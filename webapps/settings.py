@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-from configparser import ConfigParser
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,14 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-CONFIG = ConfigParser()
-CONFIG.read(BASE_DIR / "config.ini")
-SECRET_KEY = CONFIG.get("Django", "secret")
+SECRET_KEY = 'django-insecure-yz7jp3xmssk@c@c*%81=5-#4$kpt#(ea=2*8r)ggd&h#+lz_n5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["18.226.177.203"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -77,10 +75,9 @@ WSGI_APPLICATION = 'webapps.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': { 
-        'OPTIONS': {'charset': 'utf8mb4'},
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django',
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -125,6 +122,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Specify the default location for uploaded files
-MEDIA_ROOT = BASE_DIR / 'images'
