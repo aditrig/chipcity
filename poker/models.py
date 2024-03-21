@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Profile(models.Model):
-    last_name   = models.CharField(max_length=30)
-    first_names = models.CharField(max_length=30)
     bio = models.CharField(max_length=200)
     user = models.OneToOneField(User, on_delete=models.PROTECT, related_name="profile")
     picture = models.FileField(blank=True)
@@ -11,9 +9,10 @@ class Profile(models.Model):
     wallet = models.DecimalField(max_digits = 6, decimal_places = 2)
     
 class Leger(models.Model):
-    user = models.OneToOneField(User, on_delete=models.PROTECT, related_name="profile")
     pot = models.DecimalField(max_digits=10, decimal_places=2)
     table_num = models.ForeignKey(User, on_delete=models.CASCADE, related_name='table_num')
+    small_blind = models.OneToOneField(User, on_delete=models.PROTECT, related_name="small_blind")
+    big_blind = models.OneToOneField(User, on_delete=models.PROTECT, related_name="big_blind")
 
 class Participant(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT, related_name='participant')
