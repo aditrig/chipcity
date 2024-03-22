@@ -17,14 +17,14 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'webapps.settings')
 
 application = get_asgi_application()
 
-import poker.routing
+import chipcity.routing
 
 application = ProtocolTypeRouter({
     "http": application,
     # urls.py routes for http are added by default
     'websocket': AuthMiddlewareStack(
         URLRouter(
-            poker.routing.websocket_urlpatterns
+            chipcity.routing.websocket_urlpatterns
         )
     ),
 })
