@@ -16,7 +16,7 @@ class Game(models.Model):
 
 class Participant(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT, related_name='participant')
-    leger = models.ForeignKey(Game, on_delete=models.PROTECT, related_name='table_num')
+    ledger = models.ForeignKey(Game, on_delete=models.PROTECT, related_name='ledger')
     money_in_hand = models.DecimalField(max_digits=10, decimal_places=2, help_text="Money this user has in hand for this game")
     first_card = models.CharField(max_length=30)
     second_card = models.CharField(max_length=30)

@@ -13,7 +13,7 @@ function connectToServer() {
     let wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:"
 
     // Create a new WebSocket.
-    let url = `${wsProtocol}//${window.location.host}/poker/data`
+    let url = `${wsProtocol}//${window.location.host}/chipcity/data`
     socket = new WebSocket(url)
 
     // Handle any errors that occur.
