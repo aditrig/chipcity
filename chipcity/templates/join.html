@@ -8,6 +8,7 @@
     <link href="../static/chip.css" rel="stylesheet">
     <script src="../static/chipcity.js'" type="text/javascript"></script>
 </head>
+
 <body>
     <h1 class="title"> Chip City</h1>
     <table class="table">
@@ -23,7 +24,7 @@
                 <td class="tableNum">
                     <div class="type">NLH ~ 10/20</div>
                     <div class="numSeats">5/6 seats filled</div>
-                    <button class="button">Join Table</button>
+                    <button class="button"><a href="{%url 'table'%}">Join Table</a></button>
                 </td>
                 <td class="tableNum">
                     <div class="type">NLH ~ 10/20</div>
@@ -33,7 +34,7 @@
                 <td class="tableNum">
                     <div class="type">EMPTY</div>
                     <div class="numSeats">0/6 seats filled</div>
-                    <button type="submit" id="id_join_button" class="button" onclick="join_table">Join Table</button>
+                    <button class="button">Join Table</button>
                 </td>
             </tr>
             <!-- You can add more rows for additional features or player actions -->
