@@ -11,16 +11,21 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from configparser import ConfigParser
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+CONFIG = ConfigParser()
+CONFIG.read(BASE_DIR / "config.ini")
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ie=hah1g(p5_7qb9%9g46uwl5@z)2&o0&y$1(kwk@v$7l@cc&q'
+SECRET_KEY = CONFIG.get("Django", "Secret")
+# SECRET_KEY = 'django-insecure-ie=hah1g(p5_7qb9%9g46uwl5@z)2&o0&y$1(kwk@v$7l@cc&q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'chipcity'
+    'social_django',
+    'chipcity',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +128,22 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = CONFIG.get("GoogleOAuth2", "client_id")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = CONFIG.get("GoogleOAuth2", "client_secret")
+SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'prompt': 'select_account'}
+SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['fullname', 'picture']
+
+CHIPCITY_TITLE = CONFIG.get("ChipCity", "title")
+CHIPCITY_USERS = CONFIG.get("ChipCity", "users")
+
+# Used by the @login_required decorator to redirect to the login action
+LOGIN_URL = '/oauth/login/google-oauth2/'
+
+# Default URL to redirect to after a user logs in.
+LOGIN_REDIRECT_URL = '/'

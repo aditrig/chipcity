@@ -16,10 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
+from chipcity import urls as chipcity_urls
 from chipcity import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('', views.join_action),
-    path('chipcity/', include('chipcity.urls'))
+    path('oauth/', include('social_django.urls', namespace='social')),
+    path('logout', auth_views.logout_then_login, name='logout'),
+    path('chipcity/', include('chipcity.urls', namespace='chipcity')),
 ]

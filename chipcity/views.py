@@ -21,12 +21,17 @@ def join_action(request):
     if request.method == 'GET':
         return render(request, 'join.html', context)
     return render(request, 'join.html', context)
-
-    
-
     
 def table_action(request):
     context = {}
     if request.method == 'GET':
         return render(request, 'table.html', context)
     return render(request, 'table.html', context)
+
+@login_required
+def login_action(request):
+    context = {}
+    if request.method == 'GET':
+        return render(request, 'login.html', context)
+    return render(request, 'login.html', context)
+     
