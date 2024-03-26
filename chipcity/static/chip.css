@@ -79,10 +79,10 @@
 
 /* CSS for Table Page */
 .background {
-    background-image: url('../static/tempPokerTable.png');
+    background-image: url('../static/pokerTable.png');
     background-repeat: no-repeat;
     background-size: auto;
-    background-size: 100em;
+    background-size: 80em;
     background-position: center;
     background-attachment: fixed;
     z-index: -1;
