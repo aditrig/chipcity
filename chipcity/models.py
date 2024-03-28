@@ -7,12 +7,12 @@ from django.contrib.auth.models import User
     the table number, and the small and big blinds.
 '''
 class Game(models.Model):
-    dealer = models.ForeignKey(User, on_delete=models.PROTECT, related_name='dealer')
+    dealer = models.ForeignKey(User, on_delete=models.PROTECT, related_name='dealer', null=True)
     num_of_players = models.IntegerField(default=2)
-    pot = models.DecimalField(max_digits=10, decimal_places=2)
-    table_num = models.ForeignKey(User, on_delete=models.PROTECT, related_name='table_num')
-    small_blind = models.OneToOneField(User, on_delete=models.PROTECT, related_name="small_blind")
-    big_blind = models.OneToOneField(User, on_delete=models.PROTECT, related_name="big_blind")
+    pot = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True)
+    table_num = models.ForeignKey(User, on_delete=models.PROTECT, related_name='table_num', null=True)
+    small_blind = models.OneToOneField(User, on_delete=models.PROTECT, related_name="small_blind", null=True)
+    big_blind = models.OneToOneField(User, on_delete=models.PROTECT, related_name="big_blind", null=True)
 
 '''
     This is the player model. Includes the user, user's wallet, their hand, and profile picture.

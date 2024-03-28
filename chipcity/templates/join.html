@@ -24,7 +24,10 @@
                 <td class="tableNum">
                     <div class="type">NLH ~ 10/20</div>
                     <div class="numSeats">5/6 seats filled</div>
-                    <button class="button"><a href="{%url 'chipcity:table'%}">Join Table</a></button>
+                    <form action="{%url 'chipcity:table'%}" method="get">
+                        {% csrf_token %}
+                        <button class="button" type="submit">Join Table</a></button>
+                    </form>
                 </td>
                 <td class="tableNum">
                     <div class="type">NLH ~ 10/20</div>
@@ -44,7 +47,10 @@
         <span>Press a table to join...</span>
         <span>
             or
-            <button class="createButton">Create New Table</button>
+            <form action="{%url 'chipcity:table'%}" method="post">
+                {% csrf_token %}
+                <button class="createButton" type="submit">Create Table</a></button>
+            </form>
         </span>
     </div>
 </body>
