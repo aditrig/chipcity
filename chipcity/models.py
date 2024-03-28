@@ -13,9 +13,14 @@ class Game(models.Model):
     table_num = models.ForeignKey(User, on_delete=models.PROTECT, related_name='table_num', null=True)
     small_blind = models.OneToOneField(User, on_delete=models.PROTECT, related_name="small_blind", null=True)
     big_blind = models.OneToOneField(User, on_delete=models.PROTECT, related_name="big_blind", null=True)
+    # players = models.ManyToManyField(Player)
+    current_player = models.IntegerField(default=0, null=True) # can be based on seat number
+    # winner = models.ManyToManyField(Player, related_name="winner")
+    current_bet = models.IntegerField(default=0, null=True)
 
 '''
     This is the player model. Includes the user, user's wallet, their hand, and profile picture.
+    References the game that it is in.
 '''
 class Player(models.Model):
     # bio = models.CharField(max_length=200)
@@ -27,25 +32,17 @@ class Player(models.Model):
     seat_number = models.IntegerField(default=0)
     picture = models.FileField(blank=True)
     content_type = models.CharField(blank=True, max_length=50)
-    pot = models.IntegerField(default=0)
+    player_pot = models.IntegerField(default=0)
+    is_winner = models.ManyToManyField(Game, related_name='winner')
+    raise_amt = models.IntegerField(default=0)
 
 '''
-    This is the card model. Includes the flop, turn, and river cards, the current player,
-    the current player's bet, the pot, and the winner of the round.
+    This is the card model. Includes all the card suits and rank.
+    References the game that it is in.
 '''
 class Card(models.Model):
     game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="card_game")
-    flop_left = models.CharField(max_length=6)
-    flop_middle = models.CharField(max_length=6)
-    flop_right = models.CharField(max_length=6)
-    turn = models.CharField(max_length=6)
-    river = models.CharField(max_length=6)
-    players = models.ManyToManyField(Player)
-    current_player = models.IntegerField(default=0)
-    raise_amt = models.IntegerField(default=0)
-    current_bet = models.IntegerField(default=0)
-    player_pot = models.IntegerField(default=0)
-    pot = models.IntegerField(default=0)
-    winner = models.ManyToManyField(Player, related_name="winner")
-
-
+    player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="card_player")
+    suit = models.CharField(max_length=10)
+    rank = models.CharField(max_length=2)
+    image = models.CharField(max_length=20)

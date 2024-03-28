@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 import json
-from .models import*
+from chipcity.models import Game, Player, Card
 
 
 def onLoad(request):
@@ -24,12 +24,13 @@ def join_action(request):
     return render(request, 'join.html', context)
     
 def table_action(request):
-    print(request)
     context = {}
     if request.method == 'GET':
         return render(request, 'table.html', context)
     if request.method == 'POST':
-        new_game=Game(num_of_players=1)
+        print(request.user)
+        print(type(request.user))
+        new_game=Game(num_of_players=1, dealer = request.user)
         new_game.save()
         context['game'] = new_game
     return render(request, 'table.html', context)
