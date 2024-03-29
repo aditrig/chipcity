@@ -1,48 +1,87 @@
 from django.db import models
 from django.contrib.auth.models import User
-    
 
 '''
-    This is the game model. Includes the dealer, the number of players, the pot,
-    the table number, and the small and big blinds.
+    This is the card model. Includes all the cards in a standard 52 card deck.
+'''
+SUIT_CHOICES = (
+    ('c', 'Clubs'),
+    ('d', 'Diamonds'),
+    ('h', 'Hearts'),
+    ('s', 'Spades'),
+)
+
+RANK_CHOICES = (
+    ('2', '2'),
+    ('3', '3'),
+    ('4', '4'),
+    ('5', '5'),
+    ('6', '6'),
+    ('7', '7'),
+    ('8', '8'),
+    ('9', '9'),
+    ('T', 'Ten'),
+    ('J', 'Jack'),
+    ('Q', 'Queen'),
+    ('K', 'King'),
+    ('A', 'Ace'),
+)
+
+class Card(models.Model):
+    rank = models.CharField(max_length=5, choices=RANK_CHOICES)
+    suit = models.CharField(max_length=10, choices=SUIT_CHOICES)
+
+    def __str__(self):
+        return f"{self.rank}{self.suit}"
+
+'''
+    This is the game model. Includes the game(table) number.
 '''
 class Game(models.Model):
-    dealer = models.ForeignKey(User, on_delete=models.PROTECT, related_name='dealer', null=True)
-    num_of_players = models.IntegerField(default=2)
-    pot = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True)
-    table_num = models.ForeignKey(User, on_delete=models.PROTECT, related_name='table_num', null=True)
-    small_blind = models.OneToOneField(User, on_delete=models.PROTECT, related_name="small_blind", null=True)
-    big_blind = models.OneToOneField(User, on_delete=models.PROTECT, related_name="big_blind", null=True)
-    # players = models.ManyToManyField(Player)
-    current_player = models.IntegerField(default=0, null=True) # can be based on seat number
-    # winner = models.ManyToManyField(Player, related_name="winner")
-    current_bet = models.IntegerField(default=0, null=True)
+    game_num = models.IntegerField(max_length=10) #indicates the game number (for our purposes should just be 1)
 
 '''
-    This is the player model. Includes the user, user's wallet, their hand, and profile picture.
+    This is the player model. Includes the user, user's wallet, seat number, profile picture, and is_active flag.
     References the game that it is in.
 '''
 class Player(models.Model):
     # bio = models.CharField(max_length=200)
-    user = models.OneToOneField(User, on_delete=models.PROTECT, related_name="player")
-    game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="player_game")
-    wallet = models.DecimalField(max_digits=6, decimal_places = 2)
-    card_left = models.CharField(max_length=6)
-    card_right = models.CharField(max_length=6)
-    seat_number = models.IntegerField(default=0)
-    picture = models.FileField(blank=True)
-    content_type = models.CharField(blank=True, max_length=50)
-    player_pot = models.IntegerField(default=0)
-    is_winner = models.ManyToManyField(Game, related_name='winner')
-    raise_amt = models.IntegerField(default=0)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="player") #associates each player with its corresponding user
+    game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="player_game") #associates each player with a specific game instance
+    wallet = models.DecimalField(max_digits=6, decimal_places = 2) #associates each player with their own wallet (amount of money they have)
+    seat_number = models.IntegerField(default=0) #associates each player with their own specific seat # at the table
+    picture = models.FileField(blank=True) #associates each player with their own profile picture
+    content_type = models.CharField(blank=True, max_length=50) #associates each player's profile picture with a corresponding content type
+    is_active = models.BooleanField(default=True) #indicates if it is a player's current turn to make an action
 
 '''
-    This is the card model. Includes all the card suits and rank.
-    References the game that it is in.
+    This is the hand model. Includes all each player's left and right cards (texas hold'em). Also checks if a hand is active (or in play).
+    References the game that it is in and which player it is associated with.
 '''
-class Card(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="card_game")
-    player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="card_player")
-    suit = models.CharField(max_length=10)
-    rank = models.CharField(max_length=2)
-    image = models.CharField(max_length=20)
+class Hand(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="hand_game") #associates a specific hand to the game instance it belongs to
+    player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="card_player") #associates the hand dealt to a specific player
+    card_left = models.CharField(max_length=10) #indicates the left card's suit and rank (ex: 6 of Hearts == 6H)
+    card_right = models.CharField(max_length=10) #indicates the right card's suit and rank (ex: 6 of Hearts == 6H)
+    is_active = models.BooleanField(default=True) #indicates whether a player's hand is active (not folded)
+
+'''
+    This is the round model. Includes whose turn it is and the round's current pot and highest bet.
+    References the game that it is in and which player it is associated with.
+'''
+class Round(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="round_game") #associates each round with a specific game/table
+    current_player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name='current_player') #indicates whose turn it is during each round
+    pot = models.IntegerField(default=0) #indicates the pot for each round
+    highest_bet = models.IntegerField(default=0) #indicates the highest bet placed per round
+
+'''
+    This is the action model. Includes each player's action and bet amount.
+    References the round that it is in.
+'''
+class Action(models.Model):
+    round = models.ForeignKey(Round, on_delete=models.PROTECT, related_name="action_round") #associates each action taken by a player with each distinct round
+    player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="action_player") #associates each action to a specific player (bet, raise, check, fold)
+    action_type = models.CharField(max_length=10, choices=['bet', 'raise', 'check', 'fold']) #the four action type choices: "bet", "raise", "check", "fold"
+    bet_amount = models.IntegerField(default=0) #amount of money that the player has bet
+
