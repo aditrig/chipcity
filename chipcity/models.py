@@ -28,8 +28,8 @@ RANK_CHOICES = (
 )
 
 class Card(models.Model):
-    rank = models.CharField(max_length=5, choices=RANK_CHOICES)
-    suit = models.CharField(max_length=10, choices=SUIT_CHOICES)
+    rank = models.CharField(max_length=5, choices=RANK_CHOICES, null=True)
+    suit = models.CharField(max_length=10, choices=SUIT_CHOICES, null=True)
 
     def __str__(self):
         return f"{self.rank}{self.suit}"
@@ -38,7 +38,7 @@ class Card(models.Model):
     This is the game model. Includes the game(table) number.
 '''
 class Game(models.Model):
-    game_num = models.IntegerField(max_length=10) #indicates the game number (for our purposes should just be 1)
+    game_num = models.IntegerField(null=True) #indicates the game number (for our purposes should just be 1)
     players_connected = models.IntegerField(default=0)
     total_pot = models.IntegerField(default=0)
 
@@ -84,6 +84,6 @@ class Round(models.Model):
 class Action(models.Model):
     round = models.ForeignKey(Round, on_delete=models.PROTECT, related_name="action_round") #associates each action taken by a player with each distinct round
     player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="action_player") #associates each action to a specific player (bet, raise, check, fold)
-    action_type = models.CharField(max_length=10, choices=['bet', 'raise', 'check', 'fold']) #the four action type choices: "bet", "raise", "check", "fold"
+    action_type = models.CharField(max_length=10, choices=(('bet', 'Bet'), ('call', 'Call'), ('raise', 'Raise'), ('fold', 'Fold'))) #the four action type choices: "bet", "raise", "check", "fold"
     bet_amount = models.IntegerField(default=0) #amount of money that the player has bet
 
