@@ -41,6 +41,13 @@ class Game(models.Model):
     game_num = models.IntegerField(null=True) #indicates the game number (for our purposes should just be 1)
     players_connected = models.IntegerField(default=0)
     total_pot = models.IntegerField(default=0)
+    flop1 = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='flop1', blank=True, null=True)
+    flop2 = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='flop2', blank=True, null=True)
+    flop3 = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='flop3', blank=True, null=True)
+    turn = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='turn', blank=True, null=True)
+    river = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='river', blank=True, null=True)
+    curr_round = models.IntegerField(default=0)
+
 
 '''
     This is the player model. Includes the user, user's wallet, seat number, profile picture, and is_active flag.
