@@ -20,12 +20,7 @@ class MyConsumer(WebsocketConsumer):
         if not self.scope["user"].is_authenticated:
             self.send_error(f'You must be logged in')
             self.close()
-            return
-
-        if not self.scope["user"].email.endswith("@andrew.cmu.edu"):
-            self.send_error(f'You must be logged with Andrew identity')
-            self.close()
-            return            
+            return      
 
         self.user = self.scope["user"]
 

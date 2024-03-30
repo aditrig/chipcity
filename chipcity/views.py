@@ -7,11 +7,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 import json
-from chipcity.models import Game, Player, Card
 
 
 def onLoad(request):
         # return render(request, 'socialnetwork/login.html')
+        # Display splash art page intsead of redirecting
         return redirect(reverse('join_action'))
     
 
@@ -20,25 +20,11 @@ def onLoad(request):
 def join_action(request):
     context = {}
     if request.method == 'GET':
-        return render(request, 'join.html', context)
+        return render(request, 'table.html', context)
     return render(request, 'join.html', context)
-    
+
 def table_action(request):
     context = {}
     if request.method == 'GET':
         return render(request, 'table.html', context)
-    if request.method == 'POST':
-        print(request.user)
-        print(type(request.user))
-        new_game=Game(num_of_players=1, dealer = request.user)
-        new_game.save()
-        context['game'] = new_game
     return render(request, 'table.html', context)
-
-@login_required
-def login_action(request):
-    context = {}
-    if request.method == 'GET':
-        return render(request, 'login.html', context)
-    return render(request, 'login.html', context)
-     

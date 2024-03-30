@@ -127,3 +127,8 @@ function deleteItem(id) {
     let data = {action: "delete", id: id}
     socket.send(JSON.stringify(data))
 }
+
+// def join_table():
+//     document.getElementById('id_join_table').addEventListener('click', function() {
+//         window.location.href = '{%url 'table' %}}';
+//     })

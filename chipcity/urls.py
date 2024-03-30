@@ -1,13 +1,12 @@
 from django.urls import path
 from chipcity import views
 
-app_name = 'chipcity'
 
 urlpatterns = [
     path('', views.onLoad, name='onLoad'),
     path('join', views.join_action, name='join'),
     path('table', views.table_action, name='table'),
-    path('login', views.login_action, name='login'),
+    # path('register', views.register_action, name='register'),
     # path('followers', views.followers_action, name='followers'),
     # path('logout', views.logout_action, name='logout'),
     # path('myprofile', views.myprofile_action, name='myprofile'),
