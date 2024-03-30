@@ -39,6 +39,8 @@ class Card(models.Model):
 '''
 class Game(models.Model):
     game_num = models.IntegerField(max_length=10) #indicates the game number (for our purposes should just be 1)
+    players_connected = models.IntegerField(default=0)
+    total_pot = models.IntegerField(default=0)
 
 '''
     This is the player model. Includes the user, user's wallet, seat number, profile picture, and is_active flag.
