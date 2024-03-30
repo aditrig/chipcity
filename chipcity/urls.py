@@ -1,6 +1,7 @@
 from django.urls import path
 from chipcity import views
 
+app_name = "ChipCity"
 
 urlpatterns = [
     path('', views.onLoad, name='onLoad'),

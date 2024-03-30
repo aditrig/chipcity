@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'chipcity',
 ]
 
-ASGI_APPLICATION = 'webapps.asgi.application'
+ASGI_APPLICATION = 'webapps.settings'
 
 CHANNEL_LAYERS = {
     "default": {
