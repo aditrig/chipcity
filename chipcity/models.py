@@ -48,7 +48,6 @@ class Game(models.Model):
     river = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='river', blank=True, null=True)
     curr_round = models.IntegerField(default=0)
 
-
 '''
     This is the player model. Includes the user, user's wallet, seat number, profile picture, and is_active flag.
     References the game that it is in.
