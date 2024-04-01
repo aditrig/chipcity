@@ -61,7 +61,7 @@ class Player(models.Model):
     picture = models.FileField(blank=True) #associates each player with their own profile picture
     content_type = models.CharField(blank=True, max_length=50) #associates each player's profile picture with a corresponding content type
     is_active = models.BooleanField(default=True) #indicates if it is a player's current turn to make an action
-
+    
 '''
     This is the hand model. Includes all each player's left and right cards (texas hold'em). Also checks if a hand is active (or in play).
     References the game that it is in and which player it is associated with.
