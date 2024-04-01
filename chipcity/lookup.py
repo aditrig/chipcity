@@ -3,6 +3,7 @@ import itertools
 from typing import Sequence
 
 from .card import Card
+from __future__ import annotations
 
 
 class LookupTable:

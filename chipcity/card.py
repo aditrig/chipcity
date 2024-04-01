@@ -1,4 +1,5 @@
 from typing import Sequence
+from __future__ import annotations
 
 class Card:
     """

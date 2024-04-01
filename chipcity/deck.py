@@ -1,5 +1,6 @@
 from random import Random
 from .card import Card
+from __future__ import annotations
 
 from chipcity.models import *
 
@@ -47,13 +48,13 @@ class Round_Action:
         game = Game.objects.get(id=game_id)
         
         # Reset pot and highest bet for the round
-        round_instance, created = Round.objects.get_or_create(game=game, defaults={'pot': 0, 'highest_bet': 0})
+        round_instance = Round.objects.get_or_create(game=game, defaults={'pot': 0, 'highest_bet': 0})
         
         # Deal cards to players 
         deck = Deck()
         deck.shuffle()
         for player in game.players.all():
-            hand, created = Hand.objects.get_or_create(game=game, player=player)
+            hand = Hand.objects.get_or_create(game=game, player=player)
             hand.card_left, hand.card_right = deck.draw(2)  # Assuming draw returns two card objects
             hand.save()
         
