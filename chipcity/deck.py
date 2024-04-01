@@ -64,23 +64,22 @@ class Round_Action:
     def player_action(game_id, player_id, action_type, bet_amount=0):
         game = Game.objects.get(id=game_id)
         player = Player.objects.get(id=player_id)
-        current_round = game.round_game.last()  # Assuming this retrieves the current round
+        current_round = game.round_game.last()
         
         action = Action(round=current_round, player=player, action_type=action_type, bet_amount=bet_amount)
         action.save()
         
-        # Example action handling
+        #possible moves
         if action_type == 'bet' or action_type == 'raise':
             current_round.pot += bet_amount
             if bet_amount > current_round.highest_bet:
                 current_round.highest_bet = bet_amount
         elif action_type == 'call':
-            # Match the highest bet
             current_round.pot += current_round.highest_bet
-            action.bet_amount = current_round.highest_bet  # Update the action's bet_amount to match the highest bet
+            action.bet_amount = current_round.highest_bet  
             action.save()
         elif action_type == 'fold':
-            player.hand.is_active = False  # Assuming each player has one hand related to them
+            player.hand.is_active = False
             player.hand.save()
         
         current_round.save()
