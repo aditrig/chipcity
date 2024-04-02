@@ -1,9 +1,8 @@
+from __future__ import annotations
 import itertools
 from typing import Sequence
-
 from .card import Card
 from .lookup import LookupTable
-from __future__ import annotations
 
 class Evaluator:
     """

@@ -1,6 +1,6 @@
+from __future__ import annotations
 from random import Random
 from .card import Card
-from __future__ import annotations
 
 from chipcity.models import *
 
