@@ -46,11 +46,11 @@ class Game(models.Model):
     # flop3 = models.ForeignKey(StuffCard, on_delete=models.CASCADE, related_name='flop3', blank=True, null=True)
     # turn = models.ForeignKey(StuffCard, on_delete=models.CASCADE, related_name='turn', blank=True, null=True)
     # river = models.ForeignKey(StuffCard, on_delete=models.CASCADE, related_name='river', blank=True, null=True)
-    flop1 = models.IntegerField(default=0, null=True)
-    flop2 = models.IntegerField(default=0, null=True)
-    flop3 = models.IntegerField(default=0, null=True)
-    turn = models.IntegerField(default=0, null=True)
-    river = models.IntegerField(default=0, null=True)
+    flop1 = models.CharField(max_length=20, null=True)
+    flop2 = models.CharField(max_length=20, null=True)
+    flop3 = models.CharField(max_length=20, null=True)
+    turn = models.CharField(max_length=20, null=True)
+    river =models.CharField(max_length=20, null=True)
     curr_round = models.IntegerField(default=0)
     
     def create_game(self, game_num, num_players, init_pot, curr_round):
@@ -77,8 +77,13 @@ class Player(models.Model):
     wallet = models.DecimalField(max_digits=6, decimal_places = 2) #associates each player with their own wallet (amount of money they have)
     seat_number = models.IntegerField(default=0) #associates each player with their own specific seat # at the table
     picture = models.FileField(blank=True) #associates each player with their own profile picture
-    content_type = models.CharField(blank=True, max_length=50) #associates each player's profile picture with a corresponding content type
+    content_type = models.CharField(blank=True, max_length=50, null=True) #associates each player's profile picture with a corresponding content type
     is_active = models.BooleanField(default=True) #indicates if it is a player's current turn to make an action
+    # def create_player(self, wallet, num_players, init_pot, curr_round):
+    #     return type(self).objects.create(
+            
+    #     )
+
     
 '''
     This is the hand model. Includes all each player's left and right cards (texas hold'em). Also checks if a hand is active (or in play).

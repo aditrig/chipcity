@@ -43,7 +43,7 @@ class Game_Action:
         self.round = Game.curr_round
 
     def start_new_game(self, game_id):
-        game = Game.objects.get(id=game_id)
+        game = Game.objects.first()
         
         # Reset pot and highest bet for the round
         # round_instance = Round.objects.get_or_create(game=game, defaults={'pot': 0, 'highest_bet': 0})
@@ -55,14 +55,17 @@ class Game_Action:
         #     hand = Hand.objects.get_or_create(game=game, player=player)
         #     hand.card_left, hand.card_right = deck.draw(2)  # Assuming draw returns two card objects
         #     hand.save()
-
-        game.flop1 = deck.draw()
-        game.flop2 = deck.draw()
-        game.flop3 = deck.draw()
-        game.turn = deck.draw()
-        game.river = deck.draw()
         
-        # # Set the first player as the current player
+        game.flop1 = Card.int_to_pretty_str(deck.draw())
+        game.flop2 = Card.int_to_pretty_str(deck.draw())
+        game.flop3 = Card.int_to_pretty_str(deck.draw())
+        game.turn = Card.int_to_pretty_str(deck.draw())
+        game.river = Card.int_to_pretty_str(deck.draw())
+        game.save()
+        
+        
+        
+        # Set the first player as the current player
         # round_instance.current_player = game.players.first()
         # round_instance.save()
 

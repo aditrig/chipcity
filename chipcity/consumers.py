@@ -26,10 +26,7 @@ class MyConsumer(WebsocketConsumer):
 
         self.accept()
         
-        print("def connect line 24")
         if self.scope['user']:
-            print("about to make game 26")
-
             new_game = Game.objects.first()
             new_game.players_connected+=1 
             new_game.save()
@@ -48,8 +45,7 @@ class MyConsumer(WebsocketConsumer):
         #     return      
 
         self.user = self.scope["user"]
-        print("ok so")
-        self.send(text_data=json.dumps({"message": "i can say whatever i want"}))
+        # self.send(text_data=json.dumps({"message": "i can say whatever i want"}))
 
         
 
@@ -59,23 +55,20 @@ class MyConsumer(WebsocketConsumer):
         )
     
     def initGame(self):
-        print("huhiubo")
         Game_Action.start_new_game(self,game_id=1)
+        flop1_ex = (Game.objects.first().flop1)
+        flop2_ex = (Game.objects.first().flop2)
+        flop3_ex = (Game.objects.first().flop3)
+        turn_ex = (Game.objects.first().turn)
+        river_ex = (Game.objects.first().river)
+        response = flop1_ex + "\n" + flop2_ex + "\n" + flop3_ex + "\n" +turn_ex + "\n" + river_ex
 
-        # game = Game.objects.first()
-        # new_deck = Deck.GetFullDeck()
-        # indices = random.sample(range(0, 52), 5)
-        # game.flop1 = new_deck[indices[0]]
-        # game.flop2 = new_deck[indices[1]]
-        # game.flop3 = new_deck[indices[2]]
-        # game.turn = new_deck[indices[3]]
-        # game.river = new_deck[indices[4]]
-        # for i in indices:
-        #     new_deck.pop(new_deck[i])
-        # return
+        self.send(text_data=json.dumps({"message": response }))
+        
+        
+
 
     def receive(self, **kwargs):
-        print("hii")
         if 'text_data' not in kwargs:
             self.send_error('you must send text_data')
             return
@@ -95,14 +88,11 @@ class MyConsumer(WebsocketConsumer):
         words = data['text']
         
         if(action=="text"):
-            self.send(text_data=json.dumps({"message": words}))
-            print("why no if")
             print(Game.objects.first().players_connected)
             if (Game.objects.first().players_connected > 1):
                 
                 self.initGame()
-                print("is init game")
-                return
+
 
             return
 
