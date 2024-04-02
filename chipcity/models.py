@@ -49,7 +49,7 @@ class Game(models.Model):
     curr_round = models.IntegerField(default=0)
     
     def create_game(self, game_num, num_players, init_pot, curr_round=0):
-        return self.objects.create(
+        return type(self).objects.create(
             game_num=game_num,
             players_connected=num_players,
             total_pot=init_pot,
