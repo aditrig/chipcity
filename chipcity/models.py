@@ -48,8 +48,8 @@ class Game(models.Model):
     river = models.ForeignKey(StuffCard, on_delete=models.CASCADE, related_name='river', blank=True, null=True)
     curr_round = models.IntegerField(default=0)
     
-    def create_game(cls, game_num, num_players, init_pot, curr_round=0):
-        return cls.objects.create(
+    def create_game(self, game_num, num_players, init_pot, curr_round=0):
+        return self.objects.create(
             game_num=game_num,
             players_connected=num_players,
             total_pot=init_pot,

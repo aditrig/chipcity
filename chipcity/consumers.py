@@ -1,7 +1,7 @@
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 import json
-from chipcity.models import Game, Player, Card
+from chipcity.models import Game, Player, StuffCard
 from chipcity.views import * 
 from chipcity.deck import *
 import random

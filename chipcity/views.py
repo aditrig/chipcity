@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 import json
-from chipcity.models import Game, Player, Card
+from chipcity.models import Game, Player, StuffCard
 
 
 def onLoad(request):
@@ -37,7 +37,8 @@ def table_action(request):
     #     return render(request, 'table.html', context)
     
     # we want to create a game instance 
-    new_game = Game.create_game(game_num=1, num_players=0, init_pot=0,curr_round=0) 
+    new_game = Game()
+    new_game.create_game(game_num=1, num_players=0, init_pot=0,curr_round=0)
     new_game.save()
     
     return render(request, 'table.html', context)
