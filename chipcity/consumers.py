@@ -60,18 +60,19 @@ class MyConsumer(WebsocketConsumer):
     
     def initGame(self):
         print("huhiubo")
+        Game_Action.start_new_game(self,game_id=1)
 
-        game = Game.objects.first()
-        new_deck = Deck.GetFullDeck()
-        indices = random.sample(range(0, 52), 5)
-        game.flop1 = new_deck[indices[0]]
-        game.flop2 = new_deck[indices[1]]
-        game.flop3 = new_deck[indices[2]]
-        game.turn = new_deck[indices[3]]
-        game.river = new_deck[indices[4]]
-        for i in indices:
-            new_deck.pop(new_deck[i])
-        return
+        # game = Game.objects.first()
+        # new_deck = Deck.GetFullDeck()
+        # indices = random.sample(range(0, 52), 5)
+        # game.flop1 = new_deck[indices[0]]
+        # game.flop2 = new_deck[indices[1]]
+        # game.flop3 = new_deck[indices[2]]
+        # game.turn = new_deck[indices[3]]
+        # game.river = new_deck[indices[4]]
+        # for i in indices:
+        #     new_deck.pop(new_deck[i])
+        # return
 
     def receive(self, **kwargs):
         print("hii")

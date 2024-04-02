@@ -1,5 +1,5 @@
 from __future__ import annotations
-from random import Random
+import random
 from .card import Card
 
 from chipcity.models import *
@@ -12,7 +12,7 @@ class Deck:
     def shuffle(self):
         # and then shuffle
         self.cards = Deck.GetFullDeck()
-        shuffle(self.cards)
+        random.shuffle(self.cards)
 
     def draw(self, n=1):
         if n == 1:
@@ -46,15 +46,15 @@ class Game_Action:
         game = Game.objects.get(id=game_id)
         
         # Reset pot and highest bet for the round
-        round_instance = Round.objects.get_or_create(game=game, defaults={'pot': 0, 'highest_bet': 0})
+        # round_instance = Round.objects.get_or_create(game=game, defaults={'pot': 0, 'highest_bet': 0})
         
         # Deal cards to players 
         deck = Deck()
         deck.shuffle()
-        for player in game.players.all():
-            hand = Hand.objects.get_or_create(game=game, player=player)
-            hand.card_left, hand.card_right = deck.draw(2)  # Assuming draw returns two card objects
-            hand.save()
+        # for player in game.players.all():
+        #     hand = Hand.objects.get_or_create(game=game, player=player)
+        #     hand.card_left, hand.card_right = deck.draw(2)  # Assuming draw returns two card objects
+        #     hand.save()
 
         game.flop1 = deck.draw()
         game.flop2 = deck.draw()
@@ -62,9 +62,9 @@ class Game_Action:
         game.turn = deck.draw()
         game.river = deck.draw()
         
-        # Set the first player as the current player
-        round_instance.current_player = game.players.first()
-        round_instance.save()
+        # # Set the first player as the current player
+        # round_instance.current_player = game.players.first()
+        # round_instance.save()
 
     def round_action(self, game_id, player_id, action_type):
         self.player_action(game_id, player_id, action_type, bet_amount=0)
