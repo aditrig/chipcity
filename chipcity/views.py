@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 import json
-from chipcity.models import Game, Player, StuffCard
+from chipcity.models import Game, Player
 
 
 def onLoad(request):
@@ -25,6 +25,7 @@ def splash_action(request):
 
 @login_required
 def join_action(request):
+
     context = {}
     if request.method == 'GET':
         return render(request, 'join.html', context)
@@ -32,14 +33,18 @@ def join_action(request):
 
 @login_required
 def table_action(request):
+    print("game no create")
+
     context = {}
     # if request.method == 'GET':
     #     return render(request, 'table.html', context)
     
     # we want to create a game instance 
     new_game = Game()
-    new_game.create_game(game_num=1, num_players=0, init_pot=0,curr_round=0)
+    new_game.create_game(game_num=1, num_players=99, init_pot=0,curr_round=0)
     new_game.save()
+
+
     
     return render(request, 'table.html', context)
 

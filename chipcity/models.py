@@ -48,10 +48,10 @@ class Game(models.Model):
     river = models.ForeignKey(StuffCard, on_delete=models.CASCADE, related_name='river', blank=True, null=True)
     curr_round = models.IntegerField(default=0)
     
-    def create_game(self, game_num, num_players, init_pot, curr_round=0):
+    def create_game(self, game_num, num_players, init_pot, curr_round):
         return type(self).objects.create(
             game_num=game_num,
-            players_connected=num_players,
+            players_connected=99,
             total_pot=init_pot,
             flop1=None,
             flop2=None,
@@ -105,4 +105,3 @@ class Action(models.Model):
     player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="action_player") #associates each action to a specific player (bet, raise, check, fold)
     action_type = models.CharField(max_length=10, choices=(('bet', 'Bet'), ('call', 'Call'), ('raise', 'Raise'), ('fold', 'Fold'))) #the four action type choices: "bet", "raise", "check", "fold"
     bet_amount = models.IntegerField(default=0) #amount of money that the player has bet
-

@@ -8,14 +8,18 @@
     <link rel="stylesheet" href="../static/table.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="../static/poker_load.js" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dangrek&display=swap" rel="stylesheet">
-    <script src="../static/chipcity.js'" type="text/javascript"></script>
     <title>Chip City</title>
 </head>
 <body>
     <div class="table-page">
       <div class="div">
         <div class="stuff-inside">
+          <input id="item" type="text" name="item">
+          <button id="add-button" onclick="addItem()">Add item</button>
+
+          <div id="testing"> <div> 
           <div class="overlap-group">
             <img class="outer-rectangle" src="../static/img/outer-rectangle.svg" />
             <img class="inner-rectangle" src="../static/img/inner-rectangle.svg" />
@@ -88,17 +92,17 @@
         <div class="img-wrapper"><img class="img" src="../static/img/image-2.svg" /></div>
         <div class="overlap-group-logout">
           <div class="box">
-              <form action="{%url 'logout'%}" method="post">
+              {% comment %} <form action="{%url 'logout'%}" method="post">
                   {% csrf_token %}
                   <button class="logout-button" type="submit">LOGOUT</a></button>
-              </form>
+              </form> {% endcomment %}
           </div>
         </div>
       </div>
     </div>
-      <!-- <script>
+      <script>
         const myUserName = "{{ request.user.username }}"
         window.onload = connectToServer
-      </script> -->
+      </script> 
   </body>
 </html>

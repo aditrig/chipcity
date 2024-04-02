@@ -9,12 +9,16 @@ let socket = null
 
 
 function connectToServer() {
+    console.log("hi")
+
     // Use wss: protocol if site using https:, otherwise use ws: protocol
     let wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:"
 
     // Create a new WebSocket.
-    let url = `${wsProtocol}//${window.location.host}/chipcity/data`
+    let url = `${wsProtocol}//${window.location.host}/table/data`
+
     socket = new WebSocket(url)
+
 
     // Handle any errors that occur.
     socket.onerror = function(error) {
@@ -43,12 +47,11 @@ function connectToServer() {
 }
 
 function displayError(message) {
-    let errorElement = document.getElementById("error")
-    errorElement.innerHTML = message
-}
+    let errorElement = document.getElementById("testing")
+    errorElement.innerHTML = message}
 
 function displayMessage(message) {
-    let errorElement = document.getElementById("message")
+    let errorElement = document.getElementById("testing")
     errorElement.innerHTML = message
 }
 
@@ -60,6 +63,14 @@ function displayResponse(response) {
     } else {
         displayMessage("Unknown response")
     }
+}
+
+function addItem() {
+    let textInputEl = document.getElementById("item")
+    let itemText = textInputEl.value
+    if (itemText === "") return
+    let data = {action: "text", text: itemText}
+    socket.send(JSON.stringify(data))
 }
 
 // function updateList(items) {
