@@ -21,13 +21,21 @@
             <div class="number-of-seats">5/6 SEATS FILLED</div> 
             <div class="overlap-2">
               <div class="join">
-                <form action="{%url 'chipcity:table'%}" method="get">
+                <form action="{%url 'chipcity:table'%}" method="post">
                     {% csrf_token %}
                     <button class="join-button" type="submit">JOIN TABLE</a></button>
                 </form>
               </div>
             </div>
           </div>
+            <div class="overlap-group">
+                <div class="box">
+                    <form action="{%url 'logout'%}" method="post">
+                        {% csrf_token %}
+                        <button class="logout-button" type="submit">LOGOUT</a></button>
+                    </form>
+                </div>
+            </div>
         </div>
       </div>
 </body>

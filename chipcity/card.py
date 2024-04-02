@@ -1,7 +1,4 @@
-from typing import Sequence
-from __future__ import annotations
-
-class Card:
+class Card ():
     """
     Static class that handles cards. We represent cards as 32-bit integers, so 
     there is no object instantiation - they are just ints. Most of the bits are 
@@ -29,41 +26,39 @@ class Card:
     """
 
     # the basics
-    STR_RANKS: str = '23456789TJQKA'
-    STR_SUITS: str = 'shdc'
-    INT_RANKS: range = range(13)
-    PRIMES: list[int] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
+    STR_RANKS = '23456789TJQKA'
+    INT_RANKS = range(13)
+    PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
 
-    # conversion from string => int
-    CHAR_RANK_TO_INT_RANK: dict[str, int] = dict(zip(list(STR_RANKS), INT_RANKS))
-    CHAR_SUIT_TO_INT_SUIT: dict[str, int] = {
-        's': 1,  # spades
-        'h': 2,  # hearts
-        'd': 4,  # diamonds
-        'c': 8,  # clubs
-        '\u2660': 1, # spades (unicode)
-        '\u2764': 2, # hearts (unicode)
-        '\u2666': 4, # diamonds (unicode)
-        '\u2663': 8, # clubs (unicode)
+    # converstion from string => int
+    CHAR_RANK_TO_INT_RANK = dict(zip(list(STR_RANKS), INT_RANKS))
+    CHAR_SUIT_TO_INT_SUIT = {
+        's' : 1, # spades
+        'h' : 2, # hearts
+        'd' : 4, # diamonds
+        'c' : 8, # clubs
     }
-    INT_SUIT_TO_CHAR_SUIT: str = 'xshxdxxxc'
+    INT_SUIT_TO_CHAR_SUIT = 'xshxdxxxc'
 
     # for pretty printing
-    PRETTY_SUITS: dict[int, str] = {
-        1: chr(9824),   # spades
-        2: chr(9829),   # hearts
-        4: chr(9830),   # diamonds
-        8: chr(9827)    # clubs
+    PRETTY_SUITS = {
+        1: u"\u2660",  # spades
+        2: u"\u2764",  # hearts
+        4: u"\u2666",  # diamonds
+        8: u"\u2663"  # clubs
     }
+    # PRETTY_SUITS = {
+    #     1 : u"\u2660".encode('utf-8'), # spades
+    #     2 : u"\u2764".encode('utf-8'), # hearts
+    #     4 : u"\u2666".encode('utf-8'), # diamonds
+    #     8 : u"\u2663".encode('utf-8') # clubs
+    # }
 
-    SUIT_COLORS: dict[int, str] = {
-        2: "red",
-        4: "blue",
-        8: "green"
-    }
+     # hearts and diamonds
+    PRETTY_REDS = [2, 4]
 
     @staticmethod
-    def new(string: str) -> int:
+    def new(string):
         """
         Converts Card string to binary integer representation of card, inspired by:
         
@@ -83,29 +78,29 @@ class Card:
         return bitrank | suit | rank | rank_prime
 
     @staticmethod
-    def int_to_str(card_int: int) -> str:
+    def int_to_str(card_int):
         rank_int = Card.get_rank_int(card_int)
         suit_int = Card.get_suit_int(card_int)
         return Card.STR_RANKS[rank_int] + Card.INT_SUIT_TO_CHAR_SUIT[suit_int]
 
     @staticmethod
-    def get_rank_int(card_int: int) -> int:
+    def get_rank_int(card_int):
         return (card_int >> 8) & 0xF
 
     @staticmethod
-    def get_suit_int(card_int: int) -> int:
+    def get_suit_int(card_int):
         return (card_int >> 12) & 0xF
 
     @staticmethod
-    def get_bitrank_int(card_int: int) -> int:
+    def get_bitrank_int(card_int):
         return (card_int >> 16) & 0x1FFF
 
     @staticmethod
-    def get_prime(card_int: int) -> int:
+    def get_prime(card_int):
         return card_int & 0x3F
 
     @staticmethod
-    def hand_to_binary(card_strs: Sequence[str]) -> list[int]:
+    def hand_to_binary(card_strs):
         """
         Expects a list of cards as strings and returns a list
         of integers of same length corresponding to those strings. 
@@ -116,7 +111,7 @@ class Card:
         return bhand
 
     @staticmethod
-    def prime_product_from_hand(card_ints: Sequence[int]) -> int:
+    def prime_product_from_hand(card_ints):
         """
         Expects a list of cards in integer form. 
         """
@@ -128,7 +123,7 @@ class Card:
         return product
 
     @staticmethod
-    def prime_product_from_rankbits(rankbits: int) -> int:
+    def prime_product_from_rankbits(rankbits):
         """
         Returns the prime product using the bitrank (b)
         bits of the hand. Each 1 in the sequence is converted
@@ -159,13 +154,13 @@ class Card:
         return product
 
     @staticmethod
-    def int_to_binary(card_int: int) -> str:
+    def int_to_binary(card_int):
         """
         For debugging purposes. Displays the binary number as a 
         human readable string in groups of four digits. 
         """
-        bstr = bin(card_int)[2:][::-1]  # chop off the 0b and THEN reverse string
-        output = list("".join(["0000" + "\t"] * 7) + "0000")
+        bstr = bin(card_int)[2:][::-1] # chop off the 0b and THEN reverse string
+        output = list("".join(["0000" +"\t"] * 7) +"0000")
 
         for i in range(len(bstr)):
             output[i + int(i/4)] = bstr[i]
@@ -175,7 +170,7 @@ class Card:
         return "".join(output)
 
     @staticmethod
-    def int_to_pretty_str(card_int: int) -> str:
+    def int_to_pretty_str(card_int):
         """
         Prints a single card 
         """
@@ -183,8 +178,8 @@ class Card:
         color = False
         try:
             from termcolor import colored
-            # for mac, linux: http://pypi.python.org/pypi/termcolor
-            # can use for windows: http://pypi.python.org/pypi/colorama
+            ### for mac, linux: http://pypi.python.org/pypi/termcolor
+            ### can use for windows: http://pypi.python.org/pypi/colorama
             color = True
         except ImportError: 
             pass
@@ -193,24 +188,24 @@ class Card:
         suit_int = Card.get_suit_int(card_int)
         rank_int = Card.get_rank_int(card_int)
 
-        # color
+        # if we need to color red
         s = Card.PRETTY_SUITS[suit_int]
-        if color and suit_int in Card.SUIT_COLORS:
-            s = colored(s, Card.SUIT_COLORS[suit_int])
+        if color and suit_int in Card.PRETTY_REDS:
+            s = colored(s, "red")
 
         r = Card.STR_RANKS[rank_int]
 
-        return "[{}{}]".format(r,s)
+        return " [ " +r+ " " +s+ " ] "
 
     @staticmethod
-    def print_pretty_card(card_int: int) -> None:
+    def print_pretty_card(card_int):
         """
         Expects a single integer as input
         """
         print(Card.int_to_pretty_str(card_int))
 
     @staticmethod
-    def ints_to_pretty_str(card_ints: Sequence[int]) -> str:
+    def print_pretty_cards(card_ints):
         """
         Expects a list of cards in integer form.
         """
@@ -218,15 +213,8 @@ class Card:
         for i in range(len(card_ints)):
             c = card_ints[i]
             if i != len(card_ints) - 1:
-                output += str(Card.int_to_pretty_str(c)) + ","
+                output += Card.int_to_pretty_str(c) + ","
             else:
-                output += str(Card.int_to_pretty_str(c)) + " "
+                output += Card.int_to_pretty_str(c) + " "
     
-        return output
-
-    @staticmethod
-    def print_pretty_cards(card_ints: Sequence[int]) -> None:
-        """
-        Expects a list of cards in integer form.
-        """
-        print(Card.ints_to_pretty_str(card_ints))
+        print(output)

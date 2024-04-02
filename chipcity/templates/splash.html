@@ -24,7 +24,10 @@
           <img class="blue" src="../static/img/bluechip.svg" />
         </div>
         <div class="overlap">
-          <button type="button" class="login-button">LOGIN</button>
+          <form action="{%url 'chipcity:join'%}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="login-button">LOGIN</button>
+          </form>
         </div>
       </div>
     </div>

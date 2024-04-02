@@ -22,7 +22,7 @@ from chipcity import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    path('', views.join_action),
+    path('', views.splash_action),
     path('oauth/', include('social_django.urls', namespace='social')),
     path('logout', auth_views.logout_then_login, name='logout'),
     path('chipcity/', include('chipcity.urls', namespace='chipcity')),

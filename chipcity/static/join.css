@@ -105,3 +105,40 @@ body {
     font-size: 25px;
     text-align: center;
   }
+
+  .overlap-group {
+    all: unset;
+    box-sizing: border-box;
+    width: 74px;
+    height: 33px;
+  }
+
+  .overlap-group .logout-button {
+    all: unset;
+    box-sizing: border-box;
+    position: fixed;
+    width: 76px;
+    left: 0;
+    height: 33px;
+    top: 0;
+    background-color: #2D4974;
+    border-radius: 5px;
+    box-shadow: 0px 4px 4px #00000040;
+    position: absolute;
+    border: 0.5px solid;
+    border-color: #586F93;
+    font-family: "Dangrek", sans-serif;
+    text-shadow: 0px 4px 4px #00000080;
+    color: #ffffff;
+    font-size: 15px;
+    text-align: center;
+  }
+
+  .overlap-group .box {
+    position: absolute;
+    width: 82px;
+    height: 41px;
+    top: 2%;
+    left: 94%;
+    background-size: 100% 100%;
+  }

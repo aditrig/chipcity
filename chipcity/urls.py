@@ -5,6 +5,7 @@ app_name = "ChipCity"
 
 urlpatterns = [
     path('', views.onLoad, name='onLoad'),
+    path('splash', views.splash_action, name='splash'),
     path('join', views.join_action, name='join'),
     path('table', views.table_action, name='table'),
     # path('register', views.register_action, name='register'),

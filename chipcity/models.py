@@ -27,7 +27,7 @@ RANK_CHOICES = (
     ('A', 'Ace'),
 )
 
-class Card(models.Model):
+class StuffCard(models.Model):
     rank = models.CharField(max_length=5, choices=RANK_CHOICES, null=True)
     suit = models.CharField(max_length=10, choices=SUIT_CHOICES, null=True)
 
@@ -41,11 +41,11 @@ class Game(models.Model):
     game_num = models.IntegerField(null=True) #indicates the game number (for our purposes should just be 1)
     players_connected = models.IntegerField(default=0)
     total_pot = models.IntegerField(default=0)
-    flop1 = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='flop1', blank=True, null=True)
-    flop2 = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='flop2', blank=True, null=True)
-    flop3 = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='flop3', blank=True, null=True)
-    turn = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='turn', blank=True, null=True)
-    river = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='river', blank=True, null=True)
+    flop1 = models.ForeignKey(StuffCard, on_delete=models.CASCADE, related_name='flop1', blank=True, null=True)
+    flop2 = models.ForeignKey(StuffCard, on_delete=models.CASCADE, related_name='flop2', blank=True, null=True)
+    flop3 = models.ForeignKey(StuffCard, on_delete=models.CASCADE, related_name='flop3', blank=True, null=True)
+    turn = models.ForeignKey(StuffCard, on_delete=models.CASCADE, related_name='turn', blank=True, null=True)
+    river = models.ForeignKey(StuffCard, on_delete=models.CASCADE, related_name='river', blank=True, null=True)
     curr_round = models.IntegerField(default=0)
 
 '''

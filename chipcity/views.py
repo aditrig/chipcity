@@ -16,13 +16,20 @@ def onLoad(request):
     
 
 # Create your views here.
-# @login_required
+def splash_action(request):
+    context = {}
+    if request.method == 'GET':
+        return render(request, 'splash.html', context)
+    return render(request, 'splash.html', context)
+
+@login_required
 def join_action(request):
     context = {}
     if request.method == 'GET':
-        return render(request, 'table.html', context)
+        return render(request, 'join.html', context)
     return render(request, 'join.html', context)
 
+@login_required
 def table_action(request):
     context = {}
     if request.method == 'GET':
