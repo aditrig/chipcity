@@ -13,7 +13,8 @@ from chipcity.models import Game, Player
 def onLoad(request):
         # return render(request, 'socialnetwork/login.html')
         # Display splash art page intsead of redirecting
-        return redirect(reverse('join_action'))
+        # return redirect(reverse('join_action'))
+        return render(request, 'join.html', {})
     
 
 # Create your views here.
@@ -25,7 +26,6 @@ def splash_action(request):
 
 @login_required
 def join_action(request):
-
     context = {}
     if request.method == 'GET':
         return render(request, 'join.html', context)
