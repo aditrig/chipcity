@@ -1,4 +1,7 @@
-class Card ():
+from __future__ import annotations
+from typing import Sequence
+
+class Card:
     """
     Static class that handles cards. We represent cards as 32-bit integers, so 
     there is no object instantiation - they are just ints. Most of the bits are 

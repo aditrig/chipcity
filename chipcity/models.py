@@ -47,7 +47,20 @@ class Game(models.Model):
     turn = models.ForeignKey(StuffCard, on_delete=models.CASCADE, related_name='turn', blank=True, null=True)
     river = models.ForeignKey(StuffCard, on_delete=models.CASCADE, related_name='river', blank=True, null=True)
     curr_round = models.IntegerField(default=0)
-
+    
+    def create_game(cls, game_num, num_players, init_pot, curr_round=0):
+        return cls.objects.create(
+            game_num=game_num,
+            players_connected=num_players,
+            total_pot=init_pot,
+            flop1=None,
+            flop2=None,
+            flop3=None,
+            turn=None,
+            river=None,
+            curr_round=curr_round
+        )
+        
 '''
     This is the player model. Includes the user, user's wallet, seat number, profile picture, and is_active flag.
     References the game that it is in.

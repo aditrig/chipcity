@@ -62,73 +62,73 @@ function displayResponse(response) {
     }
 }
 
-function updateList(items) {
-    // Removes items from todolist if they not in items
-    let liElements = document.getElementsByTagName("li")
-    for (let i = 0; i < liElements.length; i++) {
-        let element = liElements[i]
-        let deleteIt = true
-        items.forEach(item => {
-            if (element.id === `id_item_${item.id}`) deleteIt = false
-        })
-        if (deleteIt) element.remove()
-    }
+// function updateList(items) {
+//     // Removes items from todolist if they not in items
+//     let liElements = document.getElementsByTagName("li")
+//     for (let i = 0; i < liElements.length; i++) {
+//         let element = liElements[i]
+//         let deleteIt = true
+//         items.forEach(item => {
+//             if (element.id === `id_item_${item.id}`) deleteIt = false
+//         })
+//         if (deleteIt) element.remove()
+//     }
 
-    // Adds each to do list item received from the server to the displayed list
-    let list = document.getElementById("todo-list")
-    items.forEach(item => {
-        if (document.getElementById(`id_item_${item.id}`) == null) {
-            list.append(makeListItemElement(item))
-        }
-    })
-}
-
-// Builds a new HTML "li" element for the to do list
-function makeListItemElement(item) {
-    let deleteButton
-    if (item.user === myUserName) {
-        deleteButton = `<button onclick='deleteItem(${item.id})'>X</button>`
-    } else {
-        deleteButton = "<button style='visibility: hidden'>X</button> "
-    }
-
-    let details = `<span class="details">(id=${item.id}, ip_addr=${item.ip_addr}, user=${item.user})</span>`
-
-    let element = document.createElement("li")
-    element.id = `id_item_${item.id}`
-    element.innerHTML = `${deleteButton} ${sanitize(item.text)} ${details}`
-
-    return element
-}
-
-function sanitize(s) {
-    // Be sure to replace ampersand first
-    return s.replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-}
-
-function addItem() {
-    let textInputEl = document.getElementById("item")
-    let itemText = textInputEl.value
-    if (itemText === "") return
-
-    // Clear previous error message, if any
-    displayError("")
-    
-    let data = {action: "add", text: itemText}
-    socket.send(JSON.stringify(data))
-
-    textInputEl.value = ""
-}
-
-function deleteItem(id) {
-    let data = {action: "delete", id: id}
-    socket.send(JSON.stringify(data))
-}
-
-// def join_table():
-//     document.getElementById('id_join_table').addEventListener('click', function() {
-//         window.location.href = '{%url 'table' %}}';
+//     // Adds each to do list item received from the server to the displayed list
+//     let list = document.getElementById("todo-list")
+//     items.forEach(item => {
+//         if (document.getElementById(`id_item_${item.id}`) == null) {
+//             list.append(makeListItemElement(item))
+//         }
 //     })
+// }
+
+// // Builds a new HTML "li" element for the to do list
+// function makeListItemElement(item) {
+//     let deleteButton
+//     if (item.user === myUserName) {
+//         deleteButton = `<button onclick='deleteItem(${item.id})'>X</button>`
+//     } else {
+//         deleteButton = "<button style='visibility: hidden'>X</button> "
+//     }
+
+//     let details = `<span class="details">(id=${item.id}, ip_addr=${item.ip_addr}, user=${item.user})</span>`
+
+//     let element = document.createElement("li")
+//     element.id = `id_item_${item.id}`
+//     element.innerHTML = `${deleteButton} ${sanitize(item.text)} ${details}`
+
+//     return element
+// }
+
+// function sanitize(s) {
+//     // Be sure to replace ampersand first
+//     return s.replace(/&/g, '&amp;')
+//             .replace(/</g, '&lt;')
+//             .replace(/>/g, '&gt;')
+//             .replace(/"/g, '&quot;')
+// }
+
+// function addItem() {
+//     let textInputEl = document.getElementById("item")
+//     let itemText = textInputEl.value
+//     if (itemText === "") return
+
+//     // Clear previous error message, if any
+//     displayError("")
+    
+//     let data = {action: "add", text: itemText}
+//     socket.send(JSON.stringify(data))
+
+//     textInputEl.value = ""
+// }
+
+// function deleteItem(id) {
+//     let data = {action: "delete", id: id}
+//     socket.send(JSON.stringify(data))
+// }
+
+// // def join_table():
+// //     document.getElementById('id_join_table').addEventListener('click', function() {
+// //         window.location.href = '{%url 'table' %}}';
+// //     })

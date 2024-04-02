@@ -1,7 +1,7 @@
 from __future__ import annotations
-from chipcity.evaluator import Evaluator
-from random import shuffle
-from chipcity.card import Card
+from random import Random
+from .card import Card
+
 from chipcity.models import *
 
 class Deck:
