@@ -17,7 +17,7 @@
         <input id="item" type="text" name="item">
         <button id="add-button" onclick="addItem()">Add item</button>
 
-        <div id="testing"> <div> 
+        <div id="testing"></div> 
         <div class="overlap">
           <div class="profile-picture"></div>
           <div class="profile-picture-2"></div>
@@ -91,16 +91,16 @@
           <div class="pot-button"></div>
           <div class="text-wrapper-11">POT</div>
         </div>
-        <div class="image-wrapper"><img class="image" src="../static/img/image-3.svg" /></div>
-        <div class="img-wrapper"><img class="img" src="../static/img/image-2.svg" /></div>
-        <div class="overlap-group-logout">
-          <div class="box">
-            <form action="{%url 'logout'%}" method="post">
-              {% csrf_token %}
-              <button class="logout-button" type="submit">LOGOUT</a></button>
-            </form>
-          </div>
-        </div>
+      </div>
+    </div>
+    <div class="image-wrapper"><img class="image" src="../static/img/image-3.svg" /></div>
+    <div class="img-wrapper"><img class="img" src="../static/img/image-2.svg" /></div>
+    <div class="overlap-group-logout">
+      <div class="box">
+        <form action="{%url 'logout'%}" method="post">
+          {% csrf_token %}
+          <button class="logout-button" type="submit">LOGOUT</a></button>
+        </form>
       </div>
     </div>
     <script>
