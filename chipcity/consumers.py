@@ -21,6 +21,7 @@ class MyConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_add)(
             self.group_name, self.channel_name
         )
+        print('websocket connected')
         # we need to instantiate a Player object
         # number of connected users in game object field, if ==1 then call the game_init function
 
@@ -53,6 +54,10 @@ class MyConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name
         )
+        print('when disconnected, delete a player')
+        curr_game = Game.objects.first()
+        curr_game.players_connected -= 1
+        curr_game.save()
     
     def initGame(self):
         Game_Action.start_new_game(self,game_id=1)
@@ -90,7 +95,7 @@ class MyConsumer(WebsocketConsumer):
         if(action=="text"):
             print(Game.objects.first().players_connected)
             if (Game.objects.first().players_connected > 1):
-                
+                print('game initiated')
                 self.initGame()
 
 
