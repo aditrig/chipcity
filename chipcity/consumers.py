@@ -28,10 +28,16 @@ class MyConsumer(WebsocketConsumer):
         self.accept()
         
         if self.scope['user']:
+            print(self.scope['user'])
+
             new_game = Game.objects.first()
             new_game.players_connected+=1 
             new_game.save()
-            print(new_game.players_connected)
+            new_player = Player(user=self.scope['user'], game = new_game, wallet = 0.00, seat_number = new_game.players_connected, picture = None, content_type = None, is_active = True)
+            new_player.save()
+            # print(Player.objects.first())
+            print(Player.objects.count())
+            # print(new_game.players_connected)
         else: 
             pass
         
