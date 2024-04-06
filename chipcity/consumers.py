@@ -64,9 +64,19 @@ class MyConsumer(WebsocketConsumer):
         curr_game = Game.objects.first()
         curr_game.players_connected -= 1
         curr_game.save()
+        player = Player.objects.get(user=self.scope['user'], game = curr_game)
+        player.game = None
+        # print(player.is_active)
+        print('player disconnected')
+        # want it so that when one player is disconnected, set their active status to false
     
     def initGame(self):
         Game_Action.start_new_game(self,game_id=1)
+        curr_game = Game.objects.first()
+        curr_game.players_connected = 0
+        print('initialized game and see how many players')
+        print(curr_game.players_connected)
+        curr_game.save()
         flop1_ex = (Game.objects.first().flop1)
         flop2_ex = (Game.objects.first().flop2)
         flop3_ex = (Game.objects.first().flop3)
@@ -106,6 +116,9 @@ class MyConsumer(WebsocketConsumer):
 
 
             return
+        
+        if (action == "reset"):
+            curr_game = self.initGame()
 
             
         

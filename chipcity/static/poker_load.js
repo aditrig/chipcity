@@ -73,6 +73,14 @@ function addItem() {
     socket.send(JSON.stringify(data))
 }
 
+function resetGame(){
+    let textInputEl = document.getElementById("reset")
+    let itemText = textInputEl.value
+    if (itemText === "") return
+    let data = {action: "reset", text: itemText}
+    socket.send(JSON.stringify(data))
+}
+
 // function updateList(items) {
 //     // Removes items from todolist if they not in items
 //     let liElements = document.getElementsByTagName("li")
