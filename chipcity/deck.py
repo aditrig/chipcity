@@ -43,7 +43,12 @@ class Game_Action:
         self.round = Game.curr_round
 
     def start_new_game(self, game_id):
-        game = Game.objects.first()
+        game = Game.objects.create()
+        print("so this is my first game")
+
+        print(Game.objects.all())
+
+        print("WHAT?")
         
         # Reset pot and highest bet for the round
         # round_instance = Round.objects.get_or_create(game=game, defaults={'pot': 0, 'highest_bet': 0})

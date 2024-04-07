@@ -56,7 +56,7 @@ class Game(models.Model):
     def create_game(self, game_num, num_players, init_pot, curr_round):
         return type(self).objects.create(
             game_num=game_num,
-            players_connected=99,
+            players_connected=0,
             total_pot=init_pot,
             flop1=None,
             flop2=None,
@@ -72,16 +72,15 @@ class Game(models.Model):
 '''
 class Player(models.Model):
     # bio = models.CharField(max_length=200)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="player") #associates each player with its corresponding user
-    game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="player_game") #associates each player with a specific game instance
-    wallet = models.DecimalField(max_digits=6, decimal_places = 2) #associates each player with their own wallet (amount of money they have)
-    seat_number = models.IntegerField(default=0) #associates each player with their own specific seat # at the table
-    picture = models.FileField(blank=True) #associates each player with their own profile picture
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="player",null=True) #associates each player with its corresponding user
+    game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="player_game",null=True) #associates each player with a specific game instance
+    wallet = models.DecimalField(max_digits=6, decimal_places = 2,null=True) #associates each player with their own wallet (amount of money they have)
+    seat_number = models.IntegerField(default=0,null=True) #associates each player with their own specific seat # at the table
+    picture = models.FileField(blank=True,null=True) #associates each player with their own profile picture
     content_type = models.CharField(blank=True, max_length=50, null=True) #associates each player's profile picture with a corresponding content type
     is_active = models.BooleanField(default=True) #indicates if it is a player's current turn to make an action
     # def create_player(self, wallet, num_players, init_pot, curr_round):
     #     return type(self).objects.create(
-            
     #     )
 
     
