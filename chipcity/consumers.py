@@ -41,12 +41,21 @@ class MyConsumer(WebsocketConsumer):
             )
             player.save()
 
+
+            # If the player was not created, it means it already existed. In this case, only update is_active.
+            if not created:
+                player.is_active = True
+                print(self.user)
+                player.save()
+                
+        
             active_players = 0 
 
             print(Player.objects.count())
             for player in Player.objects.all():
                 if player.is_active:
                     active_players+=1
+                else: print(player)
             print(f"there are this many active players {active_players}")
             print(f"there are this many player objects: {Player.objects.count()}")
 
@@ -56,11 +65,6 @@ class MyConsumer(WebsocketConsumer):
                 curr_game.players_connected = Player.objects.count()
                 curr_game.save()
             
-
-            # If the player was not created, it means it already existed. In this case, only update is_active.
-            if not created:
-                player.is_active = True
-                player.save()
 
         else: 
             pass
