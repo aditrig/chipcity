@@ -48,6 +48,9 @@ class MyConsumer(WebsocketConsumer):
                 print(self.user)
                 player.save()
                 
+            for game in Game.objects.all():
+                print(game)
+
         
             active_players = 0 
 
@@ -61,10 +64,10 @@ class MyConsumer(WebsocketConsumer):
             print(f"there are this many player objects: {Player.objects.count()}")
 
 
-            if ((active_players) > 1):
-                curr_game = Game.objects.first()
-                curr_game.players_connected = Player.objects.count()
-                curr_game.save()
+            # if ((active_players) > 1):
+            #     curr_game = Game.objects.first()
+            #     curr_game.players_connected = Player.objects.count()
+            #     curr_game.save()
             
 
         else: 
@@ -93,6 +96,7 @@ class MyConsumer(WebsocketConsumer):
                 active_players+=1
 
         print(f"number of active players: {active_players}")
+        
 
         # want it so that when one player is disconnected, set their active status to false
     
@@ -147,15 +151,13 @@ class MyConsumer(WebsocketConsumer):
             for player in Player.objects.all():
                 if player.is_active:
                     active_players+=1
-        print(f" the number of players is: {active_players}")
+            print(f" the number of players is: {active_players}")
 
-        if active_players >= 2:
-            print('game initiated')
-            self.initGame()
-            return
+            if active_players >= 2:
+                print('game initiated')
+                self.initGame()
+                return
         
-        if (status == "reset"):
-            curr_game = self.initGame()
 
         if (status == "waiting"):
                 return
