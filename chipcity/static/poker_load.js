@@ -69,7 +69,7 @@ function addItem() {
     let textInputEl = document.getElementById("item")
     let itemText = textInputEl.value
     if (itemText === "") return
-    let data = {action: "text", text: itemText}
+    let data = {status: "text", text: itemText}
     socket.send(JSON.stringify(data))
 }
 
@@ -77,7 +77,7 @@ function resetGame(){
     let textInputEl = document.getElementById("reset")
     let itemText = textInputEl.value
     if (itemText === "") return
-    let data = {action: "reset", text: itemText}
+    let data = {status: "reset", text: itemText}
     socket.send(JSON.stringify(data))
 }
 
@@ -136,14 +136,14 @@ function resetGame(){
 //     // Clear previous error message, if any
 //     displayError("")
     
-//     let data = {action: "add", text: itemText}
+//     let data = {status: "add", text: itemText}
 //     socket.send(JSON.stringify(data))
 
 //     textInputEl.value = ""
 // }
 
 // function deleteItem(id) {
-//     let data = {action: "delete", id: id}
+//     let data = {status: "delete", id: id}
 //     socket.send(JSON.stringify(data))
 // }
 

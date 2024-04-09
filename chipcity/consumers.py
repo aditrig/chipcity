@@ -6,14 +6,12 @@ from chipcity.views import *
 from chipcity.deck import *
 import random
 
-
-
 class MyConsumer(WebsocketConsumer):
     group_name = 'chipcity_group'
-    channel_name = 'chipcity_channel'
+    channel_name = 'game_inProgress'
+    users_connected = 0
 
     user = None
-    
     def send_error(self, error_message):
         self.send(text_data=json.dumps({'error': error_message}))
 
@@ -23,15 +21,13 @@ class MyConsumer(WebsocketConsumer):
         )
 
         self.accept()
+        player_count = Player.objects.count()
+        print(Player.objects.count())
+
         
         if self.scope['user']:
-            print(self.scope['user'])
             self.user = self.scope["user"]
-            new_game = Game.objects.first()
-            new_game.players_connected +=1
-            print("new_game.players_connected" + str(new_game.players_connected) )
-            new_game.save()
-            # new_player = Player.objects.get_or_create(user=self.scope['user'])
+            print("new player created")
             player, created = Player.objects.get_or_create(
                 user=self.scope['user'],
                 defaults={
@@ -43,51 +39,32 @@ class MyConsumer(WebsocketConsumer):
                     'is_active': True,  # This is only used if creating a new object
                 }
             )
+            player.save()
+
+            active_players = 0 
+
+            print(Player.objects.count())
+            for player in Player.objects.all():
+                if player.is_active:
+                    active_players+=1
+            print(f"there are this many active players {active_players}")
+            print(f"there are this many player objects: {Player.objects.count()}")
+
+
+            if ((active_players) > 1):
+                curr_game = Game.objects.first()
+                curr_game.players_connected = Player.objects.count()
+                curr_game.save()
+            
 
             # If the player was not created, it means it already existed. In this case, only update is_active.
             if not created:
                 player.is_active = True
                 player.save()
 
-            # try:
-            #     # Try to get the existing player
-            #     existing_player = Player.objects.get(user=self.scope['user'])
-            #     # If the player exists, set is_active to True
-            #     existing_player.is_active = True
-            #     existing_player.save()
-            # except Player.DoesNotExist:
-            #     # If the player does not exist, create a new one
-            #     new_game = Game.objects.first()
-            #     new_player = Player(
-            #         user=self.scope['user'], 
-            #         game=new_game, 
-            #         wallet=0.00, 
-            #         seat_number=new_game.players_connected, 
-            #         picture=None, 
-            #         content_type=None, 
-            #         is_active=True
-            #     )
-            #     new_player.save()
-            # if (Player.objects.get(user=self.scope['user']) == None):
-            #     new_player = Player(user=self.scope['user'], game = new_game, wallet = 0.00, seat_number = new_game.players_connected, picture = None, content_type = None, is_active = True)
-            #     new_player.save()
-            # else:
-            #     Player.objects.get(user=self.scope['user']).is_active = True
-            # print(Player.objects.first())
-            # print(Player.objects.count())
-            # print(new_game.players_connected)
         else: 
             pass
         
-        #     add user to Connected model
-        #     await connect_user(room_name=self.room_name, user=self.scope['user'], channel_name=self.channel_name)
-
-
-        # if not self.scope["user"].is_authenticated:
-        #     self.send_error(f'You must be logged in')
-        #     print("closing")
-        #     # self.close()
-        #     return      
 
         self.user = self.scope["user"]
         # self.send(text_data=json.dumps({"message": "i can say whatever i want"}))
@@ -98,30 +75,35 @@ class MyConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name
         )
-        print('when disconnected, delete a player')
-        curr_game = Game.objects.first()
-        curr_game.players_connected -= 1
-        print('players connected after disconnected user' + str(curr_game.players_connected))
-        print("The number of games:" + str(curr_game.players_connected))
-        
+        curr_game = Game.objects.first()        
+        print(self.user)
         player = Player.objects.get(user=self.user)
         player.is_active = False
+        player.save() 
+        print(player.is_active)
+        print("websocket is diconnected yay")
+        active_players = 0 
+        for player in Player.objects.all():
+            if player.is_active:
+                active_players+=1
+
+        print(f"number of active players: {active_players}")
+
         # want it so that when one player is disconnected, set their active status to false
     
     def initGame(self):
         game_count = Game.objects.all().count()
         if (game_count > 0): 
-            print(game_count)
+            print(f"this is the game count: {game_count}")
             games_to_delete = Game.objects.all()
-            print(Game.objects.all())
+            print(f"these are the games I am deleting: {Game.objects.all()}")
             games_to_delete.delete()
-        print("hi?")
-        Game_Action.start_new_game(self,game_id=1)
+        Game_Action.start_new_game(self,game_id=1,num_users = self.users_connected)
         curr_game = Game.objects.first()
-        print('initialized game and see how many players')
-        print("the number of players currently connected is:" + str(curr_game.players_connected))
-        print(Player.objects.all())
-        print(Game.objects.all())
+        print(f"ok when i init the game these are the players: {Player.objects.all()}")
+        print(f"ok when i init the game these are the games: {Game.objects.all()}")
+        print(f"---------------------------------------------------------------------------")
+
         curr_game.save()
         flop1_ex = (Game.objects.first().flop1)
         flop2_ex = (Game.objects.first().flop2)
@@ -147,28 +129,34 @@ class MyConsumer(WebsocketConsumer):
             self.send_error('invalid JSON sent to server')
             return
 
-        if 'action' not in data:
-            self.send_error('action property not sent in JSON')
+        if 'status' not in data:
+            self.send_error('status property not sent in JSON')
             return
 
 
-        action = data['action']
-        
-        if(action=="text"):
-            print(Game.objects.first().players_connected)
-            if (len(Player.objects.all()) > 0):
-                print('game initiated')
-                self.initGame()
+        status = data['status']
+        active_players = 0 
+        if(status=="text"):
+            for player in Player.objects.all():
+                if player.is_active:
+                    active_players+=1
+        print(f" the number of players is: {active_players}")
+
+        if active_players >= 2:
+            print('game initiated')
+            self.initGame()
             return
         
-        if (action == "reset"):
+        if (status == "reset"):
             curr_game = self.initGame()
 
-        if (action == "waiting"):
-                    return
-        if (action == "finish"):
+        if (status == "waiting"):
+                return
+        if (status == "inProgress"):
+                return
+        if (status == "finish"):
                 self.finishGame(data)
                 return
 
-        self.send_error(f'Invalid action property: "{action}"')
+        self.send_error(f'Invalid status property: "{status}"')
 

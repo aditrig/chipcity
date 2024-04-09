@@ -42,13 +42,11 @@ class Game_Action:
     def __init__(self):
         self.round = Game.curr_round
 
-    def start_new_game(self, game_id):
+    def start_new_game(self, game_id,num_users):
         game = Game.objects.create()
-        print("so this is my first game")
+        print("ok I just created a new game")
 
-        print(Game.objects.all())
-
-        print("WHAT?")
+        print(f"these are all the games rn: {Game.objects.all()}")
         
         # Reset pot and highest bet for the round
         # round_instance = Round.objects.get_or_create(game=game, defaults={'pot': 0, 'highest_bet': 0})
@@ -66,6 +64,7 @@ class Game_Action:
         game.flop3 = Card.int_to_pretty_str(deck.draw())
         game.turn = Card.int_to_pretty_str(deck.draw())
         game.river = Card.int_to_pretty_str(deck.draw())
+        game.players_connected = num_users
         game.save()
         
         
