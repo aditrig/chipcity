@@ -53,6 +53,7 @@ class MyConsumer(WebsocketConsumer):
 
             print(Player.objects.count())
             for player in Player.objects.all():
+                print(player)
                 if player.is_active:
                     active_players+=1
                 else: print(player)
@@ -107,6 +108,8 @@ class MyConsumer(WebsocketConsumer):
         print(f"ok when i init the game these are the players: {Player.objects.all()}")
         print(f"ok when i init the game these are the games: {Game.objects.all()}")
         print(f"---------------------------------------------------------------------------")
+        for player in Player.objects.all():
+            print(player)
 
         curr_game.save()
         flop1_ex = (Game.objects.first().flop1)

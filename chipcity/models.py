@@ -82,6 +82,9 @@ class Player(models.Model):
     # def create_player(self, wallet, num_players, init_pot, curr_round):
     #     return type(self).objects.create(
     #     )
+    def __str__(self):
+        return f"{self.user} is player number {self.id} in game {self.game}"
+
 
     
 '''
