@@ -61,6 +61,7 @@ class Game_Action:
                 hand.save()
                 player.game = game
                 player.save()
+                player.hand = hand
                 print(f"left card: {hand.card_left}, right card: {hand.card_right}")
                 
         
@@ -89,28 +90,28 @@ class Game_Action:
         self.player_action(game_id, player_id, action_type, bet_amount=0)
         self.round += 1
 
-    def player_action(self, game_id, player_id, action_type, bet_amount=0):
-        game = Game.objects.get(id=game_id)
-        player = Player.objects.get(id=player_id)
-        current_round = game.round_game.last()
+    # def player_action(self, game_id, player_id, action_type, bet_amount=0):
+    #     game = Game.objects.get(id=game_id)
+    #     player = Player.objects.get(id=player_id)
+    #     current_round = game.round_game.last()
         
-        action = Action(round=current_round, player=player, action_type=action_type, bet_amount=bet_amount)
-        action.save()
+    #     action = Action(round=current_round, player=player, action_type=action_type, bet_amount=bet_amount)
+    #     action.save()
         
-        #possible moves
-        if action_type == 'bet' or action_type == 'raise':
-            current_round.pot += bet_amount
-            if bet_amount > current_round.highest_bet:
-                current_round.highest_bet = bet_amount
-        elif action_type == 'call':
-            current_round.pot += current_round.highest_bet
-            action.bet_amount = current_round.highest_bet  
-            action.save()
-        elif action_type == 'fold':
-            player.hand.is_active = False
-            player.hand.save()
+    #     #possible moves
+    #     if action_type == 'bet' or action_type == 'raise':
+    #         current_round.pot += bet_amount
+    #         if bet_amount > current_round.highest_bet:
+    #             current_round.highest_bet = bet_amount
+    #     elif action_type == 'call':
+    #         current_round.pot += current_round.highest_bet
+    #         action.bet_amount = current_round.highest_bet  
+    #         action.save()
+    #     elif action_type == 'fold':
+    #         player.hand.is_active = False
+    #         player.hand.save()
         
-        current_round.save()
+    #     current_round.save()
 
 
 # evaluator = Evaluator()

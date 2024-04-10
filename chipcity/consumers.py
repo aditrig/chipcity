@@ -98,6 +98,10 @@ class MyConsumer(WebsocketConsumer):
         print(f"number of active players: {active_players}")
         
 
+    def play(self): 
+        print("playing")
+        return
+        
         # want it so that when one player is disconnected, set their active status to false
     
     def initGame(self):
@@ -145,7 +149,7 @@ class MyConsumer(WebsocketConsumer):
 
         status = data['action']
         active_players = 0 
-        if(status=="text"):
+        if(status=="ready"):
             for player in Player.objects.all():
                 if player.is_active:
                     active_players+=1
@@ -161,13 +165,15 @@ class MyConsumer(WebsocketConsumer):
             return
         
 
-        if (status == "waiting"):
-                return
+        if (status == "start"):
+                if (Game.objects.count() ==1):
+                    self.play() 
+                    return
         if (status == "inProgress"):
                 return
         if (status == "finish"):
                 self.finishGame(data)
                 return
 
-        self.send_error(f'Invalid status property: "{status}"')
+        else: self.send_error(f'Invalid status property: "{status}"')
 

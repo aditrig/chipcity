@@ -65,20 +65,15 @@ function displayResponse(response) {
     }
 }
 
-function addItem() {
-    let textInputEl = document.getElementById("item")
-    let itemText = textInputEl.value
-    if (itemText === "") return
-    let data = {action: "text", text: itemText}
+function startGame() {
+    let data = {action: "ready", text: ""}
     socket.send(JSON.stringify(data))
 }
 
-function resetGame(){
-    let textInputEl = document.getElementById("reset")
-    let itemText = textInputEl.value
-    if (itemText === "") return
-    let data = {action: "reset", text: itemText}
+function startPlay(){
+    let data = {action: "start", text: ""}
     socket.send(JSON.stringify(data))
+
 }
 
 // function updateList(items) {
