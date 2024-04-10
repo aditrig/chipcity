@@ -105,9 +105,9 @@ class MyConsumer(WebsocketConsumer):
         for player in Player.objects.all():
             if player.is_active:
                 active_players+=1
-        print(f"HELP i am sending game start the number of active players: {active_players}")
+        print(f"i am sending game start the number of active players: {active_players}")
 
-
+        
         Game_Action.start_new_game(self,1,active_players)
         curr_game = Game.objects.first()
         flop1_ex = (Game.objects.first().flop1)
@@ -138,12 +138,12 @@ class MyConsumer(WebsocketConsumer):
             self.send_error('invalid JSON sent to server')
             return
 
-        if 'status' not in data:
+        if 'action' not in data:
             self.send_error('status property not sent in JSON')
             return
 
 
-        status = data['status']
+        status = data['action']
         active_players = 0 
         if(status=="text"):
             for player in Player.objects.all():

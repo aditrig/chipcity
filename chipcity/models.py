@@ -81,10 +81,7 @@ class Player(models.Model):
     seat_number = models.IntegerField(default=0,null=True) #associates each player with their own specific seat # at the table
     picture = models.FileField(blank=True,null=True) #associates each player with their own profile picture
     content_type = models.CharField(blank=True, max_length=50, null=True) #associates each player's profile picture with a corresponding content type
-    is_active = models.BooleanField(default=True) #if they are in the game or have exited the browser
-    action_type = models.CharField(max_length=10, choices=(('bet', 'Bet'), ('call', 'Call'), ('raise', 'Raise'), ('fold', 'Fold'))) #the four action type choices: "bet", "raise", "check", "fold"
-    bet_amount = models.IntegerField(default=0) #amount of money that the player has bet
-
+    is_active = models.BooleanField(default=True) #
     # def create_player(self, wallet, num_players, init_pot, curr_round):
     #     return type(self).objects.create(
     #     )
@@ -118,8 +115,3 @@ class Round(models.Model):
     This is the action model. Includes each player's action and bet amount.
     References the round that it is in.
 '''
-# class Action(models.Model):
-#     round = models.ForeignKey(Round, on_delete=models.PROTECT, related_name="action_round") #associates each action taken by a player with each distinct round
-#     player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="action_player") #associates each action to a specific player (bet, raise, check, fold)
-#     action_type = models.CharField(max_length=10, choices=(('bet', 'Bet'), ('call', 'Call'), ('raise', 'Raise'), ('fold', 'Fold'))) #the four action type choices: "bet", "raise", "check", "fold"
-#     bet_amount = models.IntegerField(default=0) #amount of money that the player has bet
