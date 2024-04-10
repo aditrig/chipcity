@@ -64,10 +64,10 @@ class MyConsumer(WebsocketConsumer):
             print(f"there are this many player objects: {Player.objects.count()}")
 
 
-            # if ((active_players) > 1):
-            #     curr_game = Game.objects.first()
-            #     curr_game.players_connected = Player.objects.count()
-            #     curr_game.save()
+            if ((active_players) > 2):
+                
+                curr_game = Game.objects.first()
+                curr_game.save()
             
 
         else: 
@@ -101,30 +101,28 @@ class MyConsumer(WebsocketConsumer):
         # want it so that when one player is disconnected, set their active status to false
     
     def initGame(self):
-        game_count = Game.objects.all().count()
-        if (game_count > 0): 
-            print(f"this is the game count: {game_count}")
-            games_to_delete = Game.objects.all()
-            print(f"these are the games I am deleting: {Game.objects.all()}")
-            games_to_delete.delete()
-        Game_Action.start_new_game(self,game_id=1,num_users = self.users_connected)
-        curr_game = Game.objects.first()
-        print(f"ok when i init the game these are the players: {Player.objects.all()}")
-        print(f"ok when i init the game these are the games: {Game.objects.all()}")
-        print(f"---------------------------------------------------------------------------")
+        active_players = 0 
         for player in Player.objects.all():
-            print(player)
+            if player.is_active:
+                active_players+=1
+        print(f"HELP i am sending game start the number of active players: {active_players}")
 
-        curr_game.save()
+
+        Game_Action.start_new_game(self,1,active_players)
+        curr_game = Game.objects.first()
         flop1_ex = (Game.objects.first().flop1)
         flop2_ex = (Game.objects.first().flop2)
         flop3_ex = (Game.objects.first().flop3)
         turn_ex = (Game.objects.first().turn)
         river_ex = (Game.objects.first().river)
         
+        
         response = flop1_ex + "\n" + flop2_ex + "\n" + flop3_ex + "\n" +turn_ex + "\n" + river_ex
         
-        self.send(text_data=json.dumps({"message": response }))
+        curr_game.save()
+        print(response)
+
+        # self.send(text_data=json.dumps({"message": response }))
         
         
 
@@ -153,10 +151,14 @@ class MyConsumer(WebsocketConsumer):
                     active_players+=1
             print(f" the number of players is: {active_players}")
 
-            if active_players >= 2:
+            if (active_players >= 2 and Game.objects.count() == 0):
                 print('game initiated')
                 self.initGame()
                 return
+            community_cards = Game.objects.first().flop1 + "\n" + Game.objects.first().flop2 + "\n" + Game.objects.first().flop3 + "\n" +Game.objects.first().turn + "\n" + Game.objects.first().river
+            print(community_cards)
+            
+            return
         
 
         if (status == "waiting"):

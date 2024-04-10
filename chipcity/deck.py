@@ -45,8 +45,6 @@ class Game_Action:
     def start_new_game(self, game_id,num_users):
         game = Game.objects.create()
         print("ok I just created a new game")
-
-        print(f"these are all the games rn: {Game.objects.all()}")
         
         # Reset pot and highest bet for the round
         # round_instance = Round.objects.get_or_create(game=game, defaults={'pot': 0, 'highest_bet': 0})
@@ -54,10 +52,18 @@ class Game_Action:
         # Deal cards to players 
         deck = Deck()
         deck.shuffle()
-        # for player in game.players.all():
-        #     hand = Hand.objects.get_or_create(game=game, player=player)
-        #     hand.card_left, hand.card_right = deck.draw(2)  # Assuming draw returns two card objects
-        #     hand.save()
+        for player in Player.objects.all():
+            if player.is_active: 
+                hand, created = Hand.objects.get_or_create(game=game, player=player)
+                cards = deck.draw(2)
+                hand.card_left = Card.int_to_pretty_str(cards[0])
+                hand.card_right = Card.int_to_pretty_str(cards[1])
+                hand.save()
+                player.game = game
+                player.save()
+                print(f"left card: {hand.card_left}, right card: {hand.card_right}")
+                
+        
         
         game.flop1 = Card.int_to_pretty_str(deck.draw())
         game.flop2 = Card.int_to_pretty_str(deck.draw())
@@ -65,7 +71,13 @@ class Game_Action:
         game.turn = Card.int_to_pretty_str(deck.draw())
         game.river = Card.int_to_pretty_str(deck.draw())
         game.players_connected = num_users
+        game.total_pot = 0
+        game.curr_round = 0 # 0 is pre flop
+        game.game_num = Game.objects.first().id
         game.save()
+        
+
+
         
         
         

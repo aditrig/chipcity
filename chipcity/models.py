@@ -63,8 +63,11 @@ class Game(models.Model):
             flop3=None,
             turn=None,
             river=None,
-            curr_round=curr_round
+            curr_round=curr_round # preflop, flop, turn, river from 0-3
         )
+    def __str__(self):
+        return f"The game {self.id} is on round {self.curr_round} with {self.players_connected} players connected and the total pot at {self.total_pot}"
+
         
 '''
     This is the player model. Includes the user, user's wallet, seat number, profile picture, and is_active flag.
