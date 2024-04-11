@@ -14,86 +14,91 @@
   <body>
     <div class="table-page">
       <div class="div">
-        <div id="testing"></div> 
-        <div class="overlap">
-          <div class="profile-picture"></div>
+        <div class="table-and-seats">
+          <div class="profile-picture-1"></div>
           <div class="profile-picture-2"></div>
           <div class="profile-picture-3"></div>
           <div class="profile-picture-4"></div>
+          <div class="profile-picture-5"></div>
+          <div class="profile-picture-6"></div>
           <img class="border-rectangle" src="../static/img/BorderRectangle.svg" />
           <img class="inner-rectangle" src="../static/img/InnerRectangle.svg" />
-          <div class="lchp-5"></div>
-          <div class="rchp-5"></div>
+          <div class="lchp-1"></div>
+          <div class="rchp-1"></div>
+          <div class="lchp-2"></div>
+          <div class="rchp-2"></div>
+          <div class="lchp-3"></div>
+          <div class="rchp-3"></div>
           <div class="lchp-4"></div>
           <div class="rchp-4"></div>
+          <div class="lchp-5"></div>
+          <div class="rchp-5"></div>
+          <div class="lchp-6"></div>
+          <div class="rchp-6"></div>
           <div class="left-flop"></div>
           <div class="middle-flop"></div>
           <div class="right-flop"></div>
           <div class="turn"></div>
           <div class="river"></div>
-          <div class="lchp-2"></div>
-          <div class="rchp-2"></div>
-          <div class="lchp-1"></div>
-          <div class="rchp-1"></div>
-          <div class="rchp-6"></div>
-          <div class="lchp-6"></div>
-          <div class="lchp-3"></div>
-          <div class="rchp-3"></div>
           <div class="text-wrapper">CHIP CITY</div>
         </div>
-        <div class="profile-picture-5"></div>
-        <div class="profile-picture-6"></div>
-        <div class="overlap-group">
-          <div class="overlap-2">
-            <div class="fold-button"></div>
-            <div class="text-wrapper-2">FOLD</div>
+        <div class="action-buttons">
+          <div class="fold-call-group">
+            <div class="fold-wrap">
+              <div class="fold-button"></div>
+              <div class="fold-text">FOLD</div>
+            </div>
+            <div class="call-wrap">
+              <div class="call-button"></div>
+              <div class="call-text">CALL</div>
+            </div>
           </div>
-          <div class="overlap-3">
-            <div class="call-button"></div>
-            <div class="text-wrapper-3">CALL</div>
+          <div class="raise-check-group">
+            <div class="raise-wrap">
+              <div class="raise-button"></div>
+              <div class="raise-text">RAISE</div>
+            </div>
+            <div class="check-wrap">
+              <div class="check-button"></div>
+              <div class="check-text">CHECK</div>
+            </div>
           </div>
-        </div>
-        <div class="overlap-4">
-          <div class="overlap-5">
-            <div class="raise-button"></div>
-            <div class="text-wrapper-4">RAISE</div>
+          <div class="subtract-wrap">
+            <div class="subtract-raise"></div>
+            <div class="subtract-text">-</div>
           </div>
-          <div class="overlap-6">
-            <div class="check-button"></div>
-            <div class="text-wrapper-5">CHECK</div>
+          <div class="add-wrap">
+            <div class="add-raise"></div>
+            <div class="add-text">+</div>
           </div>
-        </div>
-        <div class="overlap-7">
-          <div class="subtract-raise"></div>
-          <div class="text-wrapper-6">-</div>
-        </div>
-        <div class="overlap-8">
-          <div class="add-raise"></div>
-          <div class="text-wrapper-6">+</div>
-        </div>
-        <div class="text-wrapper-7">$100</div>
-        <div class="overlap-9">
-          <div class="min-button"></div>
-          <div class="text-wrapper-8">MIN</div>
-        </div>
-        <div class="overlap-10">
-          <div class="max-button"></div>
-          <div class="text-wrapper-9">MAX</div>
-        </div>
-        <div class="overlap-11">
-          <div class="half-button"></div>
-          <div class="text-wrapper-10">1/2</div>
-        </div>
-        <div class="overlap-12">
-          <div class="pot-button"></div>
-          <div class="text-wrapper-11">POT</div>
+          <div class="amount-bet-text">$100</div>
+          <div class="min-wrap">
+            <div class="min-button"></div>
+            <div class="min-text">MIN</div>
+          </div>
+          <div class="max-wrap">
+            <div class="max-button"></div>
+            <div class="max-text">MAX</div>
+          </div>
+          <div class="half-wrap">
+            <div class="half-button"></div>
+            <div class="half-text">1/2</div>
+          </div>
+          <div class="pot-wrap">
+            <div class="pot-button"></div>
+            <div class="pot-text">POT</div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="image-wrapper"><img class="image" src="../static/img/image-3.svg" /></div>
-    <div class="img-wrapper"><img class="img" src="../static/img/image-2.svg" /></div>
-    <div class="overlap-group-logout">
-      <div class="box">
+    <div class="menu-wrap">
+      <img class="menu-pic" src="../static/img/menu-pic.svg">
+    </div>
+    <div class="setting-wrap">
+      <img class="setting-pic" src="../static/img/setting-pic.svg">
+    </div>
+    <div class="logout-group">
+      <div class="logout-wrap">
         <form action="{%url 'logout'%}" method="post">
           {% csrf_token %}
           <button class="logout-button" type="submit">LOGOUT</a></button>
