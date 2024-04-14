@@ -107,6 +107,22 @@
     </div>
     <button id="start-button" onclick="startGame()">Ready</button>
     <button id="play-button" onclick="startPlay()">Start</button>
+    <form id="callForm" method="get">
+      <label for="call">Call:</label>
+      <input type="text" id="call" name="call">
+      <button type="submit" form="callForm" value="Submit" id="callButton">Call</button>
+    </form>
+    <form id="raiseForm" method="get">
+      <label for="raise">Raise:</label>
+      <input type="text" id="raise" name="raise">
+      <button type="submit" form="raiseForm" value="Submit" id="raiseButton">Raise</button>
+    </form>
+    <form id="checkForm" method="get">
+      <label for="check">Check:</label>
+      <input type="text" id="check" name="check">
+      <button type="submit" form="checkForm" value="Submit" id="checkButton">Check</button>
+    </form>
+    <button type="submit" value="Submit" id="foldButton">Fold</button>
     <script>
       const myUserName = "{{ request.user.username }}"
       const myUser = "{{request.user}}"
