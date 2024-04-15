@@ -46,8 +46,14 @@ class Game(models.Model):
     flop2 = models.CharField(max_length=20, null=True)
     flop3 = models.CharField(max_length=20, null=True)
     turn = models.CharField(max_length=20, null=True)
-    river =models.CharField(max_length=20, null=True)
+    river = models.CharField(max_length=20, null=True)
     curr_round = models.IntegerField(default=0)
+    highest_curr_bet = models.IntegerField(default=0)
+    last_raise = models.IntegerField(default=0)
+    last_action =  models.IntegerField(default=0)
+    big_blind_player = models.ForeignKey(User, on_delete=models.PROTECT,related_name="big_blind_player", null=True)
+    small_blind_player = models.ForeignKey(User, on_delete=models.PROTECT,related_name="small_blind_player", null=True)
+    current_player = models.ForeignKey(User, on_delete=models.PROTECT,related_name="current_player", null=True)
     
     def create_game(self, game_num, num_players, init_pot, curr_round):
         return type(self).objects.create(
@@ -61,8 +67,8 @@ class Game(models.Model):
             river=None,
             curr_round=curr_round # preflop, flop, turn, river from 0-3
         )
-    def __str__(self):
-        return f"The game {self.id} is on round {self.curr_round} with {self.players_connected} players connected and the total pot at {self.total_pot}"
+    # def __str__(self):
+    #     return f"The game {self.id} is on round {self.curr_round} with {self.players_connected} players connected and the total pot at {self.total_pot}"
 
         
 '''
@@ -82,12 +88,19 @@ class Player(models.Model):
     is_big_blind = models.BooleanField(default=True)
     is_all_in = models.BooleanField(default=True)
     current_bet = models.IntegerField(default=0,null=True)
-    
+    can_check = models.BooleanField(default=True)
+    can_raise = models.BooleanField(default=True)
+    can_call = models.BooleanField(default=True)
+    # can_min = models.BooleanField(default=True)
+    # can_half = models.BooleanField(default=True)
+    # can_pot = models.BooleanField(default=True)
+    # can_max = models.BooleanField(default=True)
+
     # def create_player(self, wallet, num_players, init_pot, curr_round):
     #     return type(self).objects.create(
     #     )
-    def __str__(self):
-        return f"{self.user} is player number {self.id} in game {self.game}"
+    # def __str__(self):
+    #     return f"{self.user} is player number {self.id} in game {self.game}"
 
 
     

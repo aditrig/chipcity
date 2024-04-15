@@ -5,16 +5,16 @@ def list_of_players():
     list = []
     for player in Player.objects.all():
         if player.is_active:
-            list.append(player)
+            list.append(player.user)
     return list
 
-def set_blinds(game, players):
+def set_blinds(game):
     # Sets blinds for each round
     sb = ""
     bb = ""
     player_list = list_of_players()
     for player in player_list:
-        if player.is_big_blind:
+        if player.is_small_blind:
             sb = player
             bb = player_list[(player_list.index(player)+1)%(game.players_connected)]
         
@@ -49,45 +49,36 @@ def raise_action(player, money):
 
 def call_action(game, player):
     # Call functionality
-    call_val = player.round_bet - game.biggest_bet
-    player = bet_action(player, call_val)
-    # game = game_helper.new_bet(game, call_val, player.pot)
+    call_val = game.highest_curr_bet - player.current_bet
+    player = bet_action(game, player, call_val)
     player.save()
     game.save()
 
 
-def all_in(game, player):
-    """Bet all in.
-    """
-    player.round_bet += player.chips
-    # game = game_helper.new_bet(game, player.chips, player.pot)
+def all_in_action(game, player):
+    # All in functionality
+    player.current_bet += player.chips
     player.chips = 0
     player.is_all_in = True
     player.save()
     game.save()
 
 
-def check():
-    """Check action.
-    """
+def check_action():
+    # Check functionality (doesn't do anything)
     return
 
 
-def fold(player):
-    """Fold action.
-
-    :param player: [description]
-    :type player: [type]
-    """
-    player.is_in_game = False
+def fold_action(player, hand):
+    # Fold functionality
+    hand.is_active = False
+    player.current_bet = 0
     player.save()
+    hand.save()
 
 
-def set_allowed_actions(game, player):
-    """Set actions which can player do this turn.
-
-    :return: updated player object
-    """
+def allowed_action(game, player):
+    # Tells which actions are allowed for each player
     player.can_check = can_check(game, player)
     player.can_call = can_call(game, player)
     player.can_raise = can_raise(game, player)
@@ -97,38 +88,30 @@ def set_allowed_actions(game, player):
 
 
 def can_check(game, player):
-    """Check if player can check.
-
-    :return: bool
-    """
-    if game.biggest_bet <= player.round_bet:
+    # Checks if player can check
+    if game.highest_curr_bet <= player.current_bet:
         return True
     return False
 
 
 def can_call(game, player):
-    """Check if player can check.
-
-    :return: bool
-    """
-    if (game.biggest_bet - player.pot) <= player.chips:
+    # Checks if player can call
+    if (game.highest_curr_bet - player.current_bet) <= player.chips:
         return True
     return False
 
 
 def can_raise(game, player):
-    """Check if player can raise or reraise.
-
-    Player can reraise only if someone else full raised.
-    :return: bool
-    """
-    if (game.biggest_bet + game.last_raise - player.pot) <= player.chips:
+    # Checks if player can raise
+    if (game.highest_curr_bet + game.last_raise - player.current_bet) <= player.chips:
         return True
     return False
 
 
-def reset_round_bets(players):
-    for player in players:
-        player.pot += player.round_bet
-        player.round_bet = 0
+def reset_current_bets():
+    # Resets the current bets for each player after a full round is finished
+    player_list = list_of_players()
+    for player in player_list:
+        player.pot += player.current_bet
+        player.current_bet = 0
         player.save()

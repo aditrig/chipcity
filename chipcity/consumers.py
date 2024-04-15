@@ -4,6 +4,7 @@ import json
 from chipcity.models import Game, Player
 from chipcity.views import * 
 from chipcity.deck import *
+from chipcity.actionhelper import *
 import random
 
 class MyConsumer(WebsocketConsumer):
@@ -82,8 +83,7 @@ class MyConsumer(WebsocketConsumer):
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name
-        )
-        curr_game = Game.objects.first()        
+        )      
         print(self.user)
         player = Player.objects.get(user=self.user)
         player.is_active = False
@@ -96,6 +96,9 @@ class MyConsumer(WebsocketConsumer):
                 active_players+=1
 
         print(f"number of active players: {active_players}")
+        curr_game = Game.objects.first()
+        curr_game.players_connected = active_players
+        curr_game.save()
         
 
     def play(self): 
@@ -111,9 +114,29 @@ class MyConsumer(WebsocketConsumer):
                 active_players+=1
         print(f"i am sending game start the number of active players: {active_players}")
 
+        if active_players < 2:
+            # Makes sure that game does not start without 2+ players
+            return
         
+        # Gets list of active players
+        list_of_active_players = list_of_players()
+        print(list_of_active_players)
+
         Game_Action.start_new_game(self,1,active_players)
+        print(Game.objects.all())
+
+        # Sets BBP and SBP
         curr_game = Game.objects.first()
+        # print(curr_game)
+        curr_game.small_blind_player = list_of_active_players[0]
+        # print(list_of_active_players[1].user)
+        curr_game.big_blind_player = list_of_active_players[1]
+        curr_game.current_player = list_of_active_players[(list_of_active_players.index(curr_game.big_blind_player)+1)%(curr_game.players_connected)]
+        print(f"The Small Blind Player is: {curr_game.small_blind_player}")
+        print(f"The Big Blind Player is: {curr_game.big_blind_player}")
+        print(f"The Current Player is: {curr_game.current_player}")
+
+        # curr_game = Game.objects.first()
         flop1_ex = (Game.objects.first().flop1)
         flop2_ex = (Game.objects.first().flop2)
         flop3_ex = (Game.objects.first().flop3)
@@ -123,13 +146,13 @@ class MyConsumer(WebsocketConsumer):
         
         response = flop1_ex + "\n" + flop2_ex + "\n" + flop3_ex + "\n" +turn_ex + "\n" + river_ex
         
+        for hand in Hand.objects.all():
+            print(f"This is {hand.player.user}'s hand: {hand.card_left} {hand.card_right}")
+
         curr_game.save()
         print(response)
 
         # self.send(text_data=json.dumps({"message": response }))
-        
-        
-
 
     def receive(self, **kwargs):
         if 'text_data' not in kwargs:
@@ -161,6 +184,9 @@ class MyConsumer(WebsocketConsumer):
                 return
             community_cards = Game.objects.first().flop1 + "\n" + Game.objects.first().flop2 + "\n" + Game.objects.first().flop3 + "\n" +Game.objects.first().turn + "\n" + Game.objects.first().river
             print(community_cards)
+            
+            for hand in Hand.objects.all():
+                print(f"This is {hand.player.user}'s hand: {hand.card_left} {hand.card_right}")
             
             return
         
