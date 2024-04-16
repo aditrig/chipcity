@@ -161,7 +161,7 @@ class MyConsumer(WebsocketConsumer):
                 if prev_actions == 'raise' and i != 0:
                     return False
                 if prev_actions == 'check':
-                    return False
+                    return True
         else:
             return True
 
