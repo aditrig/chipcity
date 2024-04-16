@@ -66,46 +66,53 @@ class Player(models.Model):
     #     )
     # def __str__(self):
     #     return f"{self.user} is player number {self.id} in game {self.game}"
-    def make_active_player_list():
+    @classmethod
+    def make_active_player_list(cls):
         player_dict_lists = []
         for player in cls.objects.all().filter(is_active = True):
-            player_dict_lists = {
-                'user': user,
-                'game': game,
-                'wallet': wallet,
-                'chips': chips,
-                'seat_number': seat_number,
-                'picture': picture,
-                'content_type': content_type,
-                'is_active': is_active,
-                'is_big_blind': is_big_blind,
-                'is_all_in': is_all_in,
-                'current_bet': current_bet,
-                'can_check': can_check,
-                'can_raise': can_raise,
-                'can_call': can_call,
-                'most_recent_action': most_recent_action
+            player_dict = {
+                'user': player.user,
+                'game': player.game,
+                'wallet': player.wallet,
+                'chips': player.chips,
+                'seat_number': player.seat_number,
+                'picture': player.picture,
+                'content_type': player.content_type,
+                'is_active': player.is_active,
+                'is_big_blind': player.is_big_blind,
+                'is_all_in': player.is_all_in,
+                'current_bet': player.current_bet,
+                'can_check': player.can_check,
+                'can_raise': player.can_raise,
+                'can_call': player.can_call,
+                'most_recent_action': player.most_recent_action
             }
-    def make_non_active_player_list():
+            player_dict_lists.append(player_dict)
+        return player_dict_lists
+    
+    @classmethod       
+    def make_non_active_player_list(cls):
         player_dict_lists = []
         for player in cls.objects.all().filter(is_active = False):
-            player_dict_lists = {
-                'user': user,
-                'game': game,
-                'wallet': wallet,
-                'chips': chips,
-                'seat_number': seat_number,
-                'picture': picture,
-                'content_type': content_type,
-                'is_active': is_active,
-                'is_big_blind': is_big_blind,
-                'is_all_in': is_all_in,
-                'current_bet': current_bet,
-                'can_check': can_check,
-                'can_raise': can_raise,
-                'can_call': can_call,
-                'most_recent_action': most_recent_action
+            player_dict = {
+                'user': player.user,
+                'game': player.game,
+                'wallet': player.wallet,
+                'chips': player.chips,
+                'seat_number': player.seat_number,
+                'picture': player.picture,
+                'content_type': player.content_type,
+                'is_active': player.is_active,
+                'is_big_blind': player.is_big_blind,
+                'is_all_in': player.is_all_in,
+                'current_bet': player.current_bet,
+                'can_check': player.can_check,
+                'can_raise': player.can_raise,
+                'can_call': player.can_call,
+                'most_recent_action': player.most_recent_action
             }
+            player_dict_lists.append(player_dict)
+        return player_dict_lists
 
 '''
     This is the game model. Includes the game(table) number.
@@ -145,21 +152,21 @@ class Game(models.Model):
         item_dict_list = []
         for item in cls.objects.all():
             item_dict = {
-                'game_num': game_num,
+                'game_num': item.game_num,
                 'players_connected': item.players_connected,
                 'total_pot': item.total_pot,
-                'flop1': flop1,
-                'flop2': flop2,
-                'flop3': flop3,
-                'turn': turn,
-                'river': river,
+                'flop1': item.flop1,
+                'flop2': item.flop2,
+                'flop3': item.flop3,
+                'turn': item.turn,
+                'river': item.river,
                 'curr_round': item.curr_round,
-                'highest_curr_bet': highest_curr_bet,
-                'last_raise': last_raise,
-                'last_action': last_action,
-                'big_blind_player': big_blind_player,
-                'small_blind_player': small_blind_player,
-                'current_player': current_player
+                'highest_curr_bet': item.highest_curr_bet,
+                'last_raise': item.last_raise,
+                'last_action': item.last_action,
+                'big_blind_player': item.big_blind_player,
+                'small_blind_player': item.small_blind_player,
+                'current_player': item.current_player
             }
             item_dict_list.append(item_dict)
         return item_dict_list

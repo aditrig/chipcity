@@ -103,7 +103,7 @@ class MyConsumer(WebsocketConsumer):
     
     def isGameOver(self):
         game = Game.objects.first()
-        if curr_round == 3:
+        if game.curr_round == 3:
             # showdown
             return True
         num_active_players = player.objects.all().filter(is_active = True).count()
@@ -118,7 +118,7 @@ class MyConsumer(WebsocketConsumer):
             if player.most_recent_action == "fold":
                 fold_count += 1
         if fold_count == num_active_players - 1:
-            return true
+            return True
         else:
             return False
 
@@ -272,7 +272,6 @@ class MyConsumer(WebsocketConsumer):
             
             for hand in Hand.objects.all():
                 print(f"This is {hand.player.user}'s hand: {hand.card_left} {hand.card_right}")
-            self.n
 
 
     def receive(self, **kwargs):
@@ -311,8 +310,8 @@ class MyConsumer(WebsocketConsumer):
         #             self.play() 
         #             return
         if (status == "inProgress"):
-                playTurn(player_action)
-                isRoundOver(player_action)
+                self.playTurn(player_action)
+                self.isRoundOver(player_action)
         if (status == "finish"):
                 self.finishGame(data)
                 return
