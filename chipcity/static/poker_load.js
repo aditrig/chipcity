@@ -71,29 +71,29 @@ function displayResponse(response) {
 }
 
 function startGame() {
-    let data = {action: "ready", text: ""}
+    let data = {gameState: "ready", text: ""}
     socket.send(JSON.stringify(data))
 }
 
-function startPlay(){
-    let data = {action: "inProgress", text: ""}
-    socket.send(JSON.stringify(data))
+// function startPlay(){
+//     let data = {gameState: "inProgress", text: ""}
+//     socket.send(JSON.stringify(data))
 
-}
+// }
 function callAction(){
-    let data = {player_action: "call" , text:""}
+    let data = {gameState: "inProgress", player_action: "call" , text:""}
     socket.send(JSON.stringify(data))
 }
 function raiseAction(){
-    let data = {player_action: "raise," + getElementById('raiseAmount'), text:""}
+    let data = {gameState: "inProgress", player_action: "raise," + getElementById('raiseAmount'), text:""}
     socket.send(JSON.stringify(data))
 }
 function checkAction(){
-    let data = {player_action: "check", text:""}
+    let data = {gameState: "inProgress", player_action: "check", text:""}
     socket.send(JSON.stringify(data))
 }
 function foldAction(){
-    let data = {player_action: "fold", text:""}
+    let data = {gameState: "inProgress", player_action: "fold", text:""}
     socket.send(JSON.stringify(data))
 }
 

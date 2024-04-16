@@ -38,7 +38,7 @@ class MyConsumer(WebsocketConsumer):
                 defaults={
                     'wallet': 0.00,
                     'seat_number': None,
-                    'picture': None,
+                    # 'picture': None,
                     'content_type': None,
                     'is_active': True,  # This is only used if creating a new object
                 }
@@ -275,6 +275,8 @@ class MyConsumer(WebsocketConsumer):
             
             for hand in Hand.objects.all():
                 print(f"This is {hand.player.user}'s hand: {hand.card_left} {hand.card_right}")
+            
+            
 
 
     def receive(self, **kwargs):
@@ -288,14 +290,14 @@ class MyConsumer(WebsocketConsumer):
             self.send_error('invalid JSON sent to server')
             return
 
-        if 'action' not in data:
+        if 'gameState' not in data:
             self.send_error('status property not sent in JSON')
             return
         
         if 'player_action' in data:
             player_action = data['player_action']
 
-        status = data['action']
+        status = data['gameState']
         active_players = 0 
         if(status=="ready"):
             for player in Player.objects.all():
@@ -315,7 +317,7 @@ class MyConsumer(WebsocketConsumer):
         #         if (Game.objects.count() ==1):
         #             self.play() 
         #             return
-        if (status == "inProgress"):
+        if (status == "inProgress") and (Game.objects.count() ==1):
                 self.playTurn(player_action)
                 self.isRoundOver(player_action)
         if (status == "finish"):
@@ -331,6 +333,7 @@ class MyConsumer(WebsocketConsumer):
         game_info = json.dumps(Game.make_game_list())
         
         messages['game_info'] = game_info
+        messages['gameState'] = "inProgress"
         print(Player.make_active_player_list())
         active_players = json.dumps(Player.make_active_player_list())
         non_active_players = json.dumps(Player.make_non_active_player_list())
