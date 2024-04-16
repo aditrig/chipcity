@@ -5,7 +5,7 @@ def list_of_players():
     list = []
     for player in Player.objects.all():
         if player.is_active:
-            list.append(player.user)
+            list.append(player)
     return list
 
 def set_blinds(game):

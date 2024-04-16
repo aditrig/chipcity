@@ -7,6 +7,10 @@ from chipcity.deck import *
 from chipcity.actionhelper import *
 import random
 
+from django.http import JsonResponse
+from django.forms.models import model_to_dict
+
+
 class MyConsumer(WebsocketConsumer):
     group_name = 'chipcity_group'
     channel_name = 'game_inProgress'
@@ -32,7 +36,6 @@ class MyConsumer(WebsocketConsumer):
             player, created = Player.objects.get_or_create(
                 user=self.scope['user'],
                 defaults={
-                    'game': None,  # Assuming new_game is defined earlier
                     'wallet': 0.00,
                     'seat_number': None,
                     'picture': None,
@@ -266,7 +269,7 @@ class MyConsumer(WebsocketConsumer):
         print(response)
 
         # self.send(text_data=json.dumps({"message": response }))
-    def gameInitalized(): 
+    def gameInitalized(self): 
             community_cards = Game.objects.first().flop1 + "\n" + Game.objects.first().flop2 + "\n" + Game.objects.first().flop3 + "\n" +Game.objects.first().turn + "\n" + Game.objects.first().river
             print(community_cards)
             
@@ -288,8 +291,10 @@ class MyConsumer(WebsocketConsumer):
         if 'action' not in data:
             self.send_error('status property not sent in JSON')
             return
+        
+        if 'player_action' in data:
+            player_action = data['player_action']
 
-        player_action = data['player_action']
         status = data['action']
         active_players = 0 
         if(status=="ready"):
@@ -301,8 +306,9 @@ class MyConsumer(WebsocketConsumer):
             if (active_players >= 2 and Game.objects.count() == 0):
                 print('game initiated')
                 self.initGame()
-                return
             self.gameInitalized()
+            print("before broadcast list")
+            self.broadcast_list()
             return        
 
         # if (status == "start"):
@@ -327,6 +333,7 @@ class MyConsumer(WebsocketConsumer):
         non_active_players = json.dumps(Player.make_non_active_player_list())
         messages['active_players_info'] = active_players
         messages['non_active_players_info'] = non_active_players
+        print("inside broadcast list")
 
         async_to_sync(self.channel_layer.group_send)(
             self.group_name,

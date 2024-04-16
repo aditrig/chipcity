@@ -9,8 +9,6 @@ let socket = null
 
 
 function connectToServer() {
-    console.log("hi")
-
     // Use wss: protocol if site using https:, otherwise use ws: protocol
     let wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:"
 
@@ -37,13 +35,20 @@ function connectToServer() {
 
     // Handle messages received from the server.
     socket.onmessage = function(event) {
+        console.log("hi")
         let response = JSON.parse(event.data)
-        if (Array.isArray(response)) {
-            updateList(response)
-        } else {
-            displayResponse(response)
-        }
+        console.log('Game Info', JSON.parse(response.game_info));
+        console.log('Active Players', JSON.parse(response.active_players_info));
+        console.log('Non Active Players', JSON.parse(response.non_active_players_info))
     }
+    // socket.onmessage = function(event) {
+    //     let response = JSON.parse(event.data)
+    //     if (Array.isArray(response)) {
+    //         updateList(response)
+    //     } else {
+    //         displayResponse(response)
+    //     }
+    // }
 }
 
 function displayError(message) {
@@ -71,7 +76,7 @@ function startGame() {
 }
 
 function startPlay(){
-    let data = {action: "start", text: ""}
+    let data = {action: "inProgress", text: ""}
     socket.send(JSON.stringify(data))
 
 }

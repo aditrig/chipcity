@@ -72,7 +72,6 @@ class Player(models.Model):
         for player in cls.objects.all().filter(is_active = True):
             player_dict = {
                 'user': player.user,
-                'game': player.game,
                 'wallet': player.wallet,
                 'chips': player.chips,
                 'seat_number': player.seat_number,
@@ -96,7 +95,6 @@ class Player(models.Model):
         for player in cls.objects.all().filter(is_active = False):
             player_dict = {
                 'user': player.user,
-                'game': player.game,
                 'wallet': player.wallet,
                 'chips': player.chips,
                 'seat_number': player.seat_number,
@@ -148,6 +146,7 @@ class Game(models.Model):
         )
     # def __str__(self):
     #     return f"The game {self.id} is on round {self.curr_round} with {self.players_connected} players connected and the total pot at {self.total_pot}"
+    @classmethod
     def make_game_list(cls):
         item_dict_list = []
         for item in cls.objects.all():
@@ -166,7 +165,7 @@ class Game(models.Model):
                 'last_action': item.last_action,
                 'big_blind_player': item.big_blind_player,
                 'small_blind_player': item.small_blind_player,
-                'current_player': item.current_player
+                'current_player': item.current_player,
             }
             item_dict_list.append(item_dict)
         return item_dict_list
