@@ -100,9 +100,109 @@ class MyConsumer(WebsocketConsumer):
         curr_game.players_connected = active_players
         curr_game.save()
         
+    
+    def isGameOver(self):
+        game = Game.objects.first()
+        # if everyone except for one player folds
+            # player is winner
+        # it's after the last round
+        # if everyone goes all in
+            # showdown
+        
 
-    def play(self): 
-        print("playing")
+    def isRoundOver(self, action, id):
+        # action is a string that is passed in representing the action
+            # action can be "call", "raise", "check", "fold"
+        players_actions_ordered = []
+        for id in range(len(Player.objects.all())):
+            players_actions_ordered.append(Player.objects.get(user = id).most_recent_action)
+        
+        for players_actions in players_actions_ordered:
+            if players_actions == 'NULL':
+                return False
+
+        players_actions_set_last = []
+        players_actions_set_last = players_actions_ordered[:id] + players_actions_ordered[id:-1]
+
+        if action == 'raise':
+            return False
+        elif action == 'call':
+            for i in range(len(players_actions_set_last)):
+                prev_actions =  players_actions_set_last[i]
+                if prev_actions == 'fold':
+                    continue
+                if prev_actions == 'raise' and i != 0:
+                    return False
+                if prev_actions == 'check':
+                    return False
+        elif action == 'check':
+            return True
+        elif action == 'fold':
+            for i in range(len(players_actions_set_last)):
+                prev_actions =  players_actions_set_last[i]
+                if prev_actions == 'fold':
+                    continue
+                if prev_actions == 'raise' and i != 0:
+                    return False
+                if prev_actions == 'check':
+                    return False
+        else:
+            return True
+
+
+    def playTurn(self, action): 
+        # once a player makes a move (presses a button) this 
+        # updates the game state to reflect their action
+        # action is a string that is passed in representing the action
+        # action can be "call", "raise", "check", "fold"
+
+        currRound = Game.curr_round
+        currPlayer = Game.current_player.id
+        maxBet = Game.highest_curr_bet
+
+        if (action == "call"):
+            # maxBet stays the same
+            Game.current_player+=1
+            Game.save()
+        if action == "check":
+            # check if it is legal 
+            if (currRound==0):
+                if currPlayer!=Game.big_blind_player.id:
+                    print("only big blind can check pre-flop!")
+                else: 
+                    Game.current_player = Player.objects.all().filter(id=(currPlayer+1))
+                    Game.current_player.save() 
+                    Game.save()
+            elif (currRound > 0):
+                if maxBet == 0: 
+                    Game.current_player = Player.objects.all().filter(id=(currPlayer+1))
+                    Game.current_player.save() 
+                    Game.save()
+                else: 
+                    print("Can't check, opening bet has already been placed")
+
+        if action == "fold":
+            Game.current_player.is_active = False
+            Game.current_player.save() 
+            Game.save() 
+            Game.current_player = Player.objects.all().filter(id=(currPlayer+1))
+            Game.current_player.save() 
+            Game.save()
+
+        else: 
+            validate = action.split(",")
+            if len(validate) == 2 and validate[0] == "raise":
+                try:
+                    amount = int(validate[1])
+                    # Valid raise action with a numeric amount
+                    # You can handle the raise action here
+                except ValueError:
+                    # Invalid amount (not a valid number after "raise,")
+                    print("Invalid raise amount. Please provide a numeric value.")
+            else:
+                # Invalid format
+                print("Invalid action format. Please use 'raise,x' format.")
+                
         return
         
         # want it so that when one player is disconnected, set their active status to false
@@ -153,6 +253,14 @@ class MyConsumer(WebsocketConsumer):
         print(response)
 
         # self.send(text_data=json.dumps({"message": response }))
+    def gameInitalized(): 
+            community_cards = Game.objects.first().flop1 + "\n" + Game.objects.first().flop2 + "\n" + Game.objects.first().flop3 + "\n" +Game.objects.first().turn + "\n" + Game.objects.first().river
+            print(community_cards)
+            
+            for hand in Hand.objects.all():
+                print(f"This is {hand.player.user}'s hand: {hand.card_left} {hand.card_right}")
+            self.n
+
 
     def receive(self, **kwargs):
         if 'text_data' not in kwargs:
@@ -169,7 +277,7 @@ class MyConsumer(WebsocketConsumer):
             self.send_error('status property not sent in JSON')
             return
 
-
+        player_action = data['player_action']
         status = data['action']
         active_players = 0 
         if(status=="ready"):
@@ -182,24 +290,39 @@ class MyConsumer(WebsocketConsumer):
                 print('game initiated')
                 self.initGame()
                 return
-            community_cards = Game.objects.first().flop1 + "\n" + Game.objects.first().flop2 + "\n" + Game.objects.first().flop3 + "\n" +Game.objects.first().turn + "\n" + Game.objects.first().river
-            print(community_cards)
-            
-            for hand in Hand.objects.all():
-                print(f"This is {hand.player.user}'s hand: {hand.card_left} {hand.card_right}")
-            
-            return
-        
+            self.gameInitalized()
+            return        
 
-        if (status == "start"):
-                if (Game.objects.count() ==1):
-                    self.play() 
-                    return
+        # if (status == "start"):
+        #         if (Game.objects.count() ==1):
+        #             self.play() 
+        #             return
         if (status == "inProgress"):
-                return
+                playTurn(player_action)
+                isRoundOver(player_action)
         if (status == "finish"):
                 self.finishGame(data)
                 return
 
         else: self.send_error(f'Invalid status property: "{status}"')
 
+    def broadcast_list(self):
+        messages = {}
+        # create the game info field in messages
+        game_info = json.dumps(Game.make_game_list())
+        messages['game_info'] = game_info
+        active_players = json.dumps(Player.make_active_player_list())
+        non_active_players = json.dumps(Player.make_non_active_player_list())
+        messages['active_players_info'] = active_players
+        messages['non_active_players_info'] = non_active_players
+
+        async_to_sync(self.channel_layer.group_send)(
+            self.group_name,
+            {
+                'type': 'broadcast_event',
+                'message': json.dumps(messages)
+            }
+        )
+
+    def broadcast_event(self, event):
+        self.send(text_data=event['message'])

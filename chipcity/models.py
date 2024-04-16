@@ -69,7 +69,28 @@ class Game(models.Model):
         )
     # def __str__(self):
     #     return f"The game {self.id} is on round {self.curr_round} with {self.players_connected} players connected and the total pot at {self.total_pot}"
-
+    def make_game_list(cls):
+        item_dict_list = []
+        for item in cls.objects.all():
+            item_dict = {
+                'game_num': game_num,
+                'players_connected': item.players_connected,
+                'total_pot': item.total_pot,
+                'flop1': flop1,
+                'flop2': flop2,
+                'flop3': flop3,
+                'turn': turn,
+                'river': river,
+                'curr_round': item.curr_round,
+                'highest_curr_bet': highest_curr_bet,
+                'last_raise': last_raise,
+                'last_action': last_action,
+                'big_blind_player': big_blind_player,
+                'small_blind_player': small_blind_player,
+                'current_player': current_player
+            }
+            item_dict_list.append(item_dict)
+        return item_dict_list
         
 '''
     This is the player model. Includes the user, user's wallet, seat number, profile picture, and is_active flag.
@@ -91,6 +112,7 @@ class Player(models.Model):
     can_check = models.BooleanField(default=True)
     can_raise = models.BooleanField(default=True)
     can_call = models.BooleanField(default=True)
+    most_recent_action = models.CharField(blank=True, max_length=50, null=True)
     # can_min = models.BooleanField(default=True)
     # can_half = models.BooleanField(default=True)
     # can_pot = models.BooleanField(default=True)
@@ -101,7 +123,46 @@ class Player(models.Model):
     #     )
     # def __str__(self):
     #     return f"{self.user} is player number {self.id} in game {self.game}"
-
+    def make_active_player_list():
+        player_dict_lists = []
+        for player in cls.objects.all().filter(is_active = True):
+            player_dict_lists = {
+                'user': user,
+                'game': game,
+                'wallet': wallet,
+                'chips': chips,
+                'seat_number': seat_number,
+                'picture': picture,
+                'content_type': content_type,
+                'is_active': is_active,
+                'is_big_blind': is_big_blind,
+                'is_all_in': is_all_in,
+                'current_bet': current_bet,
+                'can_check': can_check,
+                'can_raise': can_raise,
+                'can_call': can_call,
+                'most_recent_action': most_recent_action
+            }
+    def make_non_active_player_list():
+        player_dict_lists = []
+        for player in cls.objects.all().filter(is_active = False):
+            player_dict_lists = {
+                'user': user,
+                'game': game,
+                'wallet': wallet,
+                'chips': chips,
+                'seat_number': seat_number,
+                'picture': picture,
+                'content_type': content_type,
+                'is_active': is_active,
+                'is_big_blind': is_big_blind,
+                'is_all_in': is_all_in,
+                'current_bet': current_bet,
+                'can_check': can_check,
+                'can_raise': can_raise,
+                'can_call': can_call,
+                'most_recent_action': most_recent_action
+            }
 
     
 '''

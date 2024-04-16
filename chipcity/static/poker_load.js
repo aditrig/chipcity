@@ -75,6 +75,22 @@ function startPlay(){
     socket.send(JSON.stringify(data))
 
 }
+function callAction(){
+    let data = {player_action: "call", text:""}
+    socket.send(JSON.stringify(data))
+}
+function raiseAction(){
+    let data = {player_action: "raise," + getElementById('raiseAmount'), text:""}
+    socket.send(JSON.stringify(data))
+}
+function checkAction(){
+    let data = {player_action: "check", text:""}
+    socket.send(JSON.stringify(data))
+}
+function foldAction(){
+    let data = {player_action: "fold", text:""}
+    socket.send(JSON.stringify(data))
+}
 
 // function updateList(items) {
 //     // Removes items from todolist if they not in items
