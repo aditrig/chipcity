@@ -36,70 +36,13 @@ class StuffCard(models.Model):
         return f"{self.rank}{self.suit}"
 
 '''
-    This is the game model. Includes the game(table) number.
-'''
-class Game(models.Model):
-    game_num = models.IntegerField(null=True) #indicates the game number (for our purposes should just be 1)
-    players_connected = models.IntegerField(default=0)
-    total_pot = models.IntegerField(default=0)
-    flop1 = models.CharField(max_length=20, null=True)
-    flop2 = models.CharField(max_length=20, null=True)
-    flop3 = models.CharField(max_length=20, null=True)
-    turn = models.CharField(max_length=20, null=True)
-    river = models.CharField(max_length=20, null=True)
-    curr_round = models.IntegerField(default=0)
-    highest_curr_bet = models.IntegerField(default=0)
-    last_raise = models.IntegerField(default=0)
-    last_action =  models.IntegerField(default=0)
-    big_blind_player = models.ForeignKey(User, on_delete=models.PROTECT,related_name="big_blind_player", null=True)
-    small_blind_player = models.ForeignKey(User, on_delete=models.PROTECT,related_name="small_blind_player", null=True)
-    current_player = models.ForeignKey(User, on_delete=models.PROTECT,related_name="current_player", null=True)
-    
-    def create_game(self, game_num, num_players, init_pot, curr_round):
-        return type(self).objects.create(
-            game_num=game_num,
-            players_connected=0,
-            total_pot=init_pot,
-            flop1=None,
-            flop2=None,
-            flop3=None,
-            turn=None,
-            river=None,
-            curr_round=curr_round # preflop, flop, turn, river from 0-3
-        )
-    # def __str__(self):
-    #     return f"The game {self.id} is on round {self.curr_round} with {self.players_connected} players connected and the total pot at {self.total_pot}"
-    def make_game_list(cls):
-        item_dict_list = []
-        for item in cls.objects.all():
-            item_dict = {
-                'game_num': game_num,
-                'players_connected': item.players_connected,
-                'total_pot': item.total_pot,
-                'flop1': flop1,
-                'flop2': flop2,
-                'flop3': flop3,
-                'turn': turn,
-                'river': river,
-                'curr_round': item.curr_round,
-                'highest_curr_bet': highest_curr_bet,
-                'last_raise': last_raise,
-                'last_action': last_action,
-                'big_blind_player': big_blind_player,
-                'small_blind_player': small_blind_player,
-                'current_player': current_player
-            }
-            item_dict_list.append(item_dict)
-        return item_dict_list
-        
-'''
     This is the player model. Includes the user, user's wallet, seat number, profile picture, and is_active flag.
     References the game that it is in.
 '''
 class Player(models.Model):
     # bio = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="player",null=True) #associates each player with its corresponding user
-    game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="player_game",null=True) #associates each player with a specific game instance
+    # game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="player_game",null=True) #associates each player with a specific game instance
     wallet = models.DecimalField(max_digits=6, decimal_places = 2,null=True) #associates each player with their own wallet (total amount of money they have)
     chips = models.DecimalField(max_digits=6, decimal_places = 2,null=True) #associates each player with their own number of chips (amount of money they bought in for)
     seat_number = models.IntegerField(default=0,null=True) #associates each player with their own specific seat # at the table
@@ -163,6 +106,64 @@ class Player(models.Model):
                 'can_call': can_call,
                 'most_recent_action': most_recent_action
             }
+
+'''
+    This is the game model. Includes the game(table) number.
+'''
+class Game(models.Model):
+    game_num = models.IntegerField(null=True) #indicates the game number (for our purposes should just be 1)
+    players_connected = models.IntegerField(default=0)
+    total_pot = models.IntegerField(default=0)
+    flop1 = models.CharField(max_length=20, null=True)
+    flop2 = models.CharField(max_length=20, null=True)
+    flop3 = models.CharField(max_length=20, null=True)
+    turn = models.CharField(max_length=20, null=True)
+    river = models.CharField(max_length=20, null=True)
+    curr_round = models.IntegerField(default=0)
+    highest_curr_bet = models.IntegerField(default=0)
+    last_raise = models.IntegerField(default=0)
+    last_action =  models.IntegerField(default=0)
+    big_blind_player = models.ForeignKey(Player, on_delete=models.PROTECT,related_name="big_blind_player", null=True)
+    small_blind_player = models.ForeignKey(Player, on_delete=models.PROTECT,related_name="small_blind_player", null=True)
+    current_player = models.ForeignKey(Player, on_delete=models.PROTECT,related_name="current_player", null=True)
+    
+    def create_game(self, game_num, num_players, init_pot, curr_round):
+        return type(self).objects.create(
+            game_num=game_num,
+            players_connected=0,
+            total_pot=init_pot,
+            flop1=None,
+            flop2=None,
+            flop3=None,
+            turn=None,
+            river=None,
+            curr_round=curr_round # preflop, flop, turn, river from 0-3
+        )
+    # def __str__(self):
+    #     return f"The game {self.id} is on round {self.curr_round} with {self.players_connected} players connected and the total pot at {self.total_pot}"
+    def make_game_list(cls):
+        item_dict_list = []
+        for item in cls.objects.all():
+            item_dict = {
+                'game_num': game_num,
+                'players_connected': item.players_connected,
+                'total_pot': item.total_pot,
+                'flop1': flop1,
+                'flop2': flop2,
+                'flop3': flop3,
+                'turn': turn,
+                'river': river,
+                'curr_round': item.curr_round,
+                'highest_curr_bet': highest_curr_bet,
+                'last_raise': last_raise,
+                'last_action': last_action,
+                'big_blind_player': big_blind_player,
+                'small_blind_player': small_blind_player,
+                'current_player': current_player
+            }
+            item_dict_list.append(item_dict)
+        return item_dict_list
+        
 
     
 '''

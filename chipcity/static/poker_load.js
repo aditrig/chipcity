@@ -76,7 +76,7 @@ function startPlay(){
 
 }
 function callAction(){
-    let data = {player_action: "call", text:""}
+    let data = {player_action: "call" , text:""}
     socket.send(JSON.stringify(data))
 }
 function raiseAction(){

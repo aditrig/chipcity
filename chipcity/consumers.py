@@ -103,12 +103,25 @@ class MyConsumer(WebsocketConsumer):
     
     def isGameOver(self):
         game = Game.objects.first()
-        # if everyone except for one player folds
-            # player is winner
-        # it's after the last round
-        # if everyone goes all in
+        if curr_round == 3:
             # showdown
-        
+            return True
+        num_active_players = player.objects.all().filter(is_active = True).count()
+        is_all_in_count = 0
+        for player in player.objects.all().filter(is_active = True):
+            if player.is_all_in:
+                is_all_in_count += 1
+        if is_all_in_count == num_active_players:
+            return True
+        fold_count = 0
+        for player in player.objects.all().filter(is_active = True):
+            if player.most_recent_action == "fold":
+                fold_count += 1
+        if fold_count == num_active_players - 1:
+            return true
+        else:
+            return False
+
 
     def isRoundOver(self, action, id):
         # action is a string that is passed in representing the action
