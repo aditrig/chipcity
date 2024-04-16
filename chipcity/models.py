@@ -43,10 +43,10 @@ class Player(models.Model):
     # bio = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="player",null=True) #associates each player with its corresponding user
     # game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="player_game",null=True) #associates each player with a specific game instance
-    wallet = models.DecimalField(max_digits=6, decimal_places = 2,null=True) #associates each player with their own wallet (total amount of money they have)
-    chips = models.DecimalField(max_digits=6, decimal_places = 2,null=True) #associates each player with their own number of chips (amount of money they bought in for)
+    wallet = models.IntegerField(default=0,null=True) #associates each player with their own wallet (total amount of money they have)
+    chips = models.IntegerField(default=0,null=True) #associates each player with their own number of chips (amount of money they bought in for)
     seat_number = models.IntegerField(default=0,null=True) #associates each player with their own specific seat # at the table
-    picture = models.FileField(blank=True,null=True) #associates each player with their own profile picture
+    # picture = models.FileField(blank=True,null=True) #associates each player with their own profile picture
     content_type = models.CharField(blank=True, max_length=50, null=True) #associates each player's profile picture with a corresponding content type
     is_active = models.BooleanField(default=True) #checks if the player is an active player at the table (not spectator)
     is_big_blind = models.BooleanField(default=True)
@@ -71,11 +71,11 @@ class Player(models.Model):
         player_dict_lists = []
         for player in cls.objects.all().filter(is_active = True):
             player_dict = {
-                'user': player.user,
+                'user': player.user.username,
                 'wallet': player.wallet,
                 'chips': player.chips,
                 'seat_number': player.seat_number,
-                'picture': player.picture,
+                # 'picture': player.picture,
                 'content_type': player.content_type,
                 'is_active': player.is_active,
                 'is_big_blind': player.is_big_blind,
@@ -87,6 +87,8 @@ class Player(models.Model):
                 'most_recent_action': player.most_recent_action
             }
             player_dict_lists.append(player_dict)
+        print("we good?")
+
         return player_dict_lists
     
     @classmethod       
@@ -94,7 +96,7 @@ class Player(models.Model):
         player_dict_lists = []
         for player in cls.objects.all().filter(is_active = False):
             player_dict = {
-                'user': player.user,
+                'user': player.user.username,
                 'wallet': player.wallet,
                 'chips': player.chips,
                 'seat_number': player.seat_number,
@@ -110,6 +112,8 @@ class Player(models.Model):
                 'most_recent_action': player.most_recent_action
             }
             player_dict_lists.append(player_dict)
+        print("we good?")
+
         return player_dict_lists
 
 '''
@@ -163,11 +167,13 @@ class Game(models.Model):
                 'highest_curr_bet': item.highest_curr_bet,
                 'last_raise': item.last_raise,
                 'last_action': item.last_action,
-                'big_blind_player': item.big_blind_player,
-                'small_blind_player': item.small_blind_player,
-                'current_player': item.current_player,
+                'big_blind_player': item.big_blind_player.id,
+                'small_blind_player': item.small_blind_player.id,
+                'current_player_id': item.current_player.id,
+                'current_player_user': item.current_player.user.username,
             }
             item_dict_list.append(item_dict)
+        print(item_dict_list)
         return item_dict_list
         
 

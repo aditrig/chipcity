@@ -327,8 +327,11 @@ class MyConsumer(WebsocketConsumer):
     def broadcast_list(self):
         messages = {}
         # create the game info field in messages
+
         game_info = json.dumps(Game.make_game_list())
+        
         messages['game_info'] = game_info
+        print(Player.make_active_player_list())
         active_players = json.dumps(Player.make_active_player_list())
         non_active_players = json.dumps(Player.make_non_active_player_list())
         messages['active_players_info'] = active_players
