@@ -85,7 +85,7 @@ function callAction(){
     socket.send(JSON.stringify(data))
 }
 function raiseAction(){
-    let data = {gameState: "inProgress", player_action: "raise," + getElementById('raiseAmount'), text:""}
+    let data = {gameState: "inProgress", player_action: "raise," + document.getElementById('raiseAmount').value, text:""}
     socket.send(JSON.stringify(data))
 }
 function checkAction(){

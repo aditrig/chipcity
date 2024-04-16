@@ -126,7 +126,7 @@ class MyConsumer(WebsocketConsumer):
             return False
 
 
-    def isRoundOver(self, action, id):
+    def isRoundOver(self, action):
         # action is a string that is passed in representing the action
             # action can be "call", "raise", "check", "fold"
         players_actions_ordered = []
@@ -171,40 +171,46 @@ class MyConsumer(WebsocketConsumer):
         # updates the game state to reflect their action
         # action is a string that is passed in representing the action
         # action can be "call", "raise", "check", "fold"
+        currentGame = Game.objects.all().first()
 
-        currRound = Game.curr_round
-        currPlayer = Game.current_player.id
-        maxBet = Game.highest_curr_bet
+        currRound = currentGame.curr_round
+        currPlayer = currentGame.current_player.id
+        maxBet = currentGame.highest_curr_bet
+
+        print(action)
+        print(f"Before Current Round: {currRound}")
+        print(f"Before Current Player: {currPlayer}")
+        print(f"Before Highest Curr Bet: {maxBet}")
 
         if (action == "call"):
             # maxBet stays the same
-            Game.current_player+=1
-            Game.save()
-        if action == "check":
+            print(Player.objects.all().filter(id=(currPlayer+1))[0])
+            currentGame.current_player = Player.objects.all().filter(id=(currPlayer+1))[0]
+            currentGame.save()
+        elif action == "check":
             # check if it is legal 
             if (currRound==0):
-                if currPlayer!=Game.big_blind_player.id:
+                if currPlayer != currentGame.big_blind_player.id:
                     print("only big blind can check pre-flop!")
                 else: 
-                    Game.current_player = Player.objects.all().filter(id=(currPlayer+1))
-                    Game.current_player.save() 
-                    Game.save()
+                    currentGame.current_player = Player.objects.all().filter(id=(currPlayer+1))[0]
+                    currentGame.current_player.save() 
+                    currentGame.save()
             elif (currRound > 0):
                 if maxBet == 0: 
-                    Game.current_player = Player.objects.all().filter(id=(currPlayer+1))
-                    Game.current_player.save() 
-                    Game.save()
+                    currentGame.current_player = Player.objects.all().filter(id=(currPlayer+1))[0]
+                    currentGame.current_player.save() 
+                    currentGame.save()
                 else: 
                     print("Can't check, opening bet has already been placed")
 
-        if action == "fold":
-            Game.current_player.is_active = False
-            Game.current_player.save() 
-            Game.save() 
-            Game.current_player = Player.objects.all().filter(id=(currPlayer+1))
-            Game.current_player.save() 
-            Game.save()
-
+        elif action == "fold":
+            currentGame.current_player.is_active = False
+            currentGame.current_player.save() 
+            currentGame.save() 
+            currentGame.current_player = Player.objects.all().filter(id=(currPlayer+1))[0]
+            currentGame.current_player.save() 
+            currentGame.save()
         else: 
             validate = action.split(",")
             if len(validate) == 2 and validate[0] == "raise":
@@ -218,7 +224,10 @@ class MyConsumer(WebsocketConsumer):
             else:
                 # Invalid format
                 print("Invalid action format. Please use 'raise,x' format.")
-                
+        
+        print(f"After Current Round: {currentGame.curr_round}")
+        print(f"After Current Player: {currentGame.current_player.id}")
+        print(f"After Highest Curr Bet: {currentGame.highest_curr_bet}")
         return
         
         # want it so that when one player is disconnected, set their active status to false
@@ -296,6 +305,7 @@ class MyConsumer(WebsocketConsumer):
         
         if 'player_action' in data:
             player_action = data['player_action']
+            print(player_action)
 
         status = data['gameState']
         active_players = 0 
@@ -318,7 +328,9 @@ class MyConsumer(WebsocketConsumer):
         #             self.play() 
         #             return
         if (status == "inProgress") and (Game.objects.count() ==1):
+                print("before PlayTurn")
                 self.playTurn(player_action)
+                print("after PlayTurn")
                 self.isRoundOver(player_action)
         if (status == "finish"):
                 self.finishGame(data)
