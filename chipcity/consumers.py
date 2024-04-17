@@ -263,19 +263,23 @@ class MyConsumer(WebsocketConsumer):
         print(f"The Small Blind Player is: {curr_game.small_blind_player}")
         print(f"The Big Blind Player is: {curr_game.big_blind_player}")
         print(f"The Current Player is: {curr_game.current_player}")
-        # for player in Player.objects.all().filter(is_participant=True):
-        #     if player.id == curr_game.big_blind_player.id:
-        #         player.is_big_blind = True
-        #         player.is_small_blind = False
-        #     else:
-        #         player.is_big_blind = False
-        #         player.is_small_blind = True
+        curr_game.save()
+        for player in Player.objects.all().filter(is_participant=True):
+            if player.id == curr_game.big_blind_player.id:
+                player.is_big_blind = True
+                player.is_small_blind = False
+            else:
+                player.is_big_blind = False
+                player.is_small_blind = True
+            player.save()
         
-        # curr_game.small_blind_player = bet_action(curr_game, curr_game.small_blind_player, curr_game.small_blind_amt)
-        # curr_game.big_blind_player = bet_action(curr_game, curr_game.big_blind_player, curr_game.big_blind_amt)
-        # curr_game.small_blind_player.save()
-        # curr_game.big_blind_player.save()
-        # curr_game.save()
+        updated_game = Game.objects.first()
+        
+        updated_game.small_blind_player = bet_action(updated_game, updated_game.small_blind_player, updated_game.small_blind_amt)
+        updated_game.big_blind_player = bet_action(updated_game, updated_game.big_blind_player, updated_game.big_blind_amt)
+        updated_game.small_blind_player.save()
+        updated_game.big_blind_player.save()
+        updated_game.save()
 
         # curr_game = Game.objects.first()
         flop1_ex = (Game.objects.first().flop1)
@@ -291,8 +295,8 @@ class MyConsumer(WebsocketConsumer):
         #     print(f"This is {player.user}'s hand: {player.card_left} {player.card_right}")
         for player in Player.objects.all().filter(is_participant=True):
             print(f"This is {player.user}'s hand: {player.card_left} {player.card_right}")
-            player.save()
-        curr_game.save()
+            # player.save()
+        # curr_game.save()
         print(response)
 
         # self.send(text_data=json.dumps({"message": response }))
