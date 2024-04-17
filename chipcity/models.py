@@ -62,8 +62,6 @@ class Player(models.Model):
                 'hand_is_active': player.hand_is_active
             }
             player_dict_lists.append(player_dict)
-        print("we good?")
-
         return player_dict_lists
     
     @classmethod       
@@ -91,8 +89,6 @@ class Player(models.Model):
                 'hand_is_active': player.hand_is_active
             }
             player_dict_lists.append(player_dict)
-        print("we good?")
-
         return player_dict_lists
 
 '''

@@ -27,12 +27,10 @@ class MyConsumer(WebsocketConsumer):
 
         self.accept()
         player_count = Player.objects.count()
-        print(Player.objects.count())
 
-        
         if self.scope['user']:
             self.user = self.scope["user"]
-            print("new player created")
+            # print("New player has been created!")
             player, created = Player.objects.get_or_create(
                 user=self.scope['user'],
                 defaults={
@@ -49,21 +47,21 @@ class MyConsumer(WebsocketConsumer):
             # If the player was not created, it means it already existed. In this case, only update is_active.
             if not created:
                 player.is_participant = True
-                print(self.user)
+                # print(self.user)
                 player.save()
                 
-            for game in Game.objects.all():
-                print(game)
+            # for game in Game.objects.all():
+            #     print(game)
 
         
             active_players = 0 
 
-            print(Player.objects.count())
+            # print(Player.objects.count())
             for player in Player.objects.all():
-                print(player)
+                # print(player)
                 if player.is_participant:
                     active_players+=1
-                else: print(player)
+                # else: print(player)
             print(f"there are this many active players {active_players}")
             print(f"there are this many player objects: {Player.objects.count()}")
 
@@ -129,7 +127,6 @@ class MyConsumer(WebsocketConsumer):
     def isRoundOver(self, action):
         # action is a string that is passed in representing the action
         # action can be "call", "raise", "check", "fold"
-        print("Inside isRoundOver")
         playersFolded = 0 
         for player in Player.objects.all():
             if not player.hand_is_active:
@@ -153,7 +150,6 @@ class MyConsumer(WebsocketConsumer):
             currPlayer = Player.objects.get(id=player_ID)
             allActions.append(currPlayer.most_recent_action)
         
-    
         # check special edge cases if preflop 
         # big blind can check when everyone else has called but only pre-flop this is bc
         # they "opened" the betting so if the big blind is check and everyone else is call the round is also over 
@@ -170,6 +166,7 @@ class MyConsumer(WebsocketConsumer):
         elif (allActions.count("call") == num_active_players):
             print("Round is Over!")
             return True
+        print("Round is not Over!")
         return False
 
         
@@ -186,29 +183,46 @@ class MyConsumer(WebsocketConsumer):
         currentGame = Game.objects.all().first()
 
         currRound = currentGame.curr_round
-        currPlayer = currentGame.current_player.id
-        maxBet = currentGame.highest_curr_bet
 
-        print(action)
-        print(f"Before Current Round: {currRound}")
-        print(f"Before Current Player: {currPlayer}")
-        print(f"Before Highest Curr Bet: {maxBet}")
-
+        print(f"This is the Current Player: {currentGame.current_player.user}")
+        print(f"This is {currentGame.current_player.user}'s action: {action}")
+        print(f"This is the Current Round (0-preflop, 1-flop, 2-turn, 3-river, 4-showdown): {currRound}")
+        print(f"Before any turn is computed, this is the Current Round's Highest Current Bet: {currentGame.highest_curr_bet}")
+        
         if (action == "call"):
             # maxBet stays the same
-            call_action(currentGame.current_player)
+            if (can_call(currentGame, currentGame.current_player)):
+                call_action(currentGame.current_player)
+                currentGame.current_player.can_call = True
+                currentGame.current_player.save()
+            else:
+                print("Calling is not a legal action!")
+                currentGame.current_player.can_call = False
+                currentGame.current_player.save()
         elif action == "check":
             # check if it is legal 
             if (currRound==0):
-                if currPlayer != currentGame.big_blind_player.id:
+                if currentGame.current_player.id != currentGame.big_blind_player.id and can_check(currentGame, currentGame.current_player):
                     print("only big blind can check pre-flop!")
+                    currentGame.current_player.can_check = False
+                    currentGame.current_player.save()
+                elif currentGame.current_player.id == currentGame.big_blind_player.id and not can_check(currentGame, currentGame.current_player):
+                    print("Can't check, opening bet has already been placed")
+                    currentGame.current_player.can_check = False
+                    currentGame.current_player.save()
                 else: 
                     check_action(currentGame, currentGame.current_player)
+                    currentGame.current_player.can_check = True
+                    currentGame.current_player.save()
             elif (currRound > 0):
-                if maxBet == 0: 
+                if can_check(currentGame, currentGame.current_player) or currentGame.highest_curr_bet == 0: 
                     check_action(currentGame, currentGame.current_player)
+                    currentGame.current_player.can_check = True
+                    currentGame.current_player.save()
                 else: 
                     print("Can't check, opening bet has already been placed")
+                    currentGame.current_player.can_check = False
+                    currentGame.current_player.save()
 
         elif action == "fold":
             fold_action(currentGame, currentGame.current_player)
@@ -216,13 +230,20 @@ class MyConsumer(WebsocketConsumer):
             validate = action.split(",")
             if len(validate) == 2 and validate[0] == "raise":
                 try:
-                    print(f"This the total pot before: {currentGame.total_pot}")
                     amount = int(validate[1])
-                    # Valid raise action with a numeric amount
-                    # You can handle the raise action here
-                    currentGame.highest_curr_bet += amount
-                    currentGame.save()
-                    raise_action(currentGame.current_player, amount)
+                    if can_raise(currentGame.current_player, amount):
+                        print(f"This the total pot before: {currentGame.total_pot}")
+                        # Valid raise action with a numeric amount
+                        # You can handle the raise action here
+                        currentGame.highest_curr_bet += amount
+                        currentGame.save()
+                        raise_action(currentGame.current_player, amount)
+                        currentGame.current_player.can_raise = True
+                        currentGame.current_player.save()
+                    else:
+                        print("Cannot raise, insufficient funds!")
+                        currentGame.current_player.can_raise = False
+                        currentGame.current_player.save()
                 except ValueError:
                     # Invalid amount (not a valid number after "raise,")
                     print("Invalid raise amount. Please provide a numeric value.")
@@ -230,9 +251,12 @@ class MyConsumer(WebsocketConsumer):
                 # Invalid format
                 print("Invalid action format. Please use 'raise,x' format.")
         
-        print(f"After Current Round: {currentGame.curr_round}")
-        print(f"After Current Player: {currentGame.current_player.id}")
-        print(f"After Highest Curr Bet: {currentGame.highest_curr_bet}")
+        # currentGame.save()
+        # currentGame.current_player.save()
+        print(f"This is the Current Player: {currentGame.current_player.user}")
+        print(f"This is {currentGame.current_player.user}'s action: {action}")
+        print(f"This is the Current Round (0-preflop, 1-flop, 2-turn, 3-river, 4-showdown): {currentGame.curr_round}")
+        print(f"After turn is computed, this is the Current Round's Highest Current Bet: {currentGame.highest_curr_bet}")
         return
         
         # want it so that when one player is disconnected, set their active status to false
@@ -242,7 +266,7 @@ class MyConsumer(WebsocketConsumer):
         for player in Player.objects.all():
             if player.is_participant:
                 active_players+=1
-        print(f"i am sending game start the number of active players: {active_players}")
+        print(f"I am now inside initGame() with the number of active players: {active_players}")
 
         if active_players < 2:
             # Makes sure that game does not start without 2+ players
@@ -250,7 +274,7 @@ class MyConsumer(WebsocketConsumer):
         
         # Gets list of active players
         list_of_active_players = list_of_players()
-        print(list_of_active_players)
+        print(f"Printing list of active player objects!: {list_of_active_players}")
 
         Game_Action.start_new_game(self,1,active_players)
         # Sets BBP and SBP
@@ -260,9 +284,9 @@ class MyConsumer(WebsocketConsumer):
         # print(list_of_active_players[1].user)
         curr_game.big_blind_player = list_of_active_players[1]
         curr_game.current_player = list_of_active_players[(list_of_active_players.index(curr_game.big_blind_player)+1)%(curr_game.players_connected)]
-        print(f"The Small Blind Player is: {curr_game.small_blind_player}")
-        print(f"The Big Blind Player is: {curr_game.big_blind_player}")
-        print(f"The Current Player is: {curr_game.current_player}")
+        print(f"The Small Blind Player is: {curr_game.small_blind_player.user}")
+        print(f"The Big Blind Player is: {curr_game.big_blind_player.user}")
+        print(f"The Current Player is: {curr_game.current_player.user}")
         curr_game.save()
         for player in Player.objects.all().filter(is_participant=True):
             if player.id == curr_game.big_blind_player.id:
@@ -297,15 +321,17 @@ class MyConsumer(WebsocketConsumer):
             print(f"This is {player.user}'s hand: {player.card_left} {player.card_right}")
             # player.save()
         # curr_game.save()
+        print("-----This is the board:-----")
         print(response)
 
         # self.send(text_data=json.dumps({"message": response }))
     def gameInitalized(self): 
-            community_cards = Game.objects.first().flop1 + "\n" + Game.objects.first().flop2 + "\n" + Game.objects.first().flop3 + "\n" +Game.objects.first().turn + "\n" + Game.objects.first().river
-            print(community_cards)
-            
             for player in Player.objects.all():
                 print(f"This is {player.user}'s hand: {player.card_left} {player.card_right}")
+            
+            community_cards = Game.objects.first().flop1 + "\n" + Game.objects.first().flop2 + "\n" + Game.objects.first().flop3 + "\n" +Game.objects.first().turn + "\n" + Game.objects.first().river
+            print("-----This is the board:-----")
+            print(community_cards)
             
     def receive(self, **kwargs):
         if 'text_data' not in kwargs:
@@ -324,7 +350,7 @@ class MyConsumer(WebsocketConsumer):
         
         if 'player_action' in data:
             player_action = data['player_action']
-            print(player_action)
+            # print(player_action)
 
         status = data['gameState']
         active_players = 0 
@@ -332,25 +358,41 @@ class MyConsumer(WebsocketConsumer):
             for player in Player.objects.all():
                 if player.is_participant:
                     active_players+=1
-            print(f" the number of players is: {active_players}")
+            print("")
+            print("-----Pressed Ready! Currently in Ready State!-----")
+            print(f"The number of players is: {active_players}")
+            print("")
 
             if (active_players >= 2 and Game.objects.count() == 0):
-                print('game initiated')
+                print("-----Game Initiated! Entering initGame()-----")
                 self.initGame()
+                print("-----Exiting initGame()-----")
+            print("")
+            print("-----Entering gameInitalized()-----")
             self.gameInitalized()
-            print("before broadcast list")
-            self.broadcast_list()       
+            print("-----Exiting gameInitalized()-----")
+            print("")
+            print("-----Entering broadcast_list()!-----")
+            self.broadcast_list()    
+            print("-----Exiting broadcast_list()!-----")   
 
         # if (status == "start"):
         #         if (Game.objects.count() ==1):
         #             self.play() 
         #             return
         if (status == "inProgress") and (Game.objects.count() == 1):
-                print("before PlayTurn")
+                print("-----Entering playTurn()!-----")
                 self.playTurn(player_action)
-                print("after PlayTurn")
+                print("-----Exiting playTurn()!-----")
+                print("")
+                print("-----Entering isRoundOver()!-----")
                 self.isRoundOver(player_action)
+                print("-----Exiting isRoundOver()!-----")
+                print("")
+                print("-----Entering broadcast_list()!-----")
                 self.broadcast_list()
+                print("-----Exiting broadcast_list()!-----")
+                print("")
         if (status == "finish"):
                 self.finishGame(data)
                 self.broadcast_list()
@@ -369,8 +411,6 @@ class MyConsumer(WebsocketConsumer):
         non_active_players = json.dumps(Player.make_non_active_player_list())
         messages['active_players_info'] = active_players
         messages['non_active_players_info'] = non_active_players
-        print("inside broadcast list")
-
         async_to_sync(self.channel_layer.group_send)(
             self.group_name,
             {

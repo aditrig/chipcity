@@ -29,10 +29,19 @@ def set_blinds(game):
 
 def bet_action(game, player, money):
     # Bet functionality
-    print(f"Before Player chips: {player.chips}")
-    print(f"Before total pot: {game.total_pot}")
-    print(f"Before money: {money}")
-    print(money < player.chips)
+    print(f"-----Now inside bet_action for {player.user}!-----")
+    print(f"Is this Pre-Flop? (0-preflop, 1-flop, 2-turn, 3-river, 4-showdown): {game.curr_round}")
+    print(f"If true, consider the following. If false, ignore...")
+    print(f"---Is {player.user} the Small Blind?: {player.is_small_blind}")
+    print(f"---If True, {player.user} should post {game.small_blind_amt}")
+    print(f"---If False, ignore")
+    print(f"---Is {player.user} the Big Blind?: {player.is_big_blind}")
+    print(f"---If True, {player.user} should post {game.big_blind_amt}")
+    print(f"---If False, ignore")
+    print(f"Amount of Money {player.user} Posted: {money}")
+    print(f"Before bet_action is run, {player.user}'s Chips: {player.chips}")
+    print(f"Before bet_action is run, Total Pot Size: {game.total_pot}")
+    print(f"True or False, {player.user} is All In?: {not (money < player.chips)}")
     if money < player.chips:
         player.current_bet += money
         player.chips -= money
@@ -42,8 +51,9 @@ def bet_action(game, player, money):
         player.chips = 0
         player.is_all_in = True
 
-    print(f"After Player chips: {player.chips}")
-    print(f"After total pot: {game.total_pot}")
+    print(f"After bet_action is run, {player.user}'s Chips: {player.chips}")
+    print(f"After bet_action is run, Total Pot Size: {game.total_pot}")
+    print(f"----------------------------------------------------")
     player.save()
     game.save()
     return player
@@ -123,9 +133,10 @@ def can_call(game, player):
     return False
 
 
-def can_raise(game, player):
+def can_raise(player, amount):
     # Checks if player can raise
-    if (game.highest_curr_bet + game.last_raise - player.current_bet) <= player.chips:
+    print(f"Player's current bet: {player.current_bet}")
+    if (player.current_bet+amount) <= player.chips:
         return True
     return False
 

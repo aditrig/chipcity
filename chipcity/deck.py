@@ -44,7 +44,7 @@ class Game_Action:
 
     def start_new_game(self, game_id,num_users):
         game = Game.objects.create()
-        print("ok I just created a new game")
+        print("I am now in start_new_game() in deck.py, setting the board and hands...")
         
         # Reset pot and highest bet for the round
         # round_instance = Round.objects.get_or_create(game=game, defaults={'pot': 0, 'highest_bet': 0})
@@ -59,7 +59,7 @@ class Game_Action:
             player.card_right = Card.int_to_pretty_str(cards[1])
             player.save()
             game.save()
-            print(f"left card: {player.card_left}, right card: {player.card_right}")
+            # print(f"left card: {player.card_left}, right card: {player.card_right}")
                 
         
         
