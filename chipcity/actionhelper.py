@@ -20,8 +20,8 @@ def set_blinds(game):
         
     small_blind_player = sb
     big_blind_player = bb
-    small_blind_player = bet_action(small_blind_player, game.small_blind)
-    big_blind_player = bet_action(big_blind_player, game.big_blind)
+    small_blind_player = bet_action(game, small_blind_player, game.small_blind_amt)
+    big_blind_player = bet_action(game, big_blind_player, game.big_blind_amt)
 
     small_blind_player.save()
     big_blind_player.save()
@@ -29,13 +29,23 @@ def set_blinds(game):
 
 def bet_action(game, player, money):
     # Bet functionality
+    print(f"Before Player chips: {player.chips}")
+    print(f"Before total pot: {game.total_pot}")
+    print(f"Before money: {money}")
+    print(money < player.chips)
     if money < player.chips:
+        player.current_bet += money
         player.chips -= money
         game.total_pot += money
     else:
         player.current_bet = player.chips
         player.chips = 0
         player.is_all_in = True
+
+    print(f"After Player chips: {player.chips}")
+    print(f"After total pot: {game.total_pot}")
+    player.save()
+    game.save()
     return player
 
 
@@ -50,14 +60,17 @@ def raise_action(player, money):
     print(f"This the total pot after: {game.total_pot}")
 
 
-def call_action(game, player):
+def call_action(player):
     # Call functionality
+    game = Game.objects.all().first()
     call_val = game.highest_curr_bet - player.current_bet
+    print(f"Call Value: {call_val}")
     updated_player = bet_action(game, player, call_val)
     game.current_player = Player.objects.all().filter(id=((updated_player.id)%(game.players_connected))+1)[0]
     updated_player.most_recent_action = "call"
-    player.save()
+    updated_player.save()
     game.save()
+    print(f"This the total pot after: {game.total_pot}")
 
 
 def all_in_action(game, player):

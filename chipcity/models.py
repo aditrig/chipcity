@@ -17,14 +17,15 @@ class Player(models.Model):
     content_type = models.CharField(blank=True, max_length=50, null=True) #associates each player's profile picture with a corresponding content type
     is_participant = models.BooleanField(default=True) #checks if the player is an active player at the table (not spectator)
     is_big_blind = models.BooleanField(default=True)
-    is_all_in = models.BooleanField(default=True)
+    is_small_blind = models.BooleanField(default=True)
+    is_all_in = models.BooleanField(default=False)
     current_bet = models.IntegerField(default=0,null=True)
     can_check = models.BooleanField(default=True)
     can_raise = models.BooleanField(default=True)
     can_call = models.BooleanField(default=True)
     most_recent_action = models.CharField(blank=True, max_length=50, null=True)
-    card_left = models.CharField(max_length=10) #indicates the left card's suit and rank (ex: 6 of Hearts == 6H)
-    card_right = models.CharField(max_length=10) #indicates the right card's suit and rank (ex: 6 of Hearts == 6H)
+    card_left = models.CharField(max_length=20) #indicates the left card's suit and rank (ex: 6 of Hearts == 6H)
+    card_right = models.CharField(max_length=20) #indicates the right card's suit and rank (ex: 6 of Hearts == 6H)
     hand_is_active = models.BooleanField(default=True) #indicates whether a player's hand is active (not folded)
     # can_min = models.BooleanField(default=True)
     # can_half = models.BooleanField(default=True)
@@ -49,6 +50,7 @@ class Player(models.Model):
                 'content_type': player.content_type,
                 'is_participant': player.is_participant,
                 'is_big_blind': player.is_big_blind,
+                'is_small_blind': player.is_small_blind,
                 'is_all_in': player.is_all_in,
                 'current_bet': player.current_bet,
                 'can_check': player.can_check,
@@ -77,6 +79,7 @@ class Player(models.Model):
                 'content_type': player.content_type,
                 'is_participant': player.is_participant,
                 'is_big_blind': player.is_big_blind,
+                'is_small_blind': player.is_small_blind,
                 'is_all_in': player.is_all_in,
                 'current_bet': player.current_bet,
                 'can_check': player.can_check,
@@ -110,6 +113,8 @@ class Game(models.Model):
     last_action =  models.IntegerField(default=0)
     big_blind_player = models.ForeignKey(Player, on_delete=models.PROTECT,related_name="big_blind_player", null=True)
     small_blind_player = models.ForeignKey(Player, on_delete=models.PROTECT,related_name="small_blind_player", null=True)
+    big_blind_amt = models.IntegerField(default=2)
+    small_blind_amt = models.IntegerField(default=1)
     current_player = models.ForeignKey(Player, on_delete=models.PROTECT,related_name="current_player", null=True)
     
     def create_game(self, game_num, num_players, init_pot, curr_round):

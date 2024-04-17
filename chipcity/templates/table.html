@@ -107,22 +107,22 @@
     </div>
     <button id="start-button" onclick="startGame()">Ready</button>
     <button id="play-button" onclick="startPlay()">Start</button>
-    <form id="callForm" method="get">
+    <form id="callForm">
       <label for="call">Call:</label>
       <input type="text" id="call" name="call">
-      <button type="submit" form="callForm" value="Submit" id="callButton" onclick="callAction()">Call</button>
+      <button type="button" form="callForm" value="Submit" id="callButton" onclick="callAction()">Call</button>
     </form>
-    <form id="raiseForm" method="get">
+    <form id="raiseForm">
       <label for="raise">Raise:</label>
       <input type="text" id="raiseAmount" name="raise">
-      <button type="submit" form="raiseForm" value="Submit" id="raiseButton" onclick="raiseAction()">Raise</button>
+      <button type="button" form="raiseForm" value="Submit" id="raiseButton" onclick="raiseAction()">Raise</button>
     </form>
-    <form id="checkForm" method="get">
+    <form id="checkForm">
       <label for="check">Check:</label>
       <input type="text" id="check" name="check">
-      <button type="submit" form="checkForm" value="Submit" id="checkButton" onclick="checkAction()">Check</button>
+      <button type="button" form="checkForm" value="Submit" id="checkButton" onclick="checkAction()">Check</button>
     </form>
-    <button type="submit" value="Submit" id="foldButton" onclick="foldAction()">Fold</button>
+    <button type="button" value="Submit" id="foldButton" onclick="foldAction()">Fold</button>
     <script>
       const myUserName = "{{ request.user.username }}"
       const myUser = "{{request.user}}"
