@@ -4,7 +4,7 @@ def list_of_players():
     # Gets list of active players
     list = []
     for player in Player.objects.all():
-        if player.is_active:
+        if player.is_participant:
             list.append(player)
     return list
 
@@ -74,13 +74,12 @@ def check_action(game, player):
     game.save()
 
 
-def fold_action(game, player, hand):
+def fold_action(game, player):
     # Fold functionality
-    hand.is_active = False
+    player.hand_is_active = False
     player.current_bet = 0
     game.current_player = Player.objects.all().filter(id=((player.id)%(game.players_connected))+1)[0]
     player.save()
-    hand.save()
 
 
 def allowed_action(game, player):

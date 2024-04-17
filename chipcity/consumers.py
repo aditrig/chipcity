@@ -1,7 +1,7 @@
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 import json
-from chipcity.models import Game, Player, Hand
+from chipcity.models import Game, Player
 from chipcity.views import * 
 from chipcity.deck import *
 from chipcity.actionhelper import *
@@ -40,7 +40,7 @@ class MyConsumer(WebsocketConsumer):
                     'seat_number': None,
                     # 'picture': None,
                     'content_type': None,
-                    'is_active': True,  # This is only used if creating a new object
+                    'is_participant': True,  # This is only used if creating a new object
                 }
             )
             player.save()
@@ -48,7 +48,7 @@ class MyConsumer(WebsocketConsumer):
 
             # If the player was not created, it means it already existed. In this case, only update is_active.
             if not created:
-                player.is_active = True
+                player.is_participant = True
                 print(self.user)
                 player.save()
                 
@@ -61,7 +61,7 @@ class MyConsumer(WebsocketConsumer):
             print(Player.objects.count())
             for player in Player.objects.all():
                 print(player)
-                if player.is_active:
+                if player.is_participant:
                     active_players+=1
                 else: print(player)
             print(f"there are this many active players {active_players}")
@@ -89,13 +89,13 @@ class MyConsumer(WebsocketConsumer):
         )      
         print(self.user)
         player = Player.objects.get(user=self.user)
-        player.is_active = False
+        player.is_participant = False
         player.save() 
-        print(player.is_active)
+        print(player.is_participant)
         print("websocket is diconnected yay")
         active_players = 0 
         for player in Player.objects.all():
-            if player.is_active:
+            if player.is_participant:
                 active_players+=1
 
         print(f"number of active players: {active_players}")
@@ -109,15 +109,15 @@ class MyConsumer(WebsocketConsumer):
         if game.curr_round == 4:
             # showdown
             return True
-        num_active_players = Player.objects.all().filter(is_active = True).count()
+        num_active_players = Player.objects.all().filter(is_participant = True).count()
         is_all_in_count = 0
-        for player in Player.objects.all().filter(is_active = True):
+        for player in Player.objects.all().filter(is_participant = True):
             if player.is_all_in:
                 is_all_in_count += 1
         if is_all_in_count == num_active_players:
             return True
         fold_count = 0
-        for player in Player.objects.all().filter(is_active = True):
+        for player in Player.objects.all().filter(is_participant = True):
             if player.most_recent_action == "fold":
                 fold_count += 1
         if fold_count == num_active_players - 1:
@@ -131,13 +131,13 @@ class MyConsumer(WebsocketConsumer):
         # action can be "call", "raise", "check", "fold"
 
         playersFolded = 0 
-        for hand in Hand.objects.all():
-            if not hand.is_active:
+        for player in Player.objects.all():
+            if not player.hand_is_active:
                 playersFolded+=1 
     
 
         # activePlayers = Game.objects.first().players_connected - playersFolded
-        num_active_players = Player.objects.all().filter(is_active = True).count()
+        num_active_players = Player.objects.all().filter(is_participant = True).count()
         activePlayers = num_active_players - playersFolded
         
         # Everyone else has folded except 1 person, so round is over
@@ -147,8 +147,8 @@ class MyConsumer(WebsocketConsumer):
 
         # allActions has a list of all players actions (that have an active hand)
         allActions = [] 
-        for hand in Hand.objects.all().filter(is_active=True):
-            player_ID =  hand.player.id
+        for player in Player.objects.all().filter(hand_is_active=True):
+            player_ID =  player.id
             currPlayer = Player.objects.get(id=player_ID)
             allActions.append(currPlayer.most_recent_action)
         
@@ -193,10 +193,7 @@ class MyConsumer(WebsocketConsumer):
                     print("Can't check, opening bet has already been placed")
 
         elif action == "fold":
-            for hand in Hand.objects.all():
-                if hand.player.id == currPlayer.id:
-                    updated_hand = hand
-            fold_action(currentGame, currentGame.current_player, updated_hand)
+            fold_action(currentGame, currentGame.current_player)
         else: 
             validate = action.split(",")
             if len(validate) == 2 and validate[0] == "raise":
@@ -224,7 +221,7 @@ class MyConsumer(WebsocketConsumer):
     def initGame(self):
         active_players = 0 
         for player in Player.objects.all():
-            if player.is_active:
+            if player.is_participant:
                 active_players+=1
         print(f"i am sending game start the number of active players: {active_players}")
 
@@ -260,8 +257,8 @@ class MyConsumer(WebsocketConsumer):
         
         response = flop1_ex + "\n" + flop2_ex + "\n" + flop3_ex + "\n" +turn_ex + "\n" + river_ex
         
-        for hand in Hand.objects.all():
-            print(f"This is {hand.player.user}'s hand: {hand.card_left} {hand.card_right}")
+        for player in Player.objects.all():
+            print(f"This is {player.user}'s hand: {player.card_left} {player.card_right}")
 
         curr_game.save()
         print(response)
@@ -271,8 +268,8 @@ class MyConsumer(WebsocketConsumer):
             community_cards = Game.objects.first().flop1 + "\n" + Game.objects.first().flop2 + "\n" + Game.objects.first().flop3 + "\n" +Game.objects.first().turn + "\n" + Game.objects.first().river
             print(community_cards)
             
-            for hand in Hand.objects.all():
-                print(f"This is {hand.player.user}'s hand: {hand.card_left} {hand.card_right}")
+            for player in Player.objects.all():
+                print(f"This is {player.user}'s hand: {player.card_left} {player.card_right}")
             
     def receive(self, **kwargs):
         if 'text_data' not in kwargs:
@@ -297,7 +294,7 @@ class MyConsumer(WebsocketConsumer):
         active_players = 0 
         if(status=="ready"):
             for player in Player.objects.all():
-                if player.is_active:
+                if player.is_participant:
                     active_players+=1
             print(f" the number of players is: {active_players}")
 

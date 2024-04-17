@@ -53,16 +53,14 @@ class Game_Action:
         deck = Deck()
         deck.shuffle()
         for player in Player.objects.all():
-            if player.is_active: 
-                hand, created = Hand.objects.get_or_create(game=game, player=player)
+            if player.is_participant: 
+                # hand, created = Hand.objects.get_or_create(game=game, player=player)
                 cards = deck.draw(2)
-                hand.card_left = Card.int_to_pretty_str(cards[0])
-                hand.card_right = Card.int_to_pretty_str(cards[1])
-                hand.save()
+                player.card_left = Card.int_to_pretty_str(cards[0])
+                player.card_right = Card.int_to_pretty_str(cards[1])
                 player.game = game
                 player.save()
-                player.hand = hand
-                print(f"left card: {hand.card_left}, right card: {hand.card_right}")
+                print(f"left card: {player.card_left}, right card: {player.card_right}")
                 
         
         

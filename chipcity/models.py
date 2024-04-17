@@ -3,39 +3,6 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 '''
-    This is the card model. Includes all the cards in a standard 52 card deck.
-'''
-SUIT_CHOICES = (
-    ('c', 'Clubs'),
-    ('d', 'Diamonds'),
-    ('h', 'Hearts'),
-    ('s', 'Spades'),
-)
-
-RANK_CHOICES = (
-    ('2', '2'),
-    ('3', '3'),
-    ('4', '4'),
-    ('5', '5'),
-    ('6', '6'),
-    ('7', '7'),
-    ('8', '8'),
-    ('9', '9'),
-    ('T', 'Ten'),
-    ('J', 'Jack'),
-    ('Q', 'Queen'),
-    ('K', 'King'),
-    ('A', 'Ace'),
-)
-
-class StuffCard(models.Model):
-    rank = models.CharField(max_length=5, choices=RANK_CHOICES, null=True)
-    suit = models.CharField(max_length=10, choices=SUIT_CHOICES, null=True)
-
-    def __str__(self):
-        return f"{self.rank}{self.suit}"
-
-'''
     This is the player model. Includes the user, user's wallet, seat number, profile picture, and is_active flag.
     References the game that it is in.
 '''
@@ -48,7 +15,7 @@ class Player(models.Model):
     seat_number = models.IntegerField(default=0,null=True) #associates each player with their own specific seat # at the table
     # picture = models.FileField(blank=True,null=True) #associates each player with their own profile picture
     content_type = models.CharField(blank=True, max_length=50, null=True) #associates each player's profile picture with a corresponding content type
-    is_active = models.BooleanField(default=True) #checks if the player is an active player at the table (not spectator)
+    is_participant = models.BooleanField(default=True) #checks if the player is an active player at the table (not spectator)
     is_big_blind = models.BooleanField(default=True)
     is_all_in = models.BooleanField(default=True)
     current_bet = models.IntegerField(default=0,null=True)
@@ -56,6 +23,9 @@ class Player(models.Model):
     can_raise = models.BooleanField(default=True)
     can_call = models.BooleanField(default=True)
     most_recent_action = models.CharField(blank=True, max_length=50, null=True)
+    card_left = models.CharField(max_length=10) #indicates the left card's suit and rank (ex: 6 of Hearts == 6H)
+    card_right = models.CharField(max_length=10) #indicates the right card's suit and rank (ex: 6 of Hearts == 6H)
+    hand_is_active = models.BooleanField(default=True) #indicates whether a player's hand is active (not folded)
     # can_min = models.BooleanField(default=True)
     # can_half = models.BooleanField(default=True)
     # can_pot = models.BooleanField(default=True)
@@ -69,7 +39,7 @@ class Player(models.Model):
     @classmethod
     def make_active_player_list(cls):
         player_dict_lists = []
-        for player in cls.objects.all().filter(is_active = True):
+        for player in cls.objects.all().filter(is_participant = True):
             player_dict = {
                 'user': player.user.username,
                 'wallet': player.wallet,
@@ -77,14 +47,17 @@ class Player(models.Model):
                 'seat_number': player.seat_number,
                 # 'picture': player.picture,
                 'content_type': player.content_type,
-                'is_active': player.is_active,
+                'is_participant': player.is_participant,
                 'is_big_blind': player.is_big_blind,
                 'is_all_in': player.is_all_in,
                 'current_bet': player.current_bet,
                 'can_check': player.can_check,
                 'can_raise': player.can_raise,
                 'can_call': player.can_call,
-                'most_recent_action': player.most_recent_action
+                'most_recent_action': player.most_recent_action,
+                'card_left': player.card_left,
+                'card_right': player.card_right,
+                'hand_is_active': player.hand_is_active
             }
             player_dict_lists.append(player_dict)
         print("we good?")
@@ -94,22 +67,25 @@ class Player(models.Model):
     @classmethod       
     def make_non_active_player_list(cls):
         player_dict_lists = []
-        for player in cls.objects.all().filter(is_active = False):
+        for player in cls.objects.all().filter(is_participant = False):
             player_dict = {
                 'user': player.user.username,
                 'wallet': player.wallet,
                 'chips': player.chips,
                 'seat_number': player.seat_number,
-                'picture': player.picture,
+                # 'picture': player.picture,
                 'content_type': player.content_type,
-                'is_active': player.is_active,
+                'is_participant': player.is_participant,
                 'is_big_blind': player.is_big_blind,
                 'is_all_in': player.is_all_in,
                 'current_bet': player.current_bet,
                 'can_check': player.can_check,
                 'can_raise': player.can_raise,
                 'can_call': player.can_call,
-                'most_recent_action': player.most_recent_action
+                'most_recent_action': player.most_recent_action,
+                'card_left': player.card_left,
+                'card_right': player.card_right,
+                'hand_is_active': player.hand_is_active
             }
             player_dict_lists.append(player_dict)
         print("we good?")
@@ -175,26 +151,3 @@ class Game(models.Model):
             item_dict_list.append(item_dict)
         print(item_dict_list)
         return item_dict_list
-        
-
-    
-'''
-    This is the hand model. Includes all each player's left and right cards (texas hold'em). Also checks if a hand is active (or in play).
-    References the game that it is in and which player it is associated with.
-'''
-class Hand(models.Model):
-    # game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="hand_game") #associates a specific hand to the game instance it belongs to
-    player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="card_player") #associates the hand dealt to a specific player
-    card_left = models.CharField(max_length=10) #indicates the left card's suit and rank (ex: 6 of Hearts == 6H)
-    card_right = models.CharField(max_length=10) #indicates the right card's suit and rank (ex: 6 of Hearts == 6H)
-    is_active = models.BooleanField(default=True) #indicates whether a player's hand is active (not folded)
-
-'''
-    This is the round model. Includes whose turn it is and the round's current pot and highest bet.
-    References the game that it is in and which player it is associated with.
-'''
-# class Round(models.Model):
-#     game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="round_game") #associates each round with a specific game/table
-#     current_player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name='current_player') #indicates whose turn it is during each round
-#     pot = models.IntegerField(default=0) #indicates the pot for each round
-#     highest_bet = models.IntegerField(default=0) #indicates the highest bet placed per round
