@@ -127,6 +127,8 @@ class MyConsumer(WebsocketConsumer):
     def isRoundOver(self, action):
         # action is a string that is passed in representing the action
         # action can be "call", "raise", "check", "fold"
+        game = Game.objects.all().first()
+
         playersFolded = 0 
         for player in Player.objects.all():
             if not player.hand_is_active:
@@ -141,6 +143,8 @@ class MyConsumer(WebsocketConsumer):
         if activePlayers == 1: 
             # game over is true, should do something
             print("Round is Over!")
+            game.curr_round += 1
+            game.save()
             return True
 
         # allActions has a list of all players actions (that have an active hand)
@@ -157,14 +161,24 @@ class MyConsumer(WebsocketConsumer):
 
         if action == "check" and (Game.objects.first().curr_round == 0) and (allActions.count("call") == (num_active_players - 1)) and  (Game.objects.first().current_player == Game.objects.first().big_blind_player):
             print("Round is Over!")
+            game.curr_round += 1
+            game.save()
             return True
         # checks only one person has raised and all others have called
         elif "raise" in allActions and (allActions.count("call") == num_active_players - 1) :
-            print("Round is Over!")
-            return True
+            allAmounts = []
+            for player in Player.objects.all().filter(hand_is_active=True):
+                allAmounts.append(player.current_bet)
+            if len(set(allAmounts)) == 1:
+                print("Round is Over!")
+                game.curr_round += 1
+                game.save()
+                return True
         # everyone checks
         elif (allActions.count("call") == num_active_players):
             print("Round is Over!")
+            game.curr_round += 1
+            game.save()
             return True
         print("Round is not Over!")
         return False
@@ -298,7 +312,7 @@ class MyConsumer(WebsocketConsumer):
             player.save()
         
         updated_game = Game.objects.first()
-        
+        updated_game.highest_curr_bet = updated_game.big_blind_amt
         updated_game.small_blind_player = bet_action(updated_game, updated_game.small_blind_player, updated_game.small_blind_amt)
         updated_game.big_blind_player = bet_action(updated_game, updated_game.big_blind_player, updated_game.big_blind_amt)
         updated_game.small_blind_player.save()
