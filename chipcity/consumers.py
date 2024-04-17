@@ -141,7 +141,7 @@ class MyConsumer(WebsocketConsumer):
         activePlayers = num_active_players - playersFolded
         
         # Everyone else has folded except 1 person, so round is over
-        if activePlayers == 1 : 
+        if activePlayers == 1: 
             # game over is true, should do something
             return True
 
@@ -156,7 +156,7 @@ class MyConsumer(WebsocketConsumer):
         # big blind can check when everyone else has called but only pre-flop this is bc
         # they "opened" the betting so if the big bling is check and everyone else is call the round is also over 
         
-        # 
+        
 
 
     def playTurn(self, action): 

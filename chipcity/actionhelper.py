@@ -44,6 +44,7 @@ def raise_action(player, money):
     game = Game.objects.all().first()
     updated_player = bet_action(game, player, money)
     game.current_player = Player.objects.all().filter(id=((updated_player.id)%(game.players_connected))+1)[0]
+    updated_player.most_recent_action = "raise"
     updated_player.save()
     game.save()
     print(f"This the total pot after: {game.total_pot}")
@@ -54,6 +55,7 @@ def call_action(game, player):
     call_val = game.highest_curr_bet - player.current_bet
     updated_player = bet_action(game, player, call_val)
     game.current_player = Player.objects.all().filter(id=((updated_player.id)%(game.players_connected))+1)[0]
+    updated_player.most_recent_action = "call"
     player.save()
     game.save()
 
@@ -70,6 +72,7 @@ def all_in_action(game, player):
 def check_action(game, player):
     # Check functionality (doesn't do anything)
     game.current_player = Player.objects.all().filter(id=((player.id)%(game.players_connected))+1)[0]
+    player.most_recent_action = "check"
     player.save()
     game.save()
 
@@ -78,6 +81,7 @@ def fold_action(game, player):
     # Fold functionality
     player.hand_is_active = False
     player.current_bet = 0
+    player.most_recent_action = "fold"
     game.current_player = Player.objects.all().filter(id=((player.id)%(game.players_connected))+1)[0]
     player.save()
 
