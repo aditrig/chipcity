@@ -152,9 +152,24 @@ class MyConsumer(WebsocketConsumer):
             currPlayer = Player.objects.get(id=player_ID)
             allActions.append(currPlayer.most_recent_action)
         
+    
         # check special edge cases if preflop 
         # big blind can check when everyone else has called but only pre-flop this is bc
-        # they "opened" the betting so if the big bling is check and everyone else is call the round is also over 
+        # they "opened" the betting so if the big blind is check and everyone else is call the round is also over 
+        
+
+        if action == "check" and (game.curr_round == 0) and (allActions.count("call") == (num_active_players - 1)) and  (Game.objects.first().current_player == Game.objects.first().big_blind_player):
+            return True
+        # checks only one person has raised and all others have called
+        elif "raise" in allActions and (allActions.count("call") == num_active_players - 1) :
+            return True
+        # everyone checks
+        elif (allActions.count("call") == num_active_players):
+            return True
+        return False
+
+        
+        currentPlayer = current_player.id
         
         
 
