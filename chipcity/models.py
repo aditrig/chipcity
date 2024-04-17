@@ -96,7 +96,8 @@ class Player(models.Model):
 '''
 class Game(models.Model):
     game_num = models.IntegerField(null=True) #indicates the game number (for our purposes should just be 1)
-    players_connected = models.IntegerField(default=0)
+    players_connected = models.IntegerField(default=0) #indicates the number of players in the current game (including folded players)
+    num_players_with_active_hand = models.IntegerField(default=0) #indicates the number of players who have an active hand
     total_pot = models.IntegerField(default=0)
     flop1 = models.CharField(max_length=20, null=True)
     flop2 = models.CharField(max_length=20, null=True)
@@ -117,6 +118,7 @@ class Game(models.Model):
         return type(self).objects.create(
             game_num=game_num,
             players_connected=0,
+            num_players_with_active_hand=0,
             total_pot=init_pot,
             flop1=None,
             flop2=None,
@@ -134,6 +136,7 @@ class Game(models.Model):
             item_dict = {
                 'game_num': item.game_num,
                 'players_connected': item.players_connected,
+                'num_players_with_active_hand': item.num_players_with_active_hand,
                 'total_pot': item.total_pot,
                 'flop1': item.flop1,
                 'flop2': item.flop2,

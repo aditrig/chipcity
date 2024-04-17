@@ -16,7 +16,7 @@ def set_blinds(game):
     for player in player_list:
         if player.is_small_blind:
             sb = player
-            bb = player_list[(player_list.index(player)+1)%(game.players_connected)]
+            bb = player_list[(player_list.index(player)+1)%(game.num_players_with_active_hand)]
         
     small_blind_player = sb
     big_blind_player = bb
@@ -63,7 +63,7 @@ def raise_action(player, money):
     # Raise functionality
     game = Game.objects.all().first()
     updated_player = bet_action(game, player, money)
-    game.current_player = Player.objects.all().filter(id=((updated_player.id)%(game.players_connected))+1)[0]
+    # game.current_player = Player.objects.all().filter(id=((updated_player.id)%(game.num_players_with_active_hand))+1)[0]
     updated_player.most_recent_action = "raise"
     updated_player.save()
     game.save()
@@ -76,7 +76,7 @@ def call_action(player):
     call_val = game.highest_curr_bet - player.current_bet
     print(f"Call Value: {call_val}")
     updated_player = bet_action(game, player, call_val)
-    game.current_player = Player.objects.all().filter(id=((updated_player.id)%(game.players_connected))+1)[0]
+    # game.current_player = Player.objects.all().filter(id=((updated_player.id)%(game.num_players_with_active_hand))+1)[0]
     updated_player.most_recent_action = "call"
     updated_player.save()
     game.save()
@@ -94,7 +94,7 @@ def all_in_action(game, player):
 
 def check_action(game, player):
     # Check functionality (doesn't do anything)
-    game.current_player = Player.objects.all().filter(id=((player.id)%(game.players_connected))+1)[0]
+    # game.current_player = Player.objects.all().filter(id=((player.id)%(game.num_players_with_active_hand))+1)[0]
     player.most_recent_action = "check"
     player.save()
     game.save()
@@ -105,7 +105,7 @@ def fold_action(game, player):
     player.hand_is_active = False
     player.current_bet = 0
     player.most_recent_action = "fold"
-    game.current_player = Player.objects.all().filter(id=((player.id)%(game.players_connected))+1)[0]
+    # game.current_player = Player.objects.all().filter(id=((player.id)%(game.num_players_with_active_hand))+1)[0]
     player.save()
 
 
