@@ -1,7 +1,7 @@
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 import json
-from chipcity.models import Game, Player
+from chipcity.models import Game, Player, Hand
 from chipcity.views import * 
 from chipcity.deck import *
 from chipcity.actionhelper import *
@@ -106,18 +106,18 @@ class MyConsumer(WebsocketConsumer):
     
     def isGameOver(self):
         game = Game.objects.first()
-        if game.curr_round == 3:
+        if game.curr_round == 4:
             # showdown
             return True
-        num_active_players = player.objects.all().filter(is_active = True).count()
+        num_active_players = Player.objects.all().filter(is_active = True).count()
         is_all_in_count = 0
-        for player in player.objects.all().filter(is_active = True):
+        for player in Player.objects.all().filter(is_active = True):
             if player.is_all_in:
                 is_all_in_count += 1
         if is_all_in_count == num_active_players:
             return True
         fold_count = 0
-        for player in player.objects.all().filter(is_active = True):
+        for player in Player.objects.all().filter(is_active = True):
             if player.most_recent_action == "fold":
                 fold_count += 1
         if fold_count == num_active_players - 1:
@@ -128,42 +128,35 @@ class MyConsumer(WebsocketConsumer):
 
     def isRoundOver(self, action):
         # action is a string that is passed in representing the action
-            # action can be "call", "raise", "check", "fold"
-        players_actions_ordered = []
-        for id in range(len(Player.objects.all())):
-            players_actions_ordered.append(Player.objects.get(user = id).most_recent_action)
+        # action can be "call", "raise", "check", "fold"
+
+        playersFolded = 0 
+        for hand in Hand.objects.all():
+            if not hand.is_active:
+                playersFolded+=1 
+    
+
+        # activePlayers = Game.objects.first().players_connected - playersFolded
+        num_active_players = Player.objects.all().filter(is_active = True).count()
+        activePlayers = num_active_players - playersFolded
         
-        for players_actions in players_actions_ordered:
-            if players_actions == 'NULL':
-                return False
-
-        players_actions_set_last = []
-        players_actions_set_last = players_actions_ordered[:id] + players_actions_ordered[id:-1]
-
-        if action == 'raise':
-            return False
-        elif action == 'call':
-            for i in range(len(players_actions_set_last)):
-                prev_actions =  players_actions_set_last[i]
-                if prev_actions == 'fold':
-                    continue
-                if prev_actions == 'raise' and i != 0:
-                    return False
-                if prev_actions == 'check':
-                    return False
-        elif action == 'check':
+        # Everyone else has folded except 1 person, so round is over
+        if activePlayers == 1 : 
+            # game over is true, should do something
             return True
-        elif action == 'fold':
-            for i in range(len(players_actions_set_last)):
-                prev_actions =  players_actions_set_last[i]
-                if prev_actions == 'fold':
-                    continue
-                if prev_actions == 'raise' and i != 0:
-                    return False
-                if prev_actions == 'check':
-                    return True
-        else:
-            return True
+
+        # allActions has a list of all players actions (that have an active hand)
+        allActions = [] 
+        for hand in Hand.objects.all().filter(is_active=True):
+            player_ID =  hand.player.id
+            currPlayer = Player.objects.get(id=player_ID)
+            allActions.append(currPlayer.most_recent_action)
+        
+        # check special edge cases if preflop 
+        # big blind can check when everyone else has called but only pre-flop this is bc
+        # they "opened" the betting so if the big bling is check and everyone else is call the round is also over 
+        
+        # 
 
 
     def playTurn(self, action): 
@@ -184,40 +177,36 @@ class MyConsumer(WebsocketConsumer):
 
         if (action == "call"):
             # maxBet stays the same
-            print(Player.objects.all().filter(id=(currPlayer+1))[0])
-            currentGame.current_player = Player.objects.all().filter(id=(currPlayer+1))[0]
-            currentGame.save()
+            print(Player.objects.all().filter(id=((currPlayer+1)%(currentGame.players_connected)))[0])
+            call_action(currentGame, currentGame.current_player)
         elif action == "check":
             # check if it is legal 
             if (currRound==0):
                 if currPlayer != currentGame.big_blind_player.id:
                     print("only big blind can check pre-flop!")
                 else: 
-                    currentGame.current_player = Player.objects.all().filter(id=(currPlayer+1))[0]
-                    currentGame.current_player.save() 
-                    currentGame.save()
+                    check_action(currentGame, currentGame.current_player)
             elif (currRound > 0):
                 if maxBet == 0: 
-                    currentGame.current_player = Player.objects.all().filter(id=(currPlayer+1))[0]
-                    currentGame.current_player.save() 
-                    currentGame.save()
+                    check_action(currentGame, currentGame.current_player)
                 else: 
                     print("Can't check, opening bet has already been placed")
 
         elif action == "fold":
-            currentGame.current_player.is_active = False
-            currentGame.current_player.save() 
-            currentGame.save() 
-            currentGame.current_player = Player.objects.all().filter(id=(currPlayer+1))[0]
-            currentGame.current_player.save() 
-            currentGame.save()
+            for hand in Hand.objects.all():
+                if hand.player.id == currPlayer.id:
+                    updated_hand = hand
+            fold_action(currentGame, currentGame.current_player, updated_hand)
         else: 
             validate = action.split(",")
             if len(validate) == 2 and validate[0] == "raise":
                 try:
+                    print(f"This the total pot before: {currentGame.total_pot}")
                     amount = int(validate[1])
                     # Valid raise action with a numeric amount
                     # You can handle the raise action here
+                    currentGame.highest_curr_bet = amount
+                    raise_action(currentGame.current_player, amount)
                 except ValueError:
                     # Invalid amount (not a valid number after "raise,")
                     print("Invalid raise amount. Please provide a numeric value.")
@@ -285,9 +274,6 @@ class MyConsumer(WebsocketConsumer):
             for hand in Hand.objects.all():
                 print(f"This is {hand.player.user}'s hand: {hand.card_left} {hand.card_right}")
             
-            
-
-
     def receive(self, **kwargs):
         if 'text_data' not in kwargs:
             self.send_error('you must send text_data')

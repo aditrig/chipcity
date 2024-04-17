@@ -43,8 +43,8 @@ class Player(models.Model):
     # bio = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="player",null=True) #associates each player with its corresponding user
     # game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="player_game",null=True) #associates each player with a specific game instance
-    wallet = models.IntegerField(default=0,null=True) #associates each player with their own wallet (total amount of money they have)
-    chips = models.IntegerField(default=0,null=True) #associates each player with their own number of chips (amount of money they bought in for)
+    wallet = models.IntegerField(default=100,null=True) #associates each player with their own wallet (total amount of money they have)
+    chips = models.IntegerField(default=50,null=True) #associates each player with their own number of chips (amount of money they bought in for)
     seat_number = models.IntegerField(default=0,null=True) #associates each player with their own specific seat # at the table
     # picture = models.FileField(blank=True,null=True) #associates each player with their own profile picture
     content_type = models.CharField(blank=True, max_length=50, null=True) #associates each player's profile picture with a corresponding content type
@@ -183,7 +183,7 @@ class Game(models.Model):
     References the game that it is in and which player it is associated with.
 '''
 class Hand(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="hand_game") #associates a specific hand to the game instance it belongs to
+    # game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="hand_game") #associates a specific hand to the game instance it belongs to
     player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="card_player") #associates the hand dealt to a specific player
     card_left = models.CharField(max_length=10) #indicates the left card's suit and rank (ex: 6 of Hearts == 6H)
     card_right = models.CharField(max_length=10) #indicates the right card's suit and rank (ex: 6 of Hearts == 6H)

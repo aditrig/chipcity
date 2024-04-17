@@ -97,6 +97,8 @@ function foldAction(){
     socket.send(JSON.stringify(data))
 }
 
+
+
 // function updateList(items) {
 //     // Removes items from todolist if they not in items
 //     let liElements = document.getElementsByTagName("li")
