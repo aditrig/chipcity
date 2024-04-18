@@ -45,12 +45,16 @@
         <div class="action-buttons">
           <div class="fold-call-group">
             <div class="fold-wrap">
-              <div class="fold-button"></div>
-              <div class="fold-text">FOLD</div>
+              <button type="button" value="Submit" id="foldButton" onclick="foldAction()" style="visibility: hidden;">Fold</button>
+              <!-- <div class="fold-button"></div>
+              <div class="fold-text">FOLD</div> -->
             </div>
             <div class="call-wrap">
-              <div class="call-button"></div>
-              <div class="call-text">CALL</div>
+              <!-- <div class="call-button"></div>
+              
+              <div class="call-text">CALL</div> -->
+              <button type="button" value="Submit" id="callButton" onclick="callAction()" style="visibility: hidden;">Call</button>
+
             </div>
           </div>
           <div class="raise-check-group">
@@ -59,8 +63,11 @@
               <div class="raise-text">RAISE</div>
             </div>
             <div class="check-wrap">
-              <div class="check-button"></div>
-              <div class="check-text">CHECK</div>
+              <button type="button" value="Submit" id="checkButton" onclick="checkAction()" style="visibility: hidden;">Check</button>
+
+              <!-- <div class="check-button"></div>
+              
+              <div class="check-text">CHECK</div> -->
             </div>
           </div>
           <div class="subtract-wrap">
