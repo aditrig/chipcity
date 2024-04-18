@@ -61,7 +61,7 @@ def bet_action(game, player, money):
 
 def raise_action(player, money):
     # Raise functionality
-    game = Game.objects.all().first()
+    game = Game.objects.all().last()
     updated_player = bet_action(game, player, money)
     # game.current_player = Player.objects.all().filter(id=((updated_player.id)%(game.num_players_with_active_hand))+1)[0]
     updated_player.most_recent_action = "raise"
@@ -72,7 +72,7 @@ def raise_action(player, money):
 
 def call_action(player):
     # Call functionality
-    game = Game.objects.all().first()
+    game = Game.objects.all().last()
     call_val = game.highest_curr_bet - player.current_bet
     print(f"Call Value: {call_val}")
     updated_player = bet_action(game, player, call_val)

@@ -143,7 +143,7 @@ class Evaluator(object):
 
         for i in range(len(stages)):
             line = ("=" * line_length + " %s " +  "=" * line_length)
-            print(line % stages[i])
+            # print(line % stages[i])
             
             best_rank = 7463  # rank one worse than worst hand
             winners = []

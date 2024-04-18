@@ -27,6 +27,8 @@ class Player(models.Model):
     card_left = models.IntegerField(default=0,null=True) #indicates the left card's suit and rank (ex: 6 of Hearts == 6H)
     card_right = models.IntegerField(default=0,null=True) #indicates the right card's suit and rank (ex: 6 of Hearts == 6H)
     hand_is_active = models.BooleanField(default=True) #indicates whether a player's hand is active (not folded)
+    win_count = models.IntegerField(default=0,null=True)
+    winning_hand = models.CharField(blank=True, max_length=50, null=True)
     # can_min = models.BooleanField(default=True)
     # can_half = models.BooleanField(default=True)
     # can_pot = models.BooleanField(default=True)
@@ -59,7 +61,9 @@ class Player(models.Model):
                 'most_recent_action': player.most_recent_action,
                 'card_left': player.card_left,
                 'card_right': player.card_right,
-                'hand_is_active': player.hand_is_active
+                'hand_is_active': player.hand_is_active,
+                'win_count': player.win_count,
+                'winning_hand': player.winning_hand
             }
             player_dict_lists.append(player_dict)
         return player_dict_lists
@@ -113,7 +117,8 @@ class Game(models.Model):
     big_blind_amt = models.IntegerField(default=2)
     small_blind_amt = models.IntegerField(default=1)
     current_player = models.ForeignKey(Player, on_delete=models.PROTECT,related_name="current_player", null=True)
-    
+    winning_player_user = models.CharField(blank=True, max_length=100, null=True)
+
     def create_game(self, game_num, num_players, init_pot, curr_round):
         return type(self).objects.create(
             game_num=game_num,
@@ -151,6 +156,7 @@ class Game(models.Model):
                 'small_blind_player': item.small_blind_player.id,
                 'current_player_id': item.current_player.id,
                 'current_player_user': item.current_player.user.username,
+                'winning_player_user': item.winning_player_user
             }
             item_dict_list.append(item_dict)
         print(item_dict_list)

@@ -68,15 +68,16 @@ class Game_Action:
         game.players_connected = num_users
         game.total_pot = 0
         game.curr_round = 0 # 0 is pre flop
-        game.game_num = Game.objects.first().id
+        game.game_num = Game.objects.last().id
         game.save()
 
         evaluator = Evaluator()
         hands = []
-
+        
+        cards = deck.draw(2)
         for player in Player.objects.all().filter(is_participant=True):
             # hand, created = Hand.objects.get_or_create(game=game, player=player)
-            cards = deck.draw(2)
+            # cards = deck.draw(2)
             print(f"{player.user}'s Hand: {Card.int_to_pretty_str(cards[0]), Card.int_to_pretty_str(cards[1])}")
             player.card_left = cards[0]
             player.card_right = cards[1]
