@@ -128,14 +128,18 @@ def can_check(game, player):
 
 def can_call(game, player):
     # Checks if player can call
+    if (game.highest_curr_bet == 0):
+        return False
     if (game.highest_curr_bet - player.current_bet) <= player.chips:
         return True
     return False
 
 
-def can_raise(player, amount):
+def can_raise(game, player, amount):
     # Checks if player can raise
     print(f"Player's current bet: {player.current_bet}")
+    if amount == 0 or amount <= game.highest_curr_bet:
+        return False
     if (player.current_bet+amount) <= player.chips:
         return True
     return False

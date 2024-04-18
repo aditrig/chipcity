@@ -143,40 +143,35 @@ class MyConsumer(WebsocketConsumer):
         for player in Player.objects.all().filter(is_participant=True):
             list_are_participants.append(player)
 
-        target = False
         current_player = game.current_player
         print(f"This is current player: {game.current_player.user}")
-
+        
+        # Checks for the player to the left of the current player's existance in list_active_hand_players
         if game.big_blind_player in list_active_hand_players:
-            current_player = Player.objects.all().filter(id=((game.big_blind_player.id)%(game.num_players_with_active_hand))+1)[0]
-        elif game.big_blind_player not in list_active_hand_players and game.small_blind_player in list_active_hand_players:
-            current_player = Player.objects.all().filter(id=((game.small_blind_player.id)%(game.num_players_with_active_hand))+1)[0]
-        elif game.big_blind_player not in list_active_hand_players and game.small_blind_player not in list_active_hand_players:
-            for participant in list_are_participants:
-                if participant.id == game.big_blind_player.id and participant in list_active_hand_players:
-                    print("Inside if")
-                    current_player = Player.objects.all().filter(id=((participant.id)%(game.num_players_with_active_hand))+1)[0]
-                    break
-                elif participant.id == game.small_blind_player.id and participant in list_active_hand_players:
-                    print("Inside else if")
-                    current_player = Player.objects.all().filter(id=((participant.id)%(game.num_players_with_active_hand))+1)[0]
-                    break
-                else:
-                    print("Inside else")
-                    # get the id of the big blind player in participants
-                    # and loop through list_active_hand_players and find the next closest person to the big blind player
-                    # and assign game.current_player to that player
-                    for i in range(1, game.num_players_with_active_hand+1):
-                        print(game.big_blind_player.id)
-                        print(game.num_players_with_active_hand)
-                        print(((game.big_blind_player.id)%(game.num_players_with_active_hand))+i)
-                        if Player.objects.all().filter(id=((game.big_blind_player.id)%(game.num_players_with_active_hand))+i)[0] in list_active_hand_players:
-                            target = True
-                            current_player = Player.objects.all().filter(id=((participant.id)%(game.num_players_with_active_hand))+i)[0]
-                            break
-                    if target:
-                        break
-                
+            currPlay = Player.objects.all().filter(id=((game.big_blind_player.id)%(game.players_connected))+1)[0]
+            count = 1
+            while currPlay not in list_active_hand_players:
+                currPlay = Player.objects.all().filter(id=((game.big_blind_player.id+count)%(game.players_connected))+1)[0]
+                count += 1
+            current_player = currPlay
+        elif game.small_blind_player in list_active_hand_players:
+            currPlay = Player.objects.all().filter(id=((game.small_blind_player.id)%(game.players_connected))+1)[0]
+            count = 1
+            while currPlay not in list_active_hand_players:
+                currPlay = Player.objects.all().filter(id=((game.small_blind_player.id+count)%(game.players_connected))+1)[0]
+                count += 1
+            current_player = currPlay
+        # elif game.big_blind_player not in list_active_hand_players and game.small_blind_player in list_active_hand_players:
+        #     current_player = Player.objects.all().filter(id=((game.small_blind_player.id)%(game.players_connected))+1)[0]
+        elif Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0] in list_active_hand_players:
+            current_player = Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0]
+        else: # If doesn't exist, finds next closest player
+            currPlay = Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0]
+            count = 1
+            while currPlay not in list_active_hand_players:
+                currPlay = Player.objects.all().filter(id=((game.current_player.id+count)%(game.players_connected))+1)[0]
+                count += 1
+            current_player = currPlay
                             
         # allActions has a list of all players actions (that have an active hand)
         allActions = [] 
@@ -215,18 +210,29 @@ class MyConsumer(WebsocketConsumer):
                 self.resetRound()
                 return True
         # everyone checks
-        elif (allActions.count("call") == num_players_with_active_hand):
+        elif (allActions.count("check") == num_players_with_active_hand):
             print("Round is Over!")
             game.curr_round += 1
             game.current_player = current_player
             game.save()
             self.resetRound()
             return True
+
         print("Round is not Over!")
-        print(((game.current_player.id)%(game.num_players_with_active_hand))+1)
-        game.current_player = Player.objects.all().filter(id=((game.current_player.id)%(game.num_players_with_active_hand))+1)[0]
-        game.current_player.save()
-        game.save()
+        print(((game.current_player.id)%(game.players_connected))+1)
+        if Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0] in list_active_hand_players:
+            game.current_player = Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0]
+            game.current_player.save()
+            game.save()
+        else:
+            currPlay = Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0]
+            count = 1
+            while currPlay not in list_active_hand_players:
+                currPlay = Player.objects.all().filter(id=((game.current_player.id+count)%(game.players_connected))+1)[0]
+                count += 1
+            game.current_player = currPlay
+            game.current_player.save()
+            game.save()
         print(f"This is now the current player: {game.current_player.user}")
         return False
 
@@ -288,7 +294,7 @@ class MyConsumer(WebsocketConsumer):
         if len(winner) == 1:
             print(f"{list_of_players_with_active_hand[winner[0][0]].user} won with a {winner[0][1]}")
         else:
-            for i in len(winner):
+            for i in range(len(winner)):
                 print(f"{list_of_players_with_active_hand[winner[i][0]].user},")
             print(f"Split Pot with a {winner[0][1]}")
 
@@ -319,7 +325,7 @@ class MyConsumer(WebsocketConsumer):
         
         if (action == "call"):
             # maxBet stays the same
-            if (can_call(currentGame, currentGame.current_player)):
+            if (can_call(currentGame, currentGame.current_player) and currentGame.current_player.most_recent_action != "big blind"):
                 call_action(currentGame.current_player)
                 currentGame.current_player.can_call = True
                 currentGame.current_player.save()
@@ -365,7 +371,7 @@ class MyConsumer(WebsocketConsumer):
             if len(validate) == 2 and validate[0] == "raise":
                 try:
                     amount = int(validate[1])
-                    if can_raise(currentGame.current_player, amount):
+                    if can_raise(currentGame, currentGame.current_player, amount):
                         print(f"This the total pot before: {currentGame.total_pot}")
                         # Valid raise action with a numeric amount
                         # You can handle the raise action here
@@ -375,7 +381,7 @@ class MyConsumer(WebsocketConsumer):
                         currentGame.current_player.can_raise = True
                         currentGame.current_player.save()
                     else:
-                        print("Cannot raise, insufficient funds!")
+                        print("Cannot raise by zero, cannot raise less than or equal to highest current bet, or have insufficient funds!")
                         currentGame.current_player.can_raise = False
                         currentGame.current_player.save()
                         return False
@@ -420,16 +426,21 @@ class MyConsumer(WebsocketConsumer):
         # print(curr_game)
         curr_game.small_blind_player = list_of_active_players[0]
         curr_game.big_blind_player = list_of_active_players[1]
-        curr_game.big_blind_player.can_check = True
+        # curr_game.big_blind_player.most_recent_action = "raise"
+        # curr_game.big_blind_player.can_check = True
+        # curr_game.big_blind_player.save()
         curr_game.current_player = list_of_active_players[(list_of_active_players.index(curr_game.big_blind_player)+1)%(curr_game.players_connected)]
         print(f"The Small Blind Player is: {curr_game.small_blind_player.user}")
         print(f"The Big Blind Player is: {curr_game.big_blind_player.user}")
         print(f"The Current Player is: {curr_game.current_player.user}")
         curr_game.save()
+
         for player in Player.objects.all().filter(is_participant=True):
             if player.id == curr_game.big_blind_player.id:
                 player.is_big_blind = True
                 player.is_small_blind = False
+                player.can_check = True
+                player.most_recent_action = "big blind"
             elif player.id == curr_game.small_blind_player.id:
                 player.is_small_blind = True
                 player.is_big_blind = False
