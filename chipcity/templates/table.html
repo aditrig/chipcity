@@ -107,22 +107,15 @@
     </div>
     <button id="start-button" onclick="startGame()">Ready</button>
     <button id="play-button" onclick="startPlay()">Start</button>
-    <form id="callForm">
-      <label for="call">Call:</label>
-      <input type="text" id="call" name="call">
-      <button type="button" form="callForm" value="Submit" id="callButton" onclick="callAction()">Call</button>
+    <button type="button" value="Submit" id="callButton" onclick="callAction()" style="visibility: hidden;">Call</button>
+    <form id="raiseForm" style="visibility: hidden;">
+      <input type="text" id="raiseAmount" name="raise" style="visibility: hidden;">
+      <button type="button" form="raiseForm" value="Submit" id="raiseButton" onclick="raiseAction()" style="visibility: hidden;">Raise</button>
     </form>
-    <form id="raiseForm">
-      <label for="raise">Raise:</label>
-      <input type="text" id="raiseAmount" name="raise">
-      <button type="button" form="raiseForm" value="Submit" id="raiseButton" onclick="raiseAction()">Raise</button>
-    </form>
-    <form id="checkForm">
-      <label for="check">Check:</label>
-      <input type="text" id="check" name="check">
-      <button type="button" form="checkForm" value="Submit" id="checkButton" onclick="checkAction()">Check</button>
-    </form>
-    <button type="button" value="Submit" id="foldButton" onclick="foldAction()">Fold</button>
+    <button type="button" value="Submit" id="checkButton" onclick="checkAction()" style="visibility: hidden;">Check</button>
+    <button type="button" value="Submit" id="foldButton" onclick="foldAction()" style="visibility: hidden;">Fold</button>
+
+    <div id="buttons_go_here"></div>
     <script>
       const myUserName = "{{ request.user.username }}"
       const myUser = "{{request.user}}"
