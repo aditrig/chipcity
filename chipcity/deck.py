@@ -1,6 +1,7 @@
 from __future__ import annotations
 import random
 from .card import Card
+from .evaluator import Evaluator
 
 from chipcity.models import *
 
@@ -51,32 +52,39 @@ class Game_Action:
         
         # Deal cards to players 
         deck = Deck()
+        board = deck.draw(5)
         deck.shuffle()
-        for player in Player.objects.all().filter(is_participant=True):
-            # hand, created = Hand.objects.get_or_create(game=game, player=player)
-            cards = deck.draw(2)
-            player.card_left = Card.int_to_pretty_str(cards[0])
-            player.card_right = Card.int_to_pretty_str(cards[1])
-            player.save()
-            game.save()
-            # print(f"left card: {player.card_left}, right card: {player.card_right}")
-                
-        
-        
-        game.flop1 = Card.int_to_pretty_str(deck.draw())
-        game.flop2 = Card.int_to_pretty_str(deck.draw())
-        game.flop3 = Card.int_to_pretty_str(deck.draw())
-        game.turn = Card.int_to_pretty_str(deck.draw())
-        game.river = Card.int_to_pretty_str(deck.draw())
+    
+        print(Card.int_to_pretty_str(board[0]))
+        print(Card.int_to_pretty_str(board[1]))
+        print(Card.int_to_pretty_str(board[2]))
+        print(Card.int_to_pretty_str(board[3]))
+        print(Card.int_to_pretty_str(board[4]))
+        game.flop1 = board[0]
+        game.flop2 = board[1]
+        game.flop3 = board[2]
+        game.turn = board[3]
+        game.river = board[4]
         game.players_connected = num_users
         game.total_pot = 0
         game.curr_round = 0 # 0 is pre flop
         game.game_num = Game.objects.first().id
         game.save()
-        
 
+        evaluator = Evaluator()
+        hands = []
 
-        
+        for player in Player.objects.all().filter(is_participant=True):
+            # hand, created = Hand.objects.get_or_create(game=game, player=player)
+            cards = deck.draw(2)
+            print(f"{player.user}'s Hand: {Card.int_to_pretty_str(cards[0]), Card.int_to_pretty_str(cards[1])}")
+            player.card_left = cards[0]
+            player.card_right = cards[1]
+            # hands.append([player.card_left, player.card_right])
+            player.save()
+            game.save()
+            # print(f"left card: {player.card_left}, right card: {player.card_right}")
+        # print(evaluator.hand_summary(board, hands))
         
         
         # Set the first player as the current player

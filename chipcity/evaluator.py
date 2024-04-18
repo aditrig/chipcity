@@ -154,8 +154,8 @@ class Evaluator(object):
                 rank_class = self.get_rank_class(rank)
                 class_string = self.class_to_string(rank_class)
                 percentage = 1.0 - self.get_five_card_rank_percentage(rank)  # higher better here
-                print("Player %d hand = %s, percentage rank among all hands = %f" % (
-                    player + 1, class_string, percentage))
+                # print("Player %d hand = %s, percentage rank among all hands = %f" % (
+                #     player + 1, class_string, percentage))
 
                 # detect winner
                 if rank == best_rank:
@@ -166,18 +166,20 @@ class Evaluator(object):
                     best_rank = rank
 
             # if we're not on the river
-            if i != stages.index("RIVER"):
-                if len(winners) == 1:
-                    print("Player %d hand is currently winning.\n" % (winners[0] + 1,))
-                else:
-                    print("Players %s are tied for the lead.\n" % [x + 1 for x in winners])
+            # if i != stages.index("RIVER"):
+            #     if len(winners) == 1:
+            #         print("Player %d hand is currently winning.\n" % (winners[0] + 1,))
+            #     else:
+            #         print("Players %s are tied for the lead.\n" % [x + 1 for x in winners])
 
             # otherwise on all other streets
             else:
-                print ("=" * line_length + " HAND OVER " + "=" * line_length)
+                # print ("=" * line_length + " HAND OVER " + "=" * line_length)
                 if len(winners) == 1:
-                    print("Player %d is the winner with a %s\n" % (winners[0] + 1,
-                        self.class_to_string(self.get_rank_class(self.evaluate(hands[winners[0]], board)))))
+                    # print("Player %d is the winner with a %s\n" % (winners[0] + 1,
+                    #     self.class_to_string(self.get_rank_class(self.evaluate(hands[winners[0]], board)))))
+                    return [(winner, self.class_to_string(self.get_rank_class(self.evaluate(hands[winners[0]], board)))) for winner in winners]
                 else:
-                    print("Players %s tied for the win with a %s\n" % (winners,
-                        self.class_to_string(self.get_rank_class(self.evaluate(hands[winners[0]], board)))))
+                    # print("Players %s tied for the win with a %s\n" % (winners,
+                    #     self.class_to_string(self.get_rank_class(self.evaluate(hands[winners[0]], board)))))
+                    return [(winner, self.class_to_string(self.get_rank_class(self.evaluate(hands[winners[0]], board)))) for winner in winners]
