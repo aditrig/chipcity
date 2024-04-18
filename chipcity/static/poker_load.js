@@ -126,11 +126,11 @@ function displayActiveButtons(game_info){
     let callDisplay
     callDisplay = document.getElementById("callButton")
     callDisplay.style.visibility = 'visible'
-    callDisplay.onclick = callAction()
+    callDisplay.onclick = function (){callAction()}
     let raiseDisplay
     raiseDisplay = document.getElementById("raiseButton")
     raiseDisplay.style.visibility = 'visible'
-    raiseDisplay.onclick = raiseAction()
+    raiseDisplay.onclick = function (){raiseAction()}
     let raiseForm
     raiseForm = document.getElementById("raiseForm")
     raiseForm.style.visibility = 'visible'
@@ -140,11 +140,11 @@ function displayActiveButtons(game_info){
     let foldDisplay
     foldDisplay = document.getElementById("foldButton")
     foldDisplay.style.visibility = 'visible'
-    foldDisplay.onclick = foldAction()
+    foldDisplay.onclick = function (){foldAction()}
     let checkDisplay
     checkDisplay = document.getElementById("checkButton")
     checkDisplay.style.visibility = 'visible'
-    checkDisplay.onclick = checkAction()
+    checkDisplay.onclick = function (){checkAction()}
 
 }
 
