@@ -208,8 +208,12 @@ function displayCards(game_info, cards, players){
             // player_right.src = source
             let player_left = document.getElementById(`player${seat_index}_left`)
             let player_right = document.getElementById(`player${seat_index}_right`)
-            let file_left = player['card_left']
-            let file_right = player['card_right']
+            let file_left_id = player['card_left']
+            // console.log(file_left)
+            let file_right_id = player['card_right']
+            // console.log(file_right)
+            let file_left = cards[file_left_id]
+            let file_right = cards[file_right_id]
             player_left.src = folder + file_left
             player_right.src = folder + file_right
 
@@ -321,8 +325,12 @@ function displayCards(game_info, cards, players){
                 } 
                 let player_left = document.getElementById(`player${seat_index}_left`)
                 let player_right = document.getElementById(`player${seat_index}_right`)
-                let file_left = player['card_left']
-                let file_right = player['card_right']
+                let file_left_id = player['card_left']
+                // console.log(file_left)
+                let file_right_id = player['card_right']
+                // console.log(file_right)
+                let file_left = cards[file_left_id]
+                let file_right = cards[file_right_id]
                 player_left.src = folder + file_left
                 player_right.src = folder + file_right
     
