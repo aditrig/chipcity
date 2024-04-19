@@ -32,14 +32,15 @@ class MyConsumer(WebsocketConsumer):
         if self.scope['user']:
             self.user = self.scope["user"]
             # print("New player has been created!")
+            # print(self.scope['user'].social_auth.get(provider='google-oauth2').extra_data['picture'])
             player, created = Player.objects.get_or_create(
                 user=self.scope['user'],
                 defaults={
-                    'wallet': 0.00,
-                    'seat_number': None,
-                    # 'picture': None,
-                    'content_type': None,
-                    'is_participant': True,  # This is only used if creating a new object
+                    # 'wallet': 0.00,
+                    # 'seat_number': None,
+                    'picture': self.scope['user'].social_auth.get(provider='google-oauth2').extra_data['picture'],
+                    # 'content_type': None,
+                    'is_participant': True  # This is only used if creating a new object
                 }
             )
             player.save()
