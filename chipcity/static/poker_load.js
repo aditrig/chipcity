@@ -43,9 +43,15 @@ function connectToServer() {
         let game_info = JSON.parse(response.game_info)
         let active_players_info = JSON.parse(response.active_players_info)
         let non_active_players_info = JSON.parse(response.non_active_players_info)
+        let cards_info = JSON.parse(response.cards)
         let game
         let a_players
         let n_players
+        let cards
+        console.log('Game Info', JSON.parse(response.game_info));
+        console.log('Active Players', JSON.parse(response.active_players_info));
+        console.log('Non Active Players', JSON.parse(response.non_active_players_info))
+        console.log(cards_info)
         if (game_info.length > 0){
             game = game_info[(game_info.length)-1]
         } else{
@@ -61,10 +67,12 @@ function connectToServer() {
         } else{
             n_players = null
         }
-        processMessage(game, a_players, n_players)
-        // console.log('Game Info', JSON.parse(response.game_info));
-        // console.log('Active Players', JSON.parse(response.active_players_info));
-        // console.log('Non Active Players', JSON.parse(response.non_active_players_info))
+        if (cards_info.length > 0){
+            cards = cards_info[cards_info.length-1]
+        } else{
+            cards = null
+        }
+        processMessage(game, cards, active_players_info, n_players)
 
         // socket.onmessage = function(event) {
         //     let response = JSON.parse(event.data)
@@ -98,7 +106,7 @@ function displayResponse(response) {
     }
 }
 
-function processMessage(game_info, active_players_info, non_active_players_info){
+function processMessage(game_info, cards, active_players_info, non_active_players_info){
     // check if the current player is the user
     // if it is, display buttons
     console.log("makes it to processMessage, check if user is currentPlayer")
@@ -114,11 +122,110 @@ function processMessage(game_info, active_players_info, non_active_players_info)
     
             displayPlaceholderButtons(game_info)
         }
+        displayCards(game_info, cards, active_players_info)
     }
     else{
         console.log("game info is null")
     }
 
+}
+
+function displayCards(game_info, cards, players){
+    console.log("made it to display cards")
+    // display the players cards based on who the player is
+    // make a for loop for the players and if the player is the user than 
+    // display the cards, if not then don't???
+    let folder = "../static/img/cards/"
+    let count = 1
+    console.log("this is the players")
+    console.log(players)
+    for (let player_id in players){
+        console.log(player_id)
+        let player = players[player_id]
+        console.log(player)
+        count = count + 1
+        console.log("this is the username of the player" + player.user)
+        console.log("this is my user name" + myUserName)
+        if (player.user == myUserName){
+            // take the players cards and display
+            let player_left = document.getElementById("player1_left")
+            let player_right = document.getElementById("player1_right")
+            let player_left_id = player['card_left']
+            let player_right_id = player['card_right']
+            let player_left_file = cards[player_left_id]
+            let player_right_file = cards[player_right_id]
+            player_left.src = folder + player_left_file
+            player_right.src = folder + player_right_file
+        } else{
+            // display to the right
+            let player_left = document.getElementById(`player${count}_left`)
+            let player_right = document.getElementById(`player${count}_right`)
+            let file = cards["not-folded-back-art"]
+            let source = folder + file
+            player_left.src = source
+            player_right.src = source
+
+        }
+    }
+
+
+    // this is the part where we display the middle cards
+    let left_flop = document.getElementById("left-flop")
+    let right_flop = document.getElementById("right-flop")
+    let middle_flop = document.getElementById("middle-flop")
+    let turn = document.getElementById("turn")
+    let river = document.getElementById("river")
+
+    left_flop.style.width = "65px"
+    left_flop.style.height = "108px"
+    right_flop.style.width = "65px"
+    right_flop.style.height = "108px"
+    middle_flop.style.width = "65px"
+    middle_flop.style.height = "108px"
+    turn.style.width = "65px"
+    turn.style.height = "108px"
+    river.style.width = "65px"
+    river.style.height = "108px"
+
+    if (game_info['curr_round'] == 0){
+        // display all red cards
+        let file = cards["not-folded-back-art"]
+        let source = folder + file
+        left_flop.src = source
+        right_flop.src = source
+        middle_flop.src = source
+        turn.src = source
+        river.src = source
+    }
+    if (game_info['curr_round'] == 1){
+        let left_flop_id = game_info['flop1']
+        let left_file = cards[left_flop_id]
+        left_flop.src = folder + left_file
+        let middle_flop_id = game_info['flop2']
+        let middle_file = cards[middle_flop_id]
+        middle_flop.src = folder + middle_file
+        let right_flop_id = game_info['flop3']
+        let right_file = cards[right_flop_id]
+        right_flop.src = folder + right_file
+    }
+    if (game_info['curr_round'] == 2){
+        let turn_id = game_info['turn']
+        console.log(game_info['turn'])
+        let turn_file = cards[turn_id]
+        console.log(turn_file)
+        console.log(folder+turn_file)
+        turn.src = folder + turn_file
+    }
+    if (game_info['curr_round'] == 3){
+        let river_id = game_info['river']
+        let river_file = cards[river_id]
+        river.src = folder + river_file
+    }
+    if (game_info['curr_round'] >= 4){
+        // flip over all the active hand cards
+    }
+
+    
 }
 
 function inc(chips){
@@ -172,7 +279,6 @@ function displayActiveButtons(game_info){
     decrementButton = document.getElementById("subtractRaise") 
     decrementButton.style.visibility = 'visible'
     decrementButton.onclick = function (){dec(chips)}
-
 
 }
 

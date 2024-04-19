@@ -476,6 +476,7 @@ class MyConsumer(WebsocketConsumer):
         # want it so that when one player is disconnected, set their active status to false
     
     def initGame(self):
+        print(Card.int_to_pretty_str(33573149))
         print(f"Game object count: {Game.objects.count()}")
         active_players = 0 
         for player in Player.objects.all():
@@ -742,6 +743,7 @@ class MyConsumer(WebsocketConsumer):
         
         messages['game_info'] = game_info
         messages['gameState'] = "inProgress"
+        messages['cards'] = json.dumps(Game.make_card_list())
         print(Player.make_active_player_list())
         active_players = json.dumps(Player.make_active_player_list())
         non_active_players = json.dumps(Player.make_non_active_player_list())
