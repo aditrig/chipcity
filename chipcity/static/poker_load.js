@@ -136,18 +136,38 @@ function displayCards(game_info, cards, players){
     // make a for loop for the players and if the player is the user than 
     // display the cards, if not then don't???
     let folder = "../static/img/cards/"
-    let count = 1
+    // let count = 1
     console.log("this is the players")
     console.log(players)
+    // console.log(game_info['list_of_active_players'])
+    // services = "['service1', 'service2', 'service3']"
+    // services = services.replace(/'/g, '"') //replacing all ' with "
+    // services = JSON.parse(services)
+    // console.log(services)
+    let list_of_players = game_info['list_of_active_players']
+    list_of_players = list_of_players.replace(/'/g, '"')
+    list_of_players = JSON.parse(list_of_players)
+    console.log(list_of_players)
+    console.log(typeof list_of_players)
+    let logged_in_user_index = list_of_players.indexOf(myUserName)
+    console.log("this is my user name")
+    console.log(myUserName)
+    console.log("this is the logged in user index")
+    console.log(logged_in_user_index)
+
     for (let player_id in players){
-        console.log(player_id)
+        // console.log(player_id)
         let player = players[player_id]
-        console.log(player)
-        count = count + 1
-        console.log("this is the username of the player" + player.user)
-        console.log("this is my user name" + myUserName)
+
+
+        // console.log(player)
+        // count = count + 1
+        // console.log("this is the username of the player" + player.user)
+        // console.log("this is my user name" + myUserName)
+        // find the location of the logged in user
+        // let curr_user_index = indexOf(myUserName)
         if (player.user == myUserName){
-            // take the players cards and display
+            // display the current user
             let player_left = document.getElementById("player1_left")
             let player_right = document.getElementById("player1_right")
             let player_left_id = player['card_left']
@@ -156,16 +176,58 @@ function displayCards(game_info, cards, players){
             let player_right_file = cards[player_right_id]
             player_left.src = folder + player_left_file
             player_right.src = folder + player_right_file
+    
         } else{
-            // display to the right
-            let player_left = document.getElementById(`player${count}_left`)
-            let player_right = document.getElementById(`player${count}_right`)
-            let file = cards["not-folded-back-art"]
-            let source = folder + file
-            player_left.src = source
-            player_right.src = source
+            let curr_user_index = list_of_players.indexOf(player.user)
+            console.log("this is the current user index")
+            console.log(curr_user_index)
+            let distance = Math.abs(curr_user_index - logged_in_user_index)
+            console.log("this is the calculated distance")
+            console.log(distance)
+            // if the curr user index < logged_in_user_index, curr user on the right
+            if (curr_user_index < logged_in_user_index){
+                console.log("the user shoudl be on the right of the logged in")
+                // curr user on the right of the logged in user
+                let seat_index = 1 + distance
+                console.log("this is the seat number")
+                console.log(seat_index)
+                // display to the right
+                let player_left = document.getElementById(`player${seat_index}_left`)
+                let player_right = document.getElementById(`player${seat_index}_right`)
+                let file = cards["not-folded-back-art"]
+                let source = folder + file
+                player_left.src = source
+                player_right.src = source
+                
+            }
+            // if logged_in_user_index < curr user index, curr user on the left
+            else if (logged_in_user_index < curr_user_index){
+                let seat_index = 7 - distance
+                console.log("this is the seat number")
+                console.log(seat_index)
+                // display to the right
+                let player_left = document.getElementById(`player${seat_index}_left`)
+                let player_right = document.getElementById(`player${seat_index}_right`)
+                let file = cards["not-folded-back-art"]
+                let source = folder + file
+                player_left.src = source
+                player_right.src = source
+            }
+
 
         }
+        
+        // } else{
+        //     // display to the right
+        //     let player_left = document.getElementById(`player${count}_left`)
+        //     let player_right = document.getElementById(`player${count}_right`)
+        //     let file = cards["not-folded-back-art"]
+        //     let source = folder + file
+        //     player_left.src = source
+        //     player_right.src = source
+
+        // }
+
     }
 
 
