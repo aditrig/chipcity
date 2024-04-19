@@ -427,8 +427,7 @@ function displayPlaceholderButtons(game_info){
 
 
 function startGame() {
-
-    let data = {gameState: "ready", text: ""}
+    let data = {gameState: "ready", text: "", user_pressed_ready: myUserName}
     socket.send(JSON.stringify(data))
 }
 

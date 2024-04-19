@@ -25,17 +25,14 @@ class MyConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_add)(
             self.group_name, self.channel_name
         )
-
         self.accept()
-        player_count = Player.objects.count()
-
         if self.scope['user']:
             self.user = self.scope["user"]
             if (Game.objects.count() != 0 and Game.objects.last().curr_round<5):
                 spectateMode = True
             else: 
                 spectateMode = False
-                # print("New player has been created!")
+                print("New player has been created!")
             player, created = Player.objects.get_or_create(
                 user=self.scope['user'],
                 defaults={
@@ -45,20 +42,18 @@ class MyConsumer(WebsocketConsumer):
                     'spectator': spectateMode
                 }
             )
-            print(player.user)
-            print(player.spectator)
+            # print(player.user)
+            # print(player.spectator)
             player.save()
 
         # If the player was not created, it means it already existed. In this case, only update is_active.
-        if not created:
-            for player in Player.objects.all().filter(): 
-                print(f"player: {player.user} spectator status: {player.spectator} and their participant status: {player.is_participant}")
-                
+        if not created:  
             active_players = 0 
             for player in Player.objects.all():
                 if player.is_participant:
                     active_players+=1
 
+            player = Player.objects.get(user=self.user)
             if not player.spectator and active_players<6:
                 player.is_participant = True
             # print(self.user)
@@ -67,12 +62,20 @@ class MyConsumer(WebsocketConsumer):
                 
             #     curr_game = Game.objects.last()
             #     curr_game.save()
-            
+            for player in Player.objects.all().filter(): 
+                print(f"player: {player.user} spectator status: {player.spectator} and their participant status: {player.is_participant}")
+        active_players = 0 
+        for player in Player.objects.all():
+            if player.is_participant:
+                active_players+=1
+        print(f"Number of Players That Are Participants: {active_players}")
 
-        else: 
-            pass
+        ready_players = 0
+        for player in Player.objects.all().filter(player_pressed_ready=True):
+            ready_players += 1
         
-
+        print(f"The number of players pressed ready is: {ready_players}")
+        
         self.user = self.scope["user"]
         # self.send(text_data=json.dumps({"message": "i can say whatever i want"}))
 
@@ -88,6 +91,8 @@ class MyConsumer(WebsocketConsumer):
         if player== None: 
             return
         player.is_participant = False
+        player.player_pressed_ready = False
+        player.hand_is_active = False
         player.save() 
         print("websocket is diconnected yay")
         for player in Player.objects.all().filter(): 
@@ -156,10 +161,14 @@ class MyConsumer(WebsocketConsumer):
         list_active_hand_players = []
         for player in Player.objects.all().filter(hand_is_active=True):
             list_active_hand_players.append(player)
-
+        print(f"list_active_hand_players: {list_active_hand_players}")
+        print(f"game.players_connected: {game.players_connected}")
+        
         list_are_participants = []
         for player in Player.objects.all().filter(is_participant=True):
             list_are_participants.append(player)
+
+        print(f"list_are_participants: {list_are_participants}")
 
         current_player = game.current_player
         print(f"This is current player: {game.current_player.user}")
@@ -343,7 +352,10 @@ class MyConsumer(WebsocketConsumer):
         print(list_of_hands)
         evaluator = Evaluator()
         board = [game.flop1, game.flop2, game.flop3, game.turn, game.river]
+        print(f"This is the Board: {board}")
+        print(f"This is the list_of_hands that need to evaluated: {list_of_hands}")
         winner = evaluator.hand_summary(board, list_of_hands)
+        print(f"This is the evaluator summary to find winner")
         if len(winner) == 1:
             print(f"{list_of_players_with_active_hand[winner[0][0]].user} won with a {winner[0][1]}")
             for player in Player.objects.all().filter(hand_is_active = True):
@@ -495,7 +507,6 @@ class MyConsumer(WebsocketConsumer):
         # want it so that when one player is disconnected, set their active status to false
     
     def initGame(self):
-        print(Card.int_to_pretty_str(33573149))
         print(f"Game object count: {Game.objects.count()}")
         active_players = 0 
         for player in Player.objects.all():
@@ -577,8 +588,8 @@ class MyConsumer(WebsocketConsumer):
             print(Card.int_to_pretty_str(game.turn))
             print(Card.int_to_pretty_str(game.river))
             print("----------------------------")
-            for player in Player.objects.all():
-                print(f"This is {player.user}'s hand: {Card.int_to_pretty_str(player.card_left)} {Card.int_to_pretty_str(player.card_right)}")
+            # for player in Player.objects.all():
+            #     print(f"This is {player.user}'s hand: {Card.int_to_pretty_str(player.card_left)} {Card.int_to_pretty_str(player.card_right)}")
 
     def newGame(self):
         print(f"Game object count: {Game.objects.count()}")
@@ -610,7 +621,7 @@ class MyConsumer(WebsocketConsumer):
                 specToPlayer = spectatorList[i]
                 specToPlayer.spectator = False
                 specToPlayer.is_participant = True
-                print(f"this is the spectator: {specToPlayer.user}")
+                print(f"this is the spectator: {specToPlayer.user}, who has become an active player")
                 specToPlayer.save()        
             
             for player in Player.objects.all():
@@ -712,40 +723,76 @@ class MyConsumer(WebsocketConsumer):
             player_action = data['player_action']
             # print(player_action)
 
+        print(f"data dump: {data}")
         status = data['gameState']
-        active_players = 0 
+        active_and_ready_players = 0 
+        num_participants = 0
         if(status=="ready"):
+            user_readied = data['user_pressed_ready']
             for player in Player.objects.all():
                 if player.is_participant:
-                    active_players+=1
+                    num_participants += 1
+            for player in Player.objects.all():
+                if player.user.username == user_readied:
+                    player.player_pressed_ready = True
+                    player.save()
+            for player in Player.objects.all():
+                if player.is_participant and player.player_pressed_ready:
+                    active_and_ready_players+=1
             print("")
             print("-----Pressed Ready! Currently in Ready State!-----")
-            print(f"The number of players is: {active_players}")
+            print(f"The number active AND ready players is: {active_and_ready_players}")
             print("")
 
-            if (active_players >= 2 and Game.objects.count() == 0):
-                print("-----Game Initiated! Entering initGame()-----")
-                self.initGame()
-                print("-----Exiting initGame()-----")
-            print("")
-            print("-----Entering gameInitalized()-----")
-            self.gameInitalized()
-            print("-----Exiting gameInitalized()-----")
-            print("")
-            print("-----Entering broadcast_list()!-----")
-            self.broadcast_list()    
-            print("-----Exiting broadcast_list()!-----")   
+            if (num_participants != active_and_ready_players):
+                print("Waiting for players to ready up!")
 
+            else:
+                if (active_and_ready_players < 2):
+                    print("Cannot Start Game With Less Than Two Players!")
+
+                if (active_and_ready_players >= 2 and Game.objects.count() == 0):
+                    print("-----Game Initiated! Entering initGame()-----")
+                    self.initGame()
+                    print("-----Exiting initGame()-----")
+                    print("")
+                    print("-----Entering gameInitalized()-----")
+                    self.gameInitalized()
+                    print("-----Exiting gameInitalized()-----")
+                    print("")
+                    print("-----Entering broadcast_list()!-----")
+                    self.broadcast_list()    
+                    print("-----Exiting broadcast_list()!-----") 
+                else:
+                    print("-----Starting New Game! Entering newGame()!-----")
+                    self.newGame()
+                    print("-----Exiting newGame()!-----")
+                    print("")
+                    # print(f"Big Blind Player: {Game.objects.last().big_blind_player}")
+                    # print(f"Game object count: {Game.objects.count()}")
+                    print("-----Entering broadcast_list()!-----")
+                    self.broadcast_list()
+                    print("-----Exiting broadcast_list()!-----")
+                    print("")
+        
         if (status == "newGame"):
+            user_readied = data['user_pressed_ready']
             for player in Player.objects.all():
-                if player.is_participant:
-                    active_players+=1
+                if player.user.username == user_readied:
+                    player.player_pressed_ready = True
+                    player.save()
+            for player in Player.objects.all():
+                if player.is_participant and player.player_pressed_ready:
+                    active_and_ready_players+=1
             print("")
             print("-----New Game! Currently in newGame State!-----")
-            print(f"The number of players is: {active_players}")
+            print(f"The number of players is: {active_and_ready_players}")
             print("")
 
-            if (active_players >= 2 and Game.objects.count() == 0):
+            if (active_and_ready_players < 2):
+                print("Cannot Start Game With Less Than Two Players!")
+
+            if (active_and_ready_players >= 2 and Game.objects.count() == 0):
                 print("-----Game Initiated! Entering initGame()-----")
                 self.initGame()
                 print("-----Exiting initGame()-----")
@@ -759,45 +806,51 @@ class MyConsumer(WebsocketConsumer):
             print("-----Exiting broadcast_list()!-----") 
             
         if status == "inProgress":
-                print("-----Entering playTurn()!-----")
-                if self.playTurn(player_action):
-                    print("-----Exiting playTurn()!-----")
+            print("-----Entering playTurn()!-----")
+            if self.playTurn(player_action):
+                print("-----Exiting playTurn()!-----")
+                print("")
+                print("-----Entering isRoundOver()!-----")
+                self.isRoundOver(player_action)
+                print("-----Exiting isRoundOver()!-----")
+                print("")
+                print("-----Entering isShowDown()!-----")
+                if self.isShowDown():
+                    print("-----Exiting isShowDown()!-----")
                     print("")
-                    print("-----Entering isRoundOver()!-----")
-                    self.isRoundOver(player_action)
-                    print("-----Exiting isRoundOver()!-----")
-                    print("")
-                    print("-----Entering isShowDown()!-----")
-                    if self.isShowDown():
-                        print("-----Exiting isShowDown()!-----")
-                        print("")
-                        print("-----Entering isGameOver()!-----")
-                        if self.isGameOver():
-                            self.evaluateHands()
-                    print("-----Exiting isGameOver()!-----")
-                    print("")
-                    print("-----Entering broadcast_list()!-----")
-                    self.broadcast_list()
-                    print("-----Exiting broadcast_list()!-----")
-                    print("")
-                    if Game.objects.last().curr_round == 5:
-                        status = "newGame"
-                        print("-----Starting New Game! Entering newGame()!-----")
-                        self.newGame()
-                        print("-----Exiting initGame()!-----")
-                        print("")
-                        # print(f"Big Blind Player: {Game.objects.last().big_blind_player}")
-                        # print(f"Game object count: {Game.objects.count()}")
-                        print("-----Entering broadcast_list()!-----")
-                        self.broadcast_list()
-                        print("-----Exiting broadcast_list()!-----")
-                        print("")
-                else:
-                    print(Game.objects.last().current_player)
+                    print("-----Entering isGameOver()!-----")
+                    if self.isGameOver():
+                        self.evaluateHands()
+                print("-----Exiting isGameOver()!-----")
+                print("")
+                print("-----Entering broadcast_list()!-----")
+                self.broadcast_list()
+                print("-----Exiting broadcast_list()!-----")
+                print("")
+                if Game.objects.last().curr_round == 5:
+                    print("Finished Game!")
+                    status = "finish"
+                    # print("-----Starting New Game! Entering newGame()!-----")
+                    # self.newGame()
+                    # print("-----Exiting newGame()!-----")
+                    # print("")
+                    # # print(f"Big Blind Player: {Game.objects.last().big_blind_player}")
+                    # # print(f"Game object count: {Game.objects.count()}")
+                    # print("-----Entering broadcast_list()!-----")
+                    # self.broadcast_list()
+                    # print("-----Exiting broadcast_list()!-----")
+                    # print("")
+            else:
+                print(Game.objects.last().current_player)
 
         if (status == "finish"):
-                self.finishGame(data)
-                self.broadcast_list()
+            print("Inside Finish, need to reset everything!")
+            # self.finishGame(data)
+            self.broadcast_list()
+            status = "ready"
+            for player in Player.objects.all().filter(is_participant=True):
+                player.player_pressed_ready = False
+                player.save()
         else: self.send_error(f'Invalid status property: "{status}"')
 
     def broadcast_list(self):

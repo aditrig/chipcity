@@ -11,7 +11,7 @@ class Player(models.Model):
     # bio = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="player",null=True) #associates each player with its corresponding user
     # game = models.ForeignKey(Game, on_delete=models.PROTECT, related_name="player_game",null=True) #associates each player with a specific game instance
-    player_pressed_ready = models.BooleanField(default=True) #indicates if a player has pressed ready on the page (is_participant must be equal to True)
+    player_pressed_ready = models.BooleanField(default=False) #indicates if a player has pressed ready on the page (is_participant must be equal to True)
     wallet = models.IntegerField(default=100,null=True) #associates each player with their own wallet (total amount of money they have)
     chips = models.IntegerField(default=50,null=True) #associates each player with their own number of chips (amount of money they bought in for)
     seat_number = models.IntegerField(default=0,null=True) #associates each player with their own specific seat # at the table

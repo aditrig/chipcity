@@ -71,7 +71,9 @@ class Game_Action:
         game.game_num = Game.objects.last().id
         game.save()
 
-        
+        # evaluator = Evaluator()
+        # hands = [[98306, 2102541], [67127839, 139523]]
+        # print(evaluator.hand_summary(board, hands))
         # cards = deck.draw(2)
         for player in Player.objects.all().filter(is_participant=True):
             # hand, created = Hand.objects.get_or_create(game=game, player=player)
@@ -150,5 +152,5 @@ class Game_Action:
 # p5_class = evaluator.get_rank_class(p5_score)
 # p6_class = evaluator.get_rank_class(p6_score)
 
-# hands = [player1_hand, player2_hand, player3_hand, player4_hand, player5_hand, player6_hand]
+# hands = [[98306, 2102541], [67127839, 139523]]
 # evaluator.hand_summary(board, hands)
