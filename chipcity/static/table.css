@@ -941,20 +941,24 @@ body {
 
 #callButton {
   position: absolute;
-  width: 55px;
-  height: 30px;
-  margin-left: 5px;
-  background-color: #2D4974;
-  border-radius: 5px;
+  width: 100px;
+  height: 28px;
+  top: 9px;
+  left: 1px;
+  background-color: #374b6b;
+  border-radius: 30px;
+  transform: rotate(9.66deg);
   box-shadow: 0px 4px 4px #00000040;
-  position: absolute;
-  border: 0.5px solid;
-  border-color: #586F93;
-  background-size: 100% 100%;
+  transform: rotate(9.66deg);
   text-shadow: 0px 4px 4px #00000040;
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
   color: #ffffff;
+  font-size: 13px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+
 }
 
 #raiseButton {
@@ -973,12 +977,22 @@ body {
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
   color: #ffffff;
+  text-shadow: 0px 4px 4px #00000040;
+  font-family: "Dangrek", Helvetica;
+  font-weight: 400;
+  color: #ffffff;
+  font-size: 13px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+
 }
 
 #checkButton {
-  position: absolute;
+  /* position: absolute;
   width: 60px;
   height: 30px;
+  top: 12%;
   margin-left: 5px;
   background-color: #2D4974;
   border-radius: 5px;
@@ -990,11 +1004,30 @@ body {
   text-shadow: 0px 4px 4px #00000040;
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
+  color: #ffffff; */
+  position: absolute;
+  width: 100px;
+  height: 28px;
+  top: 10px;
+  left: 2px;
+  background-color: #374b6b;
+  border-radius: 30px;
+  transform: rotate(-9.66deg);
+  box-shadow: 0px 4px 4px #00000040;
+  text-shadow: 0px 4px 4px #00000040;
+  font-family: "Dangrek", Helvetica;
+  font-weight: 400;
   color: #ffffff;
+  font-size: 13px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+
+
 }
 
 #foldButton {
-  position: absolute;
+  /* position: absolute;
   width: 55px;
   height: 30px;
   top: 16%;
@@ -1005,9 +1038,26 @@ body {
   position: absolute;
   border: 0.5px solid;
   border-color: #586F93;
-  background-size: 100% 100%;
+  background-size: 100% 100%; */
+
+  position: absolute;
+  width: 194px;
+  height: 56px;
+  top: 16px;
+  left: 3px;
+  border-radius: 30px;
+  border: 1px solid;
+  border-color: #e3aeb1;
+  transform: rotate(9.66deg);
+  box-shadow: 0px 4px 4px #00000040;
+  background: linear-gradient(180deg, rgb(238, 85, 93) 0%, rgb(233.75, 148.96, 153.39) 100%);
+  transform: rotate(9.66deg);
   text-shadow: 0px 4px 4px #00000040;
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
   color: #ffffff;
+  font-size: 30px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
 }

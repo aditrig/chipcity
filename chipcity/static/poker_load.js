@@ -36,19 +36,47 @@ function connectToServer() {
     // Handle messages received from the server.
     socket.onmessage = function(event) {
         console.log("hi")
+        // so here we have our response from the server and we want to utilize it to 
         let response = JSON.parse(event.data)
-        console.log('Game Info', JSON.parse(response.game_info));
-        console.log('Active Players', JSON.parse(response.active_players_info));
-        console.log('Non Active Players', JSON.parse(response.non_active_players_info))
+        console.log(response)
+        console.log(response.game_info)
+        let game_info = JSON.parse(response.game_info)
+        let active_players_info = JSON.parse(response.active_players_info)
+        let non_active_players_info = JSON.parse(response.non_active_players_info)
+        let game
+        let a_players
+        let n_players
+        if (game_info.length > 0){
+            game = game_info[0]
+        } else{
+            game = null
+        }
+        if (active_players_info.length > 0){
+            a_players = active_players_info[0]
+        } else{
+            a_players = null
+        }
+        if (non_active_players_info.length > 0){
+            n_players = active_players_info[0]
+        } else{
+            n_players = null
+        }
+        processMessage(game, a_players, n_players)
+        // console.log('Game Info', JSON.parse(response.game_info));
+        // console.log('Active Players', JSON.parse(response.active_players_info));
+        // console.log('Non Active Players', JSON.parse(response.non_active_players_info))
+
+        // socket.onmessage = function(event) {
+        //     let response = JSON.parse(event.data)
+        //     if (Array.isArray(response)) {
+        //         updateList(response)
+        //     } else {
+        //         displayResponse(response)
+        //     }
+        // }
+
+        
     }
-    // socket.onmessage = function(event) {
-    //     let response = JSON.parse(event.data)
-    //     if (Array.isArray(response)) {
-    //         updateList(response)
-    //     } else {
-    //         displayResponse(response)
-    //     }
-    // }
 }
 
 function displayError(message) {
@@ -70,7 +98,84 @@ function displayResponse(response) {
     }
 }
 
+function processMessage(game_info, active_players_info, non_active_players_info){
+    // check if the current player is the user
+    // if it is, display buttons
+    console.log("makes it to processMessage, check if user is currentPlayer")
+    if (game_info != null){
+        console.log("game info is not null")
+        if (game_info["current_player_user"] == myUserName){
+            console.log("display Active Buttons")
+    
+            displayActiveButtons(game_info)
+        }
+        else{
+            console.log("don't display active buttons")
+    
+            displayPlaceholderButtons(game_info)
+        }
+    }
+    else{
+        console.log("game info is null")
+    }
+
+}
+
+
+function displayActiveButtons(game_info){
+    let callDisplay
+    callDisplay = document.getElementById("callButton")
+    callDisplay.style.visibility = 'visible'
+    callDisplay.onclick = function (){callAction()}
+    let raiseDisplay
+    raiseDisplay = document.getElementById("raiseButton")
+    raiseDisplay.style.visibility = 'visible'
+    raiseDisplay.onclick = function (){raiseAction()}
+    let raiseForm
+    raiseForm = document.getElementById("raiseForm")
+    raiseForm.style.visibility = 'visible'
+    let raiseAmount
+    raiseAmount = document.getElementById("raiseAmount")
+    raiseAmount.style.visibility = 'visible'
+    let foldDisplay
+    foldDisplay = document.getElementById("foldButton")
+    foldDisplay.style.visibility = 'visible'
+    foldDisplay.onclick = function (){foldAction()}
+    let checkDisplay
+    checkDisplay = document.getElementById("checkButton")
+    checkDisplay.style.visibility = 'visible'
+    checkDisplay.onclick = function (){checkAction()}
+
+}
+
+function displayPlaceholderButtons(game_info){
+    let callDisplay
+    callDisplay = document.getElementById("callButton")
+    callDisplay.style.visibility = 'hidden'
+    callDisplay.onclick = function(){}
+    let raiseDisplay
+    raiseDisplay = document.getElementById("raiseButton")
+    raiseDisplay.style.visibility = 'hidden'
+    raiseDisplay.onclick = function(){}
+    let raiseForm
+    raiseForm = document.getElementById("raiseForm")
+    raiseForm.style.visibility = 'hidden'
+    let raiseAmount
+    raiseAmount = document.getElementById("raiseAmount")
+    raiseAmount.style.visibility = 'hidden'
+    let checkDisplay
+    checkDisplay = document.getElementById("checkButton")
+    checkDisplay.style.visibility = 'hidden'
+    checkDisplay.onclick = function(){}
+    let foldDisplay
+    foldDisplay = document.getElementById("foldButton")
+    foldDisplay.style.visibility = 'hidden'
+    foldDisplay.onclick = function(){}
+}
+
+
 function startGame() {
+
     let data = {gameState: "ready", text: ""}
     socket.send(JSON.stringify(data))
 }
@@ -81,19 +186,19 @@ function startGame() {
 
 // }
 function callAction(){
-    let data = {gameState: "inProgress", player_action: "call" , text:""}
+    let data = {user: myUserName, gameState: "inProgress", player_action: "call" , text:""}
     socket.send(JSON.stringify(data))
 }
 function raiseAction(){
-    let data = {gameState: "inProgress", player_action: "raise," + document.getElementById('raiseAmount').value, text:""}
+    let data = {user: myUserName, gameState: "inProgress", player_action: "raise," + document.getElementById('raiseAmount').value, text:""}
     socket.send(JSON.stringify(data))
 }
 function checkAction(){
-    let data = {gameState: "inProgress", player_action: "check", text:""}
+    let data = {user: myUserName, gameState: "inProgress", player_action: "check", text:""}
     socket.send(JSON.stringify(data))
 }
 function foldAction(){
-    let data = {gameState: "inProgress", player_action: "fold", text:""}
+    let data = {user: myUserName, gameState: "inProgress", player_action: "fold", text:""}
     socket.send(JSON.stringify(data))
 }
 
