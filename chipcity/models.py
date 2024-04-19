@@ -30,6 +30,8 @@ class Player(models.Model):
     hand_is_active = models.BooleanField(default=True) #indicates whether a player's hand is active (not folded)
     win_count = models.IntegerField(default=0,null=True)
     winning_hand = models.CharField(blank=True, max_length=50, null=True)
+    spectator = models.BooleanField(default=False) 
+
     # can_min = models.BooleanField(default=True)
     # can_half = models.BooleanField(default=True)
     # can_pot = models.BooleanField(default=True)
@@ -120,6 +122,7 @@ class Game(models.Model):
     small_blind_amt = models.IntegerField(default=1)
     current_player = models.ForeignKey(Player, on_delete=models.PROTECT,related_name="current_player", null=True)
     winning_player_user = models.CharField(blank=True, max_length=100, null=True)
+    
 
     def create_game(self, game_num, num_players, init_pot, curr_round):
         return type(self).objects.create(

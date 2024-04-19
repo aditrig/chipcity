@@ -31,42 +31,41 @@ class MyConsumer(WebsocketConsumer):
 
         if self.scope['user']:
             self.user = self.scope["user"]
+        if (Game.objects.count() != 0 and Game.objects.last().curr_round<5):
+            spectateMode = True
+        else: 
+            spectateMode = False
             # print("New player has been created!")
-            player, created = Player.objects.get_or_create(
-                user=self.scope['user'],
-                defaults={
-                    'wallet': 0.00,
-                    'seat_number': None,
-                    # 'picture': None,
-                    'content_type': None,
-                    'is_participant': True,  # This is only used if creating a new object
-                }
-            )
-            player.save()
+        player, created = Player.objects.get_or_create(
+            user=self.scope['user'],
+            defaults={
+                'wallet': 0.00,
+                'seat_number': None,
+                # 'picture': None,
+                'content_type': None,
+                'is_participant': not spectateMode,  # This is only used if creating a new object
+                'hand_is_active': not spectateMode,
+                'spectator': spectateMode
+            }
+        )
+        print(player.user)
+        print(player.spectator)
+        player.save()
 
-
-            # If the player was not created, it means it already existed. In this case, only update is_active.
-            if not created:
-                player.is_participant = True
-                # print(self.user)
-                player.save()
+        # If the player was not created, it means it already existed. In this case, only update is_active.
+        if not created:
+            for player in Player.objects.all().filter(): 
+                print(f"player: {player.user} spectator status: {player.spectator} and their participant status: {player.is_participant}")
                 
-            # for game in Game.objects.all():
-            #     print(game)
-
-        
             active_players = 0 
-
-            # print(Player.objects.count())
             for player in Player.objects.all():
-                # print(player)
                 if player.is_participant:
                     active_players+=1
-                # else: print(player)
-            print(f"there are this many active players {active_players}")
-            print(f"there are this many player objects: {Player.objects.count()}")
 
-
+            if not player.spectator and active_players<6:
+                player.is_participant = True
+            # print(self.user)
+            player.save()
             # if ((active_players) > 2):
                 
             #     curr_game = Game.objects.last()
@@ -87,18 +86,30 @@ class MyConsumer(WebsocketConsumer):
             self.group_name, self.channel_name
         )      
         print(self.user)
+        
         player = Player.objects.get(user=self.user)
+        if player== None: 
+            return
         player.is_participant = False
         player.save() 
-        print(player.is_participant)
         print("websocket is diconnected yay")
+        for player in Player.objects.all().filter(): 
+            print(f"player: {player.user} spectator status: {player.spectator} and their participant status: {player.is_participant}")
+
         active_players = 0 
         for player in Player.objects.all():
             if player.is_participant:
                 active_players+=1
 
         print(f"number of active players: {active_players}")
+        player = Player.objects.get(user=self.user)
+        if player.spectator: 
+            print(f"why r u disconnecting {player.user}")
+            player.delete() 
+            
         curr_game = Game.objects.last()
+        if curr_game == None:
+            return
         curr_game.players_connected = active_players
         curr_game.save()
 
@@ -582,7 +593,34 @@ class MyConsumer(WebsocketConsumer):
 
         if active_players < 2:
             # Makes sure that game does not start without 2+ players
+            self.close()
             return
+
+        spectatorCount = 0 
+        spectatorList =[] 
+        
+        for player in Player.objects.all(): 
+            print(f"player: {player.user} spectator status: {player.spectator} and their participant status: {player.is_participant}")
+            if player.spectator:
+                spectatorCount+=1
+                spectatorList.append(player)
+        print(spectatorList)
+            
+        
+        if active_players < 3: 
+            print("active_players less than 3")
+            for i in range(min(len(spectatorList), 3 - active_players)):
+                specToPlayer = spectatorList[i]
+                specToPlayer.spectator = False
+                specToPlayer.is_participant = True
+                print(f"this is the spectator: {specToPlayer.user}")
+                specToPlayer.save()        
+            
+            for player in Player.objects.all():
+                if not player.is_participant:
+                    player.spectator = True
+                    print(player.user)
+                    player.save()
         
         # Gets list of active players
         list_of_active_players = list_of_players()
