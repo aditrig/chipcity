@@ -200,12 +200,18 @@ function displayCards(game_info, cards, players){
                 // player_left.src = source
                 // player_right.src = source
             } 
+            // let player_left = document.getElementById(`player${seat_index}_left`)
+            // let player_right = document.getElementById(`player${seat_index}_right`)
+            // let file = cards["not-folded-back-art"]
+            // let source = folder + file
+            // player_left.src = source
+            // player_right.src = source
             let player_left = document.getElementById(`player${seat_index}_left`)
             let player_right = document.getElementById(`player${seat_index}_right`)
-            let file = cards["not-folded-back-art"]
-            let source = folder + file
-            player_left.src = source
-            player_right.src = source
+            let file_left = player['card_left']
+            let file_right = player['card_right']
+            player_left.src = folder + file_left
+            player_right.src = folder + file_right
 
 
         }
