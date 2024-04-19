@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from chipcity.card import *
 
 '''
     This is the player model. Includes the user, user's wallet, seat number, profile picture, and is_active flag.
@@ -96,7 +97,7 @@ class Player(models.Model):
         return player_dict_lists
 
 '''
-    This is the game model. Includes the game(table) number.
+    This is the game class. Includes the game(table) number.
 '''
 class Game(models.Model):
     game_num = models.IntegerField(null=True) #indicates the game number (for our purposes should just be 1)
@@ -161,3 +162,65 @@ class Game(models.Model):
             item_dict_list.append(item_dict)
         print(item_dict_list)
         return item_dict_list
+    
+    @classmethod
+    def make_card_list(cls):
+        card_dict_list = []
+        card_dict = {
+            'not-folded-back-art': "not-folded-back-art.svg",
+            'folded-back-art': "folded-back-art.svg",
+            str(Card.new('As')): "ace-of-spades.svg",
+            str(Card.new('Ah')): "ace-of-hearts.svg",
+            str(Card.new('Ad')): "ace-of-diamonds.svg",
+            str(Card.new('Ac')): "ace-of-clubs.svg",
+            str(Card.new('Ks')): "king-of-spades.svg",
+            str(Card.new('Kh')): "king-of-hearts.svg",
+            str(Card.new('Kd')): "king-of-diamonds.svg",
+            str(Card.new('Kc')): "king-of-clubs.svg",
+            str(Card.new('Qs')): "queen-of-spades.svg",
+            str(Card.new('Qh')): "queen-of-hearts.svg",
+            str(Card.new('Qd')): "queen-of-diamonds.svg",
+            str(Card.new('Qc')): "queen-of-clubs.svg",
+            str(Card.new('Js')): "jack-of-spades.svg",
+            str(Card.new('Jh')): "jack-of-hearts.svg",
+            str(Card.new('Jd')): "jack-of-diamonds.svg",
+            str(Card.new('Jc')): "jack-of-clubs.svg",
+            str(Card.new('Ts')): "ten-of-spades.svg",
+            str(Card.new('Th')): "ten-of-hearts.svg",
+            str(Card.new('Td')): "ten-of-diamonds.svg",
+            str(Card.new('Tc')): "ten-of-clubs.svg",
+            str(Card.new('9s')): "nine-of-spades.svg",
+            str(Card.new('9h')): "nine-of-hearts.svg",
+            str(Card.new('9d')): "nine-of-diamonds.svg",
+            str(Card.new('9c')): "nine-of-clubs.svg",
+            str(Card.new('8s')): "eight-of-spades.svg",
+            str(Card.new('8h')): "eight-of-hearts.svg",
+            str(Card.new('8d')): "eight-of-diamonds.svg",
+            str(Card.new('8c')): "eight-of-clubs.svg",
+            str(Card.new('7s')): "seven-of-spades.svg",
+            str(Card.new('7h')): "seven-of-hearts.svg",
+            str(Card.new('7d')): "seven-of-diamonds.svg",
+            str(Card.new('7c')): "seven-of-clubs.svg",
+            str(Card.new('6s')): "six-of-spades.svg",
+            str(Card.new('6h')): "six-of-hearts.svg",
+            str(Card.new('6d')): "six-of-diamonds.svg",
+            str(Card.new('6c')): "six-of-clubs.svg",
+            str(Card.new('5s')): "five-of-spades.svg",
+            str(Card.new('5h')): "five-of-hearts.svg",
+            str(Card.new('5d')): "five-of-diamonds.svg",
+            str(Card.new('5c')): "five-of-clubs.svg",
+            str(Card.new('4s')): "four-of-spades.svg",
+            str(Card.new('4h')): "four-of-hearts.svg",
+            str(Card.new('4d')): "four-of-diamonds.svg",
+            str(Card.new('4c')): "four-of-clubs.svg",
+            str(Card.new('3s')): "three-of-spades.svg",
+            str(Card.new('3h')): "three-of-hearts.svg",
+            str(Card.new('3d')): "three-of-diamonds.svg",
+            str(Card.new('3c')): "three-of-clubs.svg",
+            str(Card.new('2s')): "two-of-spades.svg",
+            str(Card.new('2h')): "two-of-hearts.svg",
+            str(Card.new('2d')): "two-of-diamonds.svg",
+            str(Card.new('2c')): "two-of-clubs.svg"
+        }
+        card_dict_list.append(card_dict)
+        return card_dict_list

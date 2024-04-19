@@ -71,9 +71,7 @@ class Game_Action:
         game.game_num = Game.objects.last().id
         game.save()
 
-        evaluator = Evaluator()
-        hands = []
-
+        
         # cards = deck.draw(2)
         for player in Player.objects.all().filter(is_participant=True):
             # hand, created = Hand.objects.get_or_create(game=game, player=player)
