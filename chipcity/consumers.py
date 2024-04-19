@@ -31,26 +31,23 @@ class MyConsumer(WebsocketConsumer):
 
         if self.scope['user']:
             self.user = self.scope["user"]
-        if (Game.objects.count() != 0 and Game.objects.last().curr_round<5):
-            spectateMode = True
-        else: 
-            spectateMode = False
-            # print("New player has been created!")
-        player, created = Player.objects.get_or_create(
-            user=self.scope['user'],
-            defaults={
-                'wallet': 0.00,
-                'seat_number': None,
-                # 'picture': None,
-                'content_type': None,
-                'is_participant': not spectateMode,  # This is only used if creating a new object
-                'hand_is_active': not spectateMode,
-                'spectator': spectateMode
-            }
-        )
-        print(player.user)
-        print(player.spectator)
-        player.save()
+            if (Game.objects.count() != 0 and Game.objects.last().curr_round<5):
+                spectateMode = True
+            else: 
+                spectateMode = False
+                # print("New player has been created!")
+            player, created = Player.objects.get_or_create(
+                user=self.scope['user'],
+                defaults={
+                    'picture': self.scope['user'].social_auth.get(provider='google-oauth2').extra_data['picture'],
+                    'is_participant': not spectateMode,  # This is only used if creating a new object
+                    'hand_is_active': not spectateMode,
+                    'spectator': spectateMode
+                }
+            )
+            print(player.user)
+            print(player.spectator)
+            player.save()
 
         # If the player was not created, it means it already existed. In this case, only update is_active.
         if not created:
