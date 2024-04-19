@@ -611,3 +611,4 @@ function foldAction(){
 // //     document.getElementById('id_join_table').addEventListener('click', function() {
 // //         window.location.href = '{%url 'table' %}}';
 // //     })
+
