@@ -24,9 +24,9 @@ function connectToServer() {
     }
 
     // Show a connected message when the WebSocket is opened.
-    // socket.onopen = function(event) {
-    //     displayMessage("WebSocket Connected")
-    // }
+    socket.onopen = function(event) {
+        displayMessage("WebSocket Connected")
+    }
 
     // Show a disconnected message when the WebSocket is closed.
     socket.onclose = function(event) {
@@ -431,7 +431,6 @@ function displayPlaceholderButtons(game_info){
 
 
 function startGame() {
-
     let data = {gameState: "ready", text: ""}
     socket.send(JSON.stringify(data))
 }

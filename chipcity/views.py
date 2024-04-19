@@ -35,7 +35,7 @@ def join_action(request):
 def table_action(request):
     print("game no create")
 
-    context = {}
-
+    context = {'picture': request.user.social_auth.get(provider='google-oauth2').extra_data['picture']}
+    print(context)
     return render(request, 'table.html', context)
 
