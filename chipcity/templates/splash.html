@@ -14,16 +14,16 @@
   </head>
   <body>
     <div class="splash-page">
-      <div class="div">
-        <div class="overlap-group">
-          <img class="red" src="../static/img/redchip.svg" />
-          <img class="green" src="../static/img/greenchip.svg" />
-          <img class="purple" src="../static/img/purplechip.svg" />
+      <div class="splash">
+        <div class="logo-group">
+          <img class="blue" src="../static/img/bluechip.svg">
+          <img class="green" src="../static/img/greenchip.svg">
+          <img class="red" src="../static/img/redchip.svg">
+          <img class="purple" src="../static/img/purplechip.svg">
           <img class="outer-rectangle" src="../static/img/outer-rectangle.svg" />
-          <div class="text-wrapper">CHIP CITY</div>
-          <img class="blue" src="../static/img/bluechip.svg" />
+          <div class="chip-city-text">CHIP CITY</div>
         </div>
-        <div class="overlap">
+        <div class="login-group">
           <form action="{%url 'chipcity:join'%}" method="post">
             {% csrf_token %}
             <button type="submit" class="login-button">LOGIN</button>

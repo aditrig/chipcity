@@ -12,7 +12,7 @@ body {
     height: 100%;
   }
   
-  .splash-page .div {
+  .splash-page .splash {
     background-color: rgba(255, 255, 255, 1);
     box-shadow: 0px 4px 4px #00000040;
     background: linear-gradient(180deg, rgb(51.4, 84.42, 137.24) 0%, rgba(50, 75, 115, 0.76) 100%);
@@ -21,7 +21,7 @@ body {
     position: relative;
   }
   
-  .splash-page .overlap-group {
+  .splash-page .logo-group {
     position: absolute;
     width: 751px;
     height: 384px;
@@ -62,7 +62,7 @@ body {
     left: 0;
   }
   
-  .splash-page .text-wrapper {
+  .splash-page .chip-city-text {
     position: absolute;
     width: 414px;
     height: 75px;
@@ -87,7 +87,7 @@ body {
     left: 154px;
   }
   
-  .splash-page .overlap {
+  .splash-page .login-group {
     position: absolute;
     width: 131px;
     height: 42px;

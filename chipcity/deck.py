@@ -76,10 +76,10 @@ class Game_Action:
         for player in Player.objects.all().filter(is_participant=True):
             # hand, created = Hand.objects.get_or_create(game=game, player=player)
             cards = deck.draw(2)
-            print(f"{player.user}'s Hand: {Card.int_to_pretty_str(cards[0]), Card.int_to_pretty_str(cards[1])}")
             player.card_left = cards[0]
             player.card_right = cards[1]
             # hands.append([player.card_left, player.card_right])
+            print(f"{player.user}'s Hand: {Card.int_to_pretty_str(player.card_left)} {Card.int_to_pretty_str(player.card_right)}")
             player.save()
             game.save()
             # print(f"left card: {player.card_left}, right card: {player.card_right}")

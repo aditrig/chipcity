@@ -6,7 +6,7 @@ from chipcity.views import *
 from chipcity.deck import *
 from chipcity.actionhelper import *
 from chipcity.evaluator import *
-import random, math
+import random, math, requests
 
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
@@ -101,6 +101,17 @@ class MyConsumer(WebsocketConsumer):
         curr_game = Game.objects.last()
         curr_game.players_connected = active_players
         curr_game.save()
+
+    def get_google_profile_picture(access_token):
+        headers = {
+            'Authorization': f'Bearer {access_token}'
+        }
+        response = requests.get('https://www.googleapis.com/oauth2/v2/userinfo', headers=headers)
+        if response.status_code == 200:
+            user_info = response.json()
+            return user_info.get('picture')
+        else:
+            return None
 
     def isRoundOver(self, action):
         # action is a string that is passed in representing the action
@@ -543,8 +554,16 @@ class MyConsumer(WebsocketConsumer):
 
         # self.send(text_data=json.dumps({"message": response }))
     def gameInitalized(self): 
+            game = Game.objects.last()
+            print("-----This is the board:-----")
+            print(Card.int_to_pretty_str(game.flop1))
+            print(Card.int_to_pretty_str(game.flop2))
+            print(Card.int_to_pretty_str(game.flop3))
+            print(Card.int_to_pretty_str(game.turn))
+            print(Card.int_to_pretty_str(game.river))
+            print("----------------------------")
             for player in Player.objects.all():
-                print(f"This is {player.user}'s hand: {player.card_left} {player.card_right}")
+                print(f"This is {player.user}'s hand: {Card.int_to_pretty_str(player.card_left)} {Card.int_to_pretty_str(player.card_right)}")
 
     def newGame(self):
         print(f"Game object count: {Game.objects.count()}")

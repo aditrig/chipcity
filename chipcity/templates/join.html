@@ -15,11 +15,11 @@
 <body>
     <div class="join-page">
         <div class="div">
-          <div class="overlap-group-2">
+          <div class="join-table-group">
             <div class="table-number">TABLE 1</div>
-            <div class="poker-variation-big">NLH - 10/20</div>
+            <div class="poker-variation">NLH - 1/2</div>
             <div class="number-of-seats">5/6 SEATS FILLED</div> 
-            <div class="overlap-2">
+            <div class="join-group">
               <div class="join">
                 <form action="{%url 'chipcity:table'%}" method="post">
                     {% csrf_token %}
@@ -28,8 +28,8 @@
               </div>
             </div>
           </div>
-            <div class="overlap-group">
-                <div class="box">
+            <div class="logout-group">
+                <div class="logout-wrap">
                     <form action="{%url 'logout'%}" method="post">
                         {% csrf_token %}
                         <button class="logout-button" type="submit">LOGOUT</a></button>
