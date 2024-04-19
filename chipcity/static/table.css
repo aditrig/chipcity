@@ -154,7 +154,7 @@ body {
   border-color: #a4a2a299;
 }
 
-.table-page .left-flop {
+.table-page .left-flop_container {
   position: absolute;
   width: 68px;
   height: 100px;
@@ -166,7 +166,7 @@ body {
   border-color: #a4a2a299;
 }
 
-.table-page .middle-flop {
+.table-page .middle-flop_container {
   position: absolute;
   width: 68px;
   height: 100px;
@@ -178,7 +178,7 @@ body {
   border-color: #a4a2a299;
 }
 
-.table-page .right-flop {
+.table-page .right-flop_container {
   position: absolute;
   width: 68px;
   height: 100px;
@@ -190,7 +190,7 @@ body {
   border-color: #a4a2a299;
 }
 
-.table-page .turn {
+.table-page .turn_container {
   position: absolute;
   width: 68px;
   height: 100px;
@@ -202,7 +202,7 @@ body {
   border-color: #a4a2a299;
 }
 
-.table-page .river {
+.table-page .river_container {
   position: absolute;
   width: 68px;
   height: 100px;
@@ -1084,3 +1084,68 @@ body {
   letter-spacing: 0;
   line-height: normal;
 }
+
+
+/* entire container, keeps perspective */
+.lchp-1 {
+	perspective: 1000px;
+}
+	/* flip the pane when hovered */
+	.lchp-1:hover .flipper, .lchp-1.hover .flipper {
+		transform: rotateY(180deg);
+	}
+
+.lchp-1, .front, .back {
+	width: 51px;
+	height: 75px;
+}
+
+.rchp-1 {
+	perspective: 1000px;
+}
+	/* flip the pane when hovered */
+	.rchp-1:hover .flipper, .rchp-1.hover .flipper {
+		transform: rotateY(180deg);
+	}
+
+.rchp-1, .front, .back {
+	width: 51px;
+	height: 75px;
+}
+
+/* flip speed goes here */
+.flipper {
+	transition: 0.6s;
+	transform-style: preserve-3d;
+	position: relative;
+}
+
+.flip {
+  transform: rotateY(180deg);
+}
+
+/* hide back of pane during swap */
+.front, .back {
+	backface-visibility: hidden;
+
+	position: absolute;
+	top: 0;
+	left: 0;
+  width: 100%; /* Ensure the front and back take the full width */
+  height: 100%; /* Ensure the front and back take the full height */
+
+}
+
+
+/* front pane, initially hidden */
+.front {
+	transform: rotateY(180deg);
+}
+
+/* back, placed above front */
+.back {
+	z-index: 2;
+	/* for firefox 31 */
+	transform: rotateY(0deg);
+}
+
