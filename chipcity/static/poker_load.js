@@ -47,17 +47,17 @@ function connectToServer() {
         let a_players
         let n_players
         if (game_info.length > 0){
-            game = game_info[0]
+            game = game_info[(game_info.length)-1]
         } else{
             game = null
         }
         if (active_players_info.length > 0){
-            a_players = active_players_info[0]
+            a_players = active_players_info[(active_players_info.length)-1]
         } else{
             a_players = null
         }
         if (non_active_players_info.length > 0){
-            n_players = active_players_info[0]
+            n_players = non_active_players_info[(non_active_players_info.length) -1]
         } else{
             n_players = null
         }
@@ -121,8 +121,27 @@ function processMessage(game_info, active_players_info, non_active_players_info)
 
 }
 
+function inc(chips){
+    var value = parseInt(document.getElementById('raiseAmount').value ,10) 
+    value = isNaN(value) ? 0 : value;
+    value++;
+    document.getElementById('number').value = value;
+
+}
+
+function dec(chips){
+    if (chips > 0) {
+        var value = parseInt(document.getElementById('raiseAmount').value ,10) 
+        value = isNaN(value) ? 0 : value;
+        value--;
+        document.getElementById('number').value = value;
+        }
+}
+
 
 function displayActiveButtons(game_info){
+    var chips = 0
+
     let callDisplay
     callDisplay = document.getElementById("callButton")
     callDisplay.style.visibility = 'visible'
@@ -145,6 +164,15 @@ function displayActiveButtons(game_info){
     checkDisplay = document.getElementById("checkButton")
     checkDisplay.style.visibility = 'visible'
     checkDisplay.onclick = function (){checkAction()}
+    let incrementButton
+    let decrementButton
+    incrementButton = document.getElementById("addRaise")
+    incrementButton.style.visibility = 'visible'
+    incrementButton.onclick = function (){inc(chips)}
+    decrementButton = document.getElementById("subtractRaise") 
+    decrementButton.style.visibility = 'visible'
+    decrementButton.onclick = function (){dec(chips)}
+
 
 }
 
@@ -171,6 +199,15 @@ function displayPlaceholderButtons(game_info){
     foldDisplay = document.getElementById("foldButton")
     foldDisplay.style.visibility = 'hidden'
     foldDisplay.onclick = function(){}
+    let incrementButton
+    let decrementButton
+    incrementButton = document.getElementById("addRaise")
+    incrementButton.style.visibility =  'hidden'
+    incrementButton.onclick =function(){}
+    decrementButton = document.getElementById("subtractRaise") 
+    decrementButton.style.visibility = 'hidden'
+    decrementButton.onclick = function(){}
+
 }
 
 

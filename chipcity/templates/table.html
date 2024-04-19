@@ -59,9 +59,11 @@
           </div>
           <div class="raise-check-group">
             <div class="raise-wrap">
-              <div class="raise-button"></div>
-              <div class="raise-text">RAISE</div>
+              <button type="button" form="raiseForm" value="Submit" id="raiseButton" onclick="raiseAction()" style="visibility: hidden;">Raise</button>
+
+              
             </div>
+
             <div class="check-wrap">
               <button type="button" value="Submit" id="checkButton" onclick="checkAction()" style="visibility: hidden;">Check</button>
 
@@ -71,15 +73,22 @@
             </div>
           </div>
           <div class="subtract-wrap">
-            <div class="subtract-raise"></div>
-            <div class="subtract-text">-</div>
+            <button id="subtractRaise" onclick="dec()" style="visibility: hidden;">-</button>
+            {% comment %} <div class="subtract-raise"></div>
+            <div class="subtract-text">-</div> {% endcomment %}
           </div>
           <div class="add-wrap">
-            <div class="add-raise"></div>
-            <div class="add-text">+</div>
+            <button id="addRaise" onclick="inc()" style="visibility: hidden;">+</button>
+
+            {% comment %} <div class="add-raise"></div>
+            <div class="add-text">+</div> {% endcomment %}
           </div>
-          <div class="amount-bet-text">$100</div>
-          <div class="min-wrap">
+          <div > 
+            <form id="raiseForm" style="visibility: hidden;">
+              <input type="text" id="raiseAmount" name="raise" value="0" style="visibility: hidden;">
+            </form>        
+          </div> 
+          {% comment %} <div class="min-wrap">
             <div class="min-button"></div>
             <div class="min-text">MIN</div>
           </div>
@@ -93,7 +102,7 @@
           </div>
           <div class="pot-wrap">
             <div class="pot-button"></div>
-            <div class="pot-text">POT</div>
+            <div class="pot-text">POT</div> {% endcomment %}
           </div>
         </div>
       </div>
@@ -115,10 +124,6 @@
     <button id="start-button" onclick="startGame()">Ready</button>
     <button id="play-button" onclick="startPlay()">Start</button>
     <button type="button" value="Submit" id="callButton" onclick="callAction()" style="visibility: hidden;">Call</button>
-    <form id="raiseForm" style="visibility: hidden;">
-      <input type="text" id="raiseAmount" name="raise" style="visibility: hidden;">
-      <button type="button" form="raiseForm" value="Submit" id="raiseButton" onclick="raiseAction()" style="visibility: hidden;">Raise</button>
-    </form>
     <button type="button" value="Submit" id="checkButton" onclick="checkAction()" style="visibility: hidden;">Check</button>
     <button type="button" value="Submit" id="foldButton" onclick="foldAction()" style="visibility: hidden;">Fold</button>
 
