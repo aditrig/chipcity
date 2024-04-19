@@ -15,32 +15,103 @@
     <div class="table-page">
       <div class="div">
         <div class="table-and-seats">
-          <div class="profile-picture-1"></div>
-          <div class="profile-picture-2"></div>
-          <div class="profile-picture-3"></div>
-          <div class="profile-picture-4"></div>
-          <div class="profile-picture-5"></div>
-          <div class="profile-picture-6"></div>
+          <div class="profile-picture-1" id="pfp2_div"><img id="pfp2"/></div>
+          <div class="profile-picture-2" id="pfp6_div"><img id="pfp6"/></div>
+          <div class="profile-picture-3" id="pfp3_div"><img id="pfp3"/></div>
+          <div class="profile-picture-4" id = "pfp5_div"><img id="pfp5"/></div>
+          <div class="profile-picture-5" id="pfp1_div"><img id="pfp1"/></div>
+          <div class="profile-picture-6" id="pfp4_div"><img id="pfp4"/></div>         
           <img class="border-rectangle" src="../static/img/BorderRectangle.svg" />
           <img class="inner-rectangle" src="../static/img/InnerRectangle.svg" />
-          <div class="lchp-1"><img id = "player1_left"/></div>
-          <div class="rchp-1"><img id = "player1_right"/></div>
-          <div class="lchp-2"><img id = "player2_left"/></div>
-          <div class="rchp-2"><img id = "player2_right"/></div>
-          <div class="lchp-3"><img id = "player3_left"/></div>
-          <div class="rchp-3"><img id = "player3_right"/></div>
-          <div class="lchp-4"><img id = "player4_left"/></div>
-          <div class="rchp-4"><img id = "player4_right"/></div>
-          <div class="lchp-5"><img id = "player5_left"/></div>
-          <div class="rchp-5"><img id = "player5_right"/></div>
-          <div class="lchp-6"><img id = "player6_left"/></div>
-          <div class="rchp-6"><img id = "player6_right"/></div>
-          <div class="left-flop"><img id="left-flop"/></div>
-          <div class="middle-flop"><img id="middle-flop"/></div>
-          <div class="right-flop"><img id="right-flop"/></div>
-          <div class="turn"><img id="turn"/></div>
-          <div class="river"><img id="river"/></div>
-          <div class="text-wrapper">CHIP CITY</div>
+
+          <div class="lchp-1" ontouchstart="this.classList.toggle('hover');" >
+            <div class="flipper">
+              <div class="front">
+                <img id = "player1_left_front"/>
+              </div>
+              <div class="back">
+                <img id = "player1_left_back"/>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="rchp-1" ontouchstart="this.classList.toggle('hover');" >
+            <div class="flipper">
+              <div class="front">
+                <img id = "player1_right_front"/>
+              </div>
+              <div class="back">
+                <img id = "player1_right_back"/>
+              </div>
+            </div>
+
+          </div>
+          <div class="lchp-2"><img id = "player2_left_front"/></div>
+          <div class="rchp-2"><img id = "player2_right_front"/></div>
+          <div class="lchp-3"><img id = "player3_left_front"/></div>
+          <div class="rchp-3"><img id = "player3_right_front"/></div>
+          <div class="lchp-4"><img id = "player4_left_front"/></div>
+          <div class="rchp-4"><img id = "player4_right_front"/></div>
+          <div class="lchp-5"><img id = "player5_left_front"/></div>
+          <div class="rchp-5"><img id = "player5_right_front"/></div>
+          <div class="lchp-6"><img id = "player6_left_front"/></div>
+          <div class="rchp-6"><img id = "player6_right_front"/></div>
+          <div class="left-flop_container" id="leftFlopCardContainer">
+              <div class="flipper">
+                <div class="front">
+                  <img id="left-flop_front"/>
+                </div>
+                <div class="back">
+                  <img id="left-flop_back"/>             
+                </div>
+            </div>
+          </div>
+          
+          <div class="middle-flop_container" id="middlFlopCardContainer">
+              <div class="flipper">
+                <div class="front">
+                  <img id="middle-flop_front"/>
+                </div>
+                <div class="back">
+                  <img id="middle-flop_back"/>             
+                </div>
+            </div>
+          </div>
+          
+          <div class="right-flop_container" id="rightFlopCardContainer">
+              <div class="flipper">
+                <div class="front">
+                  <img id="right-flop_front"/>
+                </div>
+                <div class="back">
+                  <img id="right-flop_back"/>             
+                </div>
+            </div>
+          </div>
+
+          <div class="turn_container" id="turnContainer">
+            <div class="flipper">
+              <div class="front">
+                <img id="turn_front"/>
+              </div>
+              <div class="back">
+                <img id="turn_back"/>             
+              </div>
+          </div>
+        </div>
+
+        <div class="river_container" id="riverContainer">
+          <div class="flipper">
+            <div class="front">
+              <img id="river_front"/>
+            </div>
+            <div class="back">
+              <img id="river_back"/>             
+            </div>
+        </div>
+      </div>
+        <div class="text-wrapper">CHIP CITY</div>
         </div>
         <div class="action-buttons">
           <div class="fold-call-group">
