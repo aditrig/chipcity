@@ -25,7 +25,7 @@ function connectToServer() {
 
     // Show a connected message when the WebSocket is opened.
     socket.onopen = function(event) {
-        displayMessage("WebSocket Connected")
+    displayMessage("WebSocket Connected")
     }
 
     // Show a disconnected message when the WebSocket is closed.
@@ -252,7 +252,8 @@ function displayCards(game_info, cards, players){
         turn.src = source
         river.src = source
     }
-    if (game_info['curr_round'] == 1){
+    if (game_info['curr_round'] == 1 || game_info['curr_round'] >=4){
+        // show the 3 flop cards
         let left_flop_id = game_info['flop1']
         let left_file = cards[left_flop_id]
         left_flop.src = folder + left_file
@@ -263,7 +264,8 @@ function displayCards(game_info, cards, players){
         let right_file = cards[right_flop_id]
         right_flop.src = folder + right_file
     }
-    if (game_info['curr_round'] == 2){
+    if (game_info['curr_round'] == 2 || game_info['curr_round'] >= 4){
+        // show the turn card
         let turn_id = game_info['turn']
         console.log(game_info['turn'])
         let turn_file = cards[turn_id]
@@ -271,7 +273,8 @@ function displayCards(game_info, cards, players){
         console.log(folder+turn_file)
         turn.src = folder + turn_file
     }
-    if (game_info['curr_round'] == 3){
+    if (game_info['curr_round'] == 3 || game_info['curr_round'] >= 4){
+        // show the river card
         let river_id = game_info['river']
         let river_file = cards[river_id]
         river.src = folder + river_file
@@ -315,13 +318,6 @@ function displayCards(game_info, cards, players){
                     seat_index = 7 - distance
                     console.log("this is the seat number")
                     console.log(seat_index)
-                    // display to the right
-                    // let player_left = document.getElementById(`player${seat_index}_left`)
-                    // let player_right = document.getElementById(`player${seat_index}_right`)
-                    // let file2_left = player['card_left']
-                    // let file2_right = player['card_right']
-                    // player_left.src = folder + file2_left
-                    // player_right.src = folder + file2_right
                 } 
                 let player_left = document.getElementById(`player${seat_index}_left`)
                 let player_right = document.getElementById(`player${seat_index}_right`)
@@ -431,6 +427,7 @@ function displayPlaceholderButtons(game_info){
 
 
 function startGame() {
+
     let data = {gameState: "ready", text: ""}
     socket.send(JSON.stringify(data))
 }
