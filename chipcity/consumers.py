@@ -345,7 +345,7 @@ class MyConsumer(WebsocketConsumer):
                     # Give Rewards
                     player.chips += game.total_pot
                     player.save()
-                    game.winning_player_user = str([list_of_players_with_active_hand[winner[0][0]].user])
+                    game.winning_player_user = str([list_of_players_with_active_hand[winner[0][0]].user.username])
                     game.save()
         else:
             winning_player_user_list = []
@@ -357,7 +357,7 @@ class MyConsumer(WebsocketConsumer):
                 win.winning_hand = winner[0][1]
                 win.chips += math.ceil(game.total_pot/len(winner))
                 win.save()
-                winning_player_user_list.append(win.user)
+                winning_player_user_list.append(win.user.username)
 
                 # for player in Player.objects.all().filter(hand_is_active = True):
                 #     if player.id == list_of_players_with_active_hand[winner[i][0]].id:
@@ -503,9 +503,15 @@ class MyConsumer(WebsocketConsumer):
         list_of_active_players = list_of_players()
         print(f"Printing list of active player objects!: {list_of_active_players}")
 
+        list = []
+        for player in Player.objects.all():
+            if player.is_participant:
+                list.append(player.user.username)
+
         Game_Action.start_new_game(self,1,active_players)
         # Sets BBP and SBP
         curr_game = Game.objects.last()
+        curr_game.list_of_active_players = str(list)
         print(curr_game)
         curr_game.small_blind_player = list_of_active_players[0]
         curr_game.big_blind_player = list_of_active_players[1]
@@ -585,6 +591,10 @@ class MyConsumer(WebsocketConsumer):
         # Number of times to rotate
         num = Game.objects.count() % len(list_of_active_players)
         list_of_active_players = list_of_active_players[num:] + list_of_active_players[:num]
+        
+        list = []
+        for player in list_of_active_players:
+            list.append(player.user.username)
 
         Game_Action.start_new_game(self,1,active_players)
         # Sets BBP and SBP
@@ -599,6 +609,7 @@ class MyConsumer(WebsocketConsumer):
         curr_game.game_num = Game.objects.all().count()
         curr_game.players_connected = active_players
         curr_game.num_players_with_active_hand = active_players
+        curr_game.list_of_active_players = str(list)
         curr_game.save()
 
         for player in Player.objects.all().filter(is_participant=True):
