@@ -62,6 +62,14 @@ def bet_action(game, player, money):
 def raise_action(player, money):
     # Raise functionality
     game = Game.objects.all().last()
+    for otherplayer in Player.objects.all().filter(hand_is_active=True):
+        if otherplayer.id != player.id:
+            otherplayer.can_raise = True
+            otherplayer.most_recent_action = "None"
+            otherplayer.save()
+        # if otherplayer.most_recent_action == "big blind":
+        #     otherplayer.most_recent_action = "None"
+        #     otherplayer.save()
     updated_player = bet_action(game, player, money)
     # game.current_player = Player.objects.all().filter(id=((updated_player.id)%(game.num_players_with_active_hand))+1)[0]
     updated_player.most_recent_action = "raise"
@@ -88,6 +96,8 @@ def all_in_action(game, player):
     player.current_bet += player.chips
     player.chips = 0
     player.is_all_in = True
+    player.most_recent_action = "all in"
+    game.total_pot += player.current_bet
     player.save()
     game.save()
 
@@ -129,8 +139,15 @@ def can_check(game, player):
 def can_call(game, player):
     # Checks if player can call
     if (game.highest_curr_bet == 0):
+        print("1")
         return False
     if (game.highest_curr_bet - player.current_bet) <= player.chips:
+        print("2")
+        return True
+    elif (player.chips - game.highest_curr_bet) <= 0:
+        print("3")
+        player.is_all_in = True
+        player.save()
         return True
     return False
 

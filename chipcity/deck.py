@@ -73,11 +73,11 @@ class Game_Action:
 
         evaluator = Evaluator()
         hands = []
-        
-        cards = deck.draw(2)
+
+        # cards = deck.draw(2)
         for player in Player.objects.all().filter(is_participant=True):
             # hand, created = Hand.objects.get_or_create(game=game, player=player)
-            # cards = deck.draw(2)
+            cards = deck.draw(2)
             print(f"{player.user}'s Hand: {Card.int_to_pretty_str(cards[0]), Card.int_to_pretty_str(cards[1])}")
             player.card_left = cards[0]
             player.card_right = cards[1]

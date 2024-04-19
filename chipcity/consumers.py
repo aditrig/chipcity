@@ -133,8 +133,7 @@ class MyConsumer(WebsocketConsumer):
             game.curr_round = 4
             game.save()
             return True
-                        
-        # comment out for now
+
         list_active_hand_players = []
         for player in Player.objects.all().filter(hand_is_active=True):
             list_active_hand_players.append(player)
@@ -150,35 +149,47 @@ class MyConsumer(WebsocketConsumer):
         if game.big_blind_player in list_active_hand_players:
             currPlay = Player.objects.all().filter(id=((game.big_blind_player.id)%(game.players_connected))+1)[0]
             count = 1
-            while currPlay not in list_active_hand_players:
+            while currPlay not in list_active_hand_players or currPlay.is_all_in:
                 currPlay = Player.objects.all().filter(id=((game.big_blind_player.id+count)%(game.players_connected))+1)[0]
                 count += 1
             current_player = currPlay
         elif game.small_blind_player in list_active_hand_players:
             currPlay = Player.objects.all().filter(id=((game.small_blind_player.id)%(game.players_connected))+1)[0]
             count = 1
-            while currPlay not in list_active_hand_players:
+            while currPlay not in list_active_hand_players or currPlay.is_all_in:
                 currPlay = Player.objects.all().filter(id=((game.small_blind_player.id+count)%(game.players_connected))+1)[0]
                 count += 1
             current_player = currPlay
         # elif game.big_blind_player not in list_active_hand_players and game.small_blind_player in list_active_hand_players:
         #     current_player = Player.objects.all().filter(id=((game.small_blind_player.id)%(game.players_connected))+1)[0]
-        elif Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0] in list_active_hand_players:
+        elif Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0] in list_active_hand_players and not Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0].is_all_in:
             current_player = Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0]
         else: # If doesn't exist, finds next closest player
             currPlay = Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0]
             count = 1
-            while currPlay not in list_active_hand_players:
+            while currPlay not in list_active_hand_players or currPlay.is_all_in:
                 currPlay = Player.objects.all().filter(id=((game.current_player.id+count)%(game.players_connected))+1)[0]
                 count += 1
             current_player = currPlay
                             
         # allActions has a list of all players actions (that have an active hand)
         allActions = [] 
+        all_in_count = 0
         for player in Player.objects.all().filter(hand_is_active=True):
+            if player.is_all_in:
+                all_in_count += 1
             player_ID =  player.id
             currPlayer = Player.objects.get(id=player_ID)
             allActions.append(currPlayer.most_recent_action)
+        
+        # If only 2 people left and one of them is all in, go straight to ShowDown (Round Over = True)
+        if len(list_active_hand_players) == 2 and all_in_count == 1:
+            print("Round is Over!")
+            game.curr_round = 4
+            game.current_player = current_player
+            game.save()
+            self.resetRound()
+            return True
         
         # check special edge cases if preflop 
         # big blind can check when everyone else has called but only pre-flop this is bc
@@ -198,7 +209,7 @@ class MyConsumer(WebsocketConsumer):
             self.resetRound()
             return True
         # checks only one person has raised and all others have called
-        elif "raise" in allActions and (allActions.count("call") == num_players_with_active_hand - 1) :
+        elif "raise" in allActions and (allActions.count("call") == num_players_with_active_hand - 1):
             allAmounts = []
             for player in Player.objects.all().filter(hand_is_active=True):
                 allAmounts.append(player.current_bet)
@@ -209,25 +220,35 @@ class MyConsumer(WebsocketConsumer):
                 game.save()
                 self.resetRound()
                 return True
+        # checks only one person has raised and all others have called minus person all in (must have at least one all in)
+        elif "raise" in allActions and (allActions.count("call") == num_players_with_active_hand - all_in_count - 1):
+            if allActions.count("all in") > 0:
+                print("Round is Over!")
+                game.curr_round += 1
+                game.current_player = current_player
+                game.save()
+                self.resetRound()
+                return True
         # everyone checks
-        elif (allActions.count("check") == num_players_with_active_hand):
+        elif (allActions.count("check") == num_players_with_active_hand - all_in_count):
             print("Round is Over!")
             game.curr_round += 1
             game.current_player = current_player
             game.save()
             self.resetRound()
             return True
+        
 
         print("Round is not Over!")
         print(((game.current_player.id)%(game.players_connected))+1)
-        if Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0] in list_active_hand_players:
+        if Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0] in list_active_hand_players and not Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0].is_all_in:
             game.current_player = Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0]
             game.current_player.save()
             game.save()
         else:
             currPlay = Player.objects.all().filter(id=((game.current_player.id)%(game.players_connected))+1)[0]
             count = 1
-            while currPlay not in list_active_hand_players:
+            while currPlay not in list_active_hand_players or currPlay.is_all_in:
                 currPlay = Player.objects.all().filter(id=((game.current_player.id+count)%(game.players_connected))+1)[0]
                 count += 1
             game.current_player = currPlay
@@ -242,6 +263,8 @@ class MyConsumer(WebsocketConsumer):
         if game.curr_round == 4:
             # showdown
             print("Showdown!")
+            game.curr_round = 5
+            game.save()
             return True
         num_players_with_active_hand = Player.objects.all().filter(hand_is_active = True).count()
         
@@ -250,12 +273,24 @@ class MyConsumer(WebsocketConsumer):
         for player in Player.objects.all().filter(hand_is_active = True):
             if player.is_all_in:
                 is_all_in_count += 1
+        if ((num_players_with_active_hand - is_all_in_count) == 1):
+            print("Showdown!")
+            game.curr_round = 5
+            game.save()
+            return True
+
         if is_all_in_count == num_players_with_active_hand:
             print("Showdown!")
+            game.curr_round = 5
+            game.save()
             return True
         return False
         
     def isGameOver(self):
+        game = Game.objects.last()
+        if game.curr_round == 5:
+            print("Game Over!")
+            return True
         num_players_with_active_hand = Player.objects.all().filter(hand_is_active = True).count()
         # Checks if only one active hand player
         active_hand_count = 0
@@ -264,7 +299,6 @@ class MyConsumer(WebsocketConsumer):
         if active_hand_count == 1:
             print("Game is Over!")
             return True
-        
         # Checks if everyone has folded except one player
         fold_count = 0
         for player in Player.objects.all().filter(hand_is_active = True):
@@ -303,19 +337,27 @@ class MyConsumer(WebsocketConsumer):
                     game.winning_player_user = str([list_of_players_with_active_hand[winner[0][0]].user])
                     game.save()
         else:
+            winning_player_user_list = []
             for i in range(len(winner)):
                 print(f"{list_of_players_with_active_hand[winner[i][0]].user},")
                 print(f"Split Pot with a {winner[0][1]}")
-                winning_player_user_list = []
-                for player in Player.objects.all().filter(hand_is_active = True):
-                    if player.id == list_of_players_with_active_hand[winner[i][0]].id:
-                        player.win_count += 1
-                        player.winning_hand = winner[0][1]
-                        player.chips += math.ceil(game.total_pot/len(winner))
-                        player.save()
-                        winning_player_user_list.append(list_of_players_with_active_hand[winner[i][0]].user)
-                game.winning_player_user = str(winning_player_user_list)
-                game.save()
+                win = list_of_players_with_active_hand[winner[i][0]]
+                win.win_count += 1
+                win.winning_hand = winner[0][1]
+                win.chips += math.ceil(game.total_pot/len(winner))
+                win.save()
+                winning_player_user_list.append(win.user)
+
+                # for player in Player.objects.all().filter(hand_is_active = True):
+                #     if player.id == list_of_players_with_active_hand[winner[i][0]].id:
+                #         player.win_count += 1
+                #         player.winning_hand = winner[0][1]
+                #         player.chips += math.ceil(game.total_pot/len(winner))
+                #         player.save()
+                #         winning_player_user_list.append(list_of_players_with_active_hand[winner[i][0]].user)
+            print(str(winning_player_user_list))
+            game.winning_player_user = str(winning_player_user_list)
+            game.save()
     
     def resetRound(self):
         game = Game.objects.all().last()
@@ -343,9 +385,16 @@ class MyConsumer(WebsocketConsumer):
         if (action == "call"):
             # maxBet stays the same
             if (can_call(currentGame, currentGame.current_player) and currentGame.current_player.most_recent_action != "big blind"):
-                call_action(currentGame.current_player)
-                currentGame.current_player.can_call = True
-                currentGame.current_player.save()
+                if currentGame.current_player.is_all_in:
+                    print("all in!")
+                    all_in_action(currentGame, currentGame.current_player)
+                    currentGame.current_player.can_call = True
+                    currentGame.current_player.save()
+                    action = "all in"
+                else:
+                    call_action(currentGame.current_player)
+                    currentGame.current_player.can_call = True
+                    currentGame.current_player.save()
             else:
                 print("Calling is not a legal action!")
                 currentGame.current_player.can_call = False
@@ -396,7 +445,7 @@ class MyConsumer(WebsocketConsumer):
                         currentGame.highest_curr_bet = currentGame.current_player.current_bet + amount
                         currentGame.save()
                         raise_action(currentGame.current_player, amount)
-                        currentGame.current_player.can_raise = True
+                        currentGame.current_player.can_raise = False
                         currentGame.current_player.save()
                     else:
                         print("Cannot raise by zero, cannot raise less than or equal to highest current bet, or have insufficient funds!")
@@ -418,6 +467,7 @@ class MyConsumer(WebsocketConsumer):
         print(f"This is {currentGame.current_player.user}'s action: {action}")
         print(f"This is the Current Round (0-preflop, 1-flop, 2-turn, 3-river, 4-showdown): {currentGame.curr_round}")
         print(f"After turn is computed, this is the Current Round's Highest Current Bet: {currentGame.highest_curr_bet}")
+        print(f"After turn is computed, this is the Current Player's Current Bet: {currentGame.current_player.current_bet}")
         # currentGame.current_player = Player.objects.all().filter(id=((currentGame.current_player.id)%(currentGame.num_players_with_active_hand))+1)[0]
         # currentGame.current_player.save()
         # currentGame.save()
@@ -653,12 +703,11 @@ class MyConsumer(WebsocketConsumer):
                     print("")
                     print("-----Entering isShowDown()!-----")
                     if self.isShowDown():
-                        self.evaluateHands()
-                    print("-----Exiting isShowDown()!-----")
-                    print("")
-                    print("-----Entering isGameOver()!-----")
-                    if self.isGameOver():
-                        self.evaluateHands()
+                        print("-----Exiting isShowDown()!-----")
+                        print("")
+                        print("-----Entering isGameOver()!-----")
+                        if self.isGameOver():
+                            self.evaluateHands()
                     print("-----Exiting isGameOver()!-----")
                     print("")
                     print("-----Entering broadcast_list()!-----")
