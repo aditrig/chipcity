@@ -75,15 +75,6 @@ function connectToServer() {
         }
 
         processMessage(game, cards, active_players_info, n_players)
-
-        // socket.onmessage = function(event) {
-        //     let response = JSON.parse(event.data)
-        //     if (Array.isArray(response)) {
-        //         updateList(response)
-        //     } else {
-        //         displayResponse(response)
-        //     }
-        // }
         displayGameInfo(game, active_players_info)
 
         
@@ -262,6 +253,19 @@ function displayGameInfo(game_info, players){
             group_bet_div.style.background = "#BE7EB5"
             group_bet_div.style.boxShadow = "0px 4px 4px 0px rgba(0, 0, 0, 0.25)"
         }
+
+
+        
+        let turn_indicator = document.getElementById('logo');
+        let current_turn_user = game_info['current_player_user'];
+        if (current_turn_user && current_turn_user === myUserName) {
+            turn_indicator.textContent = "It's your turn!";
+        } else {
+            // Reset to default text if it's not the user's turn
+            turn_indicator.textContent = `${current_turn_user} is taking their turn`;
+
+        }
+    
     }
 
 }
@@ -270,6 +274,7 @@ function displayGameInfo(game_info, players){
 function displayCards(game_info, cards, players){
     console.log("made it to display cards")
         // clear the board first 
+    
         for (let i = 1; i <= 6; i++) {
             let user_tc_group = document.getElementById(`user_total_chips_group_${i}`)
             user_tc_group.style.background = "none"
@@ -518,31 +523,44 @@ function displayCards(game_info, cards, players){
     // Display cards based on game state
     if ((game_info['curr_round'] == 0) && (game_info['game_num'] > 1)) {
         // display all red cards
-        // let file = cards["not-folded-back-art"];
-        // let source = folder + file;
-        // left_flop_back.src = source;
-        // middle_flop_back.src = source;
-        // right_flop_back.src = source;
-        // turn_back.src = source; 
-        // river_back.src = source;
-        // left_flop_front.parentElement.parentElement.classList.add('flip');
-        // middle_flop_front.parentElement.parentElement.classList.add('flip');
-        // right_flop_front.parentElement.parentElement.classList.add('flip');
-        // turn_front.parentElement.parentElement.classList.add('flip');
-        // river_front.parentElement.parentElement.classList.add('flip')
+        let file = cards["not-folded-back-art"];
+        let source = folder + file;
+        left_flop_back.src = source;
+        middle_flop_back.src = source;
+        right_flop_back.src = source;
+        turn_back.src = source; 
+        river_back.src = source;
+        left_flop_front.parentElement.parentElement.classList.remove('flip-to-back');
+        middle_flop_front.parentElement.parentElement.classList.remove('flip-to-back');
+        right_flop_front.parentElement.parentElement.classList.remove('flip-to-back');
+        turn_front.parentElement.parentElement.classList.remove('flip-to-back');
+        river_front.parentElement.parentElement.classList.remove('flip-to-back')
+        left_flop_front.parentElement.parentElement.classList.add('flip-to-front');
+        middle_flop_front.parentElement.parentElement.classList.add('flip-to-front');
+        right_flop_front.parentElement.parentElement.classList.add('flip-to-front');
+        turn_front.parentElement.parentElement.classList.add('flip-to-front');
+        river_front.parentElement.parentElement.classList.add('flip-to-front')
+
     } 
     if (game_info['curr_round'] == 1|| game_info['curr_round'] >= 4) {
-        left_flop_front.parentElement.parentElement.classList.add('flip');
-        middle_flop_front.parentElement.parentElement.classList.add('flip');
-        right_flop_front.parentElement.parentElement.classList.add('flip');
+        left_flop_front.parentElement.parentElement.classList.add('flip-to-back');
+        left_flop_front.parentElement.parentElement.classList.remove('flip-to-front');
+        middle_flop_front.parentElement.parentElement.classList.add('flip-to-back');
+        middle_flop_front.parentElement.parentElement.classList.remove('flip-to-front');
+
+        right_flop_front.parentElement.parentElement.classList.add('flip-to-back');
+        right_flop_front.parentElement.parentElement.classList.remove('flip-to-front');
+
     }
 
 
     if (game_info['curr_round'] == 2 || game_info['curr_round'] >= 4){
-        turn_front.parentElement.parentElement.classList.add('flip');
+        turn_front.parentElement.parentElement.classList.add('flip-to-back');
+        turn_front.parentElement.parentElement.classList.remove('flip-to-front');
     }
     if (game_info['curr_round'] == 3 || game_info['curr_round'] >= 4){
-        river_front.parentElement.parentElement.classList.add('flip');
+        river_front.parentElement.parentElement.classList.add('flip-to-back');
+        river_front.parentElement.parentElement.classList.remove('flip-to-front');
 
     }
     if (game_info['curr_round'] >= 4){
@@ -714,6 +732,7 @@ function displayHighlight(game_info, players){
             highlightCurrentPlayer = document.getElementById(`pfp${seat_index}_div`)
             highlightCurrentPlayer.style.boxShadow = "none"
         }
+        
         
     }
 }
