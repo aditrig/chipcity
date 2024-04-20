@@ -133,29 +133,33 @@ function processMessage(game_info, cards, active_players_info, non_active_player
 
 function displayCards(game_info, cards, players){
     console.log("made it to display cards")
-    console.log("made it to display cards")
         // clear the board first 
-        for (let i = 1; i <= 6; i++) {
-            let curr_pfp = document.getElementById(`pfp${i}`)
-            curr_pfp.src = ''
-            let curr_hand_left = document.getElementById(`player${i}_left_front`)
-            curr_hand_left.src = ""
-            let curr_hand_right = document.getElementById(`player${i}_right_front`)
-            curr_hand_right.src = ""
-
-        }
+    for (let i = 1; i <= 6; i++) {
+        let curr_pfp = document.getElementById(`pfp${i}`)
+        curr_pfp.src = ''
+        let curr_hand_left = document.getElementById(`player${i}_left_front`)
+        curr_hand_left.src = ""
+        let curr_hand_right = document.getElementById(`player${i}_right_front`)
+        curr_hand_right.src = ""
+    }
+    // let reset_left_flop = document.getElementById("left-flop_front")
+    // reset_left_flop.src = ""
+    // let reset_right_flop = document.getElementById("right-flop_front")
+    // reset_right_flop.src = ""
+    // let reset_middle_flop = document.getElementById("middle-flop_front")
+    // reset_middle_flop.src = ""
+    // let reset_turn = document.getElementById("turn_front")
+    // reset_turn.src = ""
+    // let reset_river = document.getElementById("river_front")
+    // reset_river.src = ""
+    console.log("this is the game info")
+    console.log(game_info)
 
     // make a for loop for the players and if the player is the user than 
     // display the cards, if not then don't???
     let folder = "../static/img/cards/"
-    // let count = 1
     console.log("this is the players")
     console.log(players)
-    // console.log(game_info['list_of_active_players'])
-    // services = "['service1', 'service2', 'service3']"
-    // services = services.replace(/'/g, '"') //replacing all ' with "
-    // services = JSON.parse(services)
-    // console.log(services)
     let list_of_players = game_info['list_of_active_players']
     list_of_players = list_of_players.replace(/'/g, '"')
     list_of_players = JSON.parse(list_of_players)
@@ -221,20 +225,7 @@ function displayCards(game_info, cards, players){
                 seat_index = 7 - distance
                 console.log("this is the seat number")
                 console.log(seat_index)
-                // display to the right
-                // let player_left = document.getElementById(`player${seat_index}_left`)
-                // let player_right = document.getElementById(`player${seat_index}_right`)
-                // let file = cards["not-folded-back-art"]
-                // let source = folder + file
-                // player_left.src = source
-                // player_right.src = source
-            } 
-            // let player_left = document.getElementById(`player${seat_index}_left`)
-            // let player_right = document.getElementById(`player${seat_index}_right`)
-            // let file = cards["not-folded-back-art"]
-            // let source = folder + file
-            // player_left.src = source
-            // player_right.src = source
+            }
             let player_left = document.getElementById(`player${seat_index}_left_front`)
             let player_right = document.getElementById(`player${seat_index}_right_front`)
             let file_left_id = player['card_left']
@@ -260,7 +251,7 @@ function displayCards(game_info, cards, players){
 
 
     // this is the part where we display the middle cards
-// Set image sources and adjust styles
+    // Set image sources and adjust styles
     let left_flop_front = document.getElementById("left-flop_front");
     let left_flop_back = document.getElementById("left-flop_back");
     let middle_flop_front = document.getElementById("middle-flop_front");
@@ -298,66 +289,55 @@ function displayCards(game_info, cards, players){
     river_back.style.width = "65px"; 
     river_back.style.height = "108px";
 
-
-
+    let file = cards["not-folded-back-art"];
+    let source = folder + file;
+    left_flop_back.src = source;
+    middle_flop_back.src = source;
+    right_flop_back.src = source;
+    turn_back.src = source; 
+    river_back.src = source;
+    let left_flop_id = game_info['flop1'];
+    let left_file = cards[left_flop_id];
+    left_flop_front.src = folder + left_file;
+    let middle_flop_id = game_info['flop2'];
+    let middle_file = cards[middle_flop_id];
+    middle_flop_front.src = folder + middle_file;
+    let right_flop_id = game_info['flop3'];
+    let right_file = cards[right_flop_id];
+    right_flop_front.src = folder + right_file;
+    let turn_id = game_info['turn'];
+    let turn_file = cards[turn_id];
+    turn_front.src = folder + turn_file;
+    let river_id = game_info['river'];
+    let river_file = cards[river_id];
+    river_front.src = folder + river_file;
     // Display cards based on game state
-    if (game_info['curr_round'] == 0) {
+    if ((game_info['curr_round'] == 0) && (game_info['game_num'] > 1)) {
         // display all red cards
-        let file = cards["not-folded-back-art"];
-        let source = folder + file;
-        left_flop_back.src = source;
-        middle_flop_back.src = source;
-        right_flop_back.src = source;
-        turn_back.src = source; 
-        river_back.src = source; 
-
-    } else if (game_info['curr_round'] == 1) {
-        let left_flop_id = game_info['flop1'];
-        let left_file = cards[left_flop_id];
-        left_flop_front.src = folder + left_file;
+        // let file = cards["not-folded-back-art"];
+        // let source = folder + file;
+        // left_flop_back.src = source;
+        // middle_flop_back.src = source;
+        // right_flop_back.src = source;
+        // turn_back.src = source; 
+        // river_back.src = source;
+        // left_flop_front.parentElement.parentElement.classList.add('flip');
+        // middle_flop_front.parentElement.parentElement.classList.add('flip');
+        // right_flop_front.parentElement.parentElement.classList.add('flip');
+        // turn_front.parentElement.parentElement.classList.add('flip');
+        // river_front.parentElement.parentElement.classList.add('flip')
+    } 
+    if (game_info['curr_round'] == 1) {
         left_flop_front.parentElement.parentElement.classList.add('flip');
-
-        let middle_flop_id = game_info['flop2'];
-        let middle_file = cards[middle_flop_id];
-        middle_flop_front.src = folder + middle_file;
         middle_flop_front.parentElement.parentElement.classList.add('flip');
-
-        let right_flop_id = game_info['flop3'];
-        let right_file = cards[right_flop_id];
-        right_flop_front.src = folder + right_file;
         right_flop_front.parentElement.parentElement.classList.add('flip');
-        
-
-
     }
-        //           <div class="right-flop_container" id="cardContainer">
-        //     <div class="card">
-        //       <div class="flipper">
-        //         <div class="front">
-        //           <img id = "right-flop_front"/>
-        //         </div>
-        //         <div class="back">
-        //           <img id = "right-flop_back"/>             
-        //          </div>
-        //     </div>
-        //   </div>          
-
 
 
     if (game_info['curr_round'] == 2 || game_info['curr_round'] >= 4){
-        let turn_front = document.getElementById("turn_front"); 
-        let turn_id = game_info['turn'];
-        let turn_file = cards[turn_id];
-        turn_front.src = folder + turn_file;
         turn_front.parentElement.parentElement.classList.add('flip');
-
-
     }
     if (game_info['curr_round'] == 3 || game_info['curr_round'] >= 4){
-        let river_front = document.getElementById("river_front"); 
-        let river_id = game_info['river'];
-        let river_file = cards[river_id];
-        river_front.src = folder + river_file;
         river_front.parentElement.parentElement.classList.add('flip');
 
     }
