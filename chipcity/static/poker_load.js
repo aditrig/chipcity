@@ -523,7 +523,7 @@ function startGame() {
 
 // }
 function callAction(){
-    let data = {gameState: "ready", text: "", user_pressed_ready: myUserName}
+    let data = {user: myUserName, gameState: "inProgress", player_action: "call", text:""}
     socket.send(JSON.stringify(data))
 }
 function raiseAction(){
