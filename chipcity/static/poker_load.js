@@ -350,21 +350,38 @@ function displayCards(game_info, cards, players){
             user_chips_group.style.border = "0px"
             user_chips_group.style.boxShadow = "none"
 
+            console.log('setting the visibilities to be hidden')
             let curr_pfp = document.getElementById(`pfp${i}_div`)
             curr_pfp.style.backgroundImage = "none"
             curr_pfp.style.boxShadow = "none"
 
             let curr_hand_left = document.getElementById(`player${i}_left_front`)
             curr_hand_left.src = ""
+            curr_hand_left.style.visibility = "hidden"
             let curr_hand_right = document.getElementById(`player${i}_right_front`)
             curr_hand_right.src = ""
+            curr_hand_right.style.visibility = "hidden"
 
             curr_hand_left.style.width = 0
             curr_hand_left.style.height = 0
 
             curr_hand_right.style.width = 0
             curr_hand_right.style.height = 0
+            let curr_hand_left_back = document.getElementById(`player${i}_left_back`)
+            let curr_hand_right_back = document.getElementById(`player${i}_right_back`)
+            curr_hand_left_back.src = ""
+            curr_hand_right_back.src = ""
+            curr_hand_left_back.style.visibility = "hidden"
+            curr_hand_right_back.style.visibility = "hidden"
+    
+            curr_hand_left.parentElement.parentElement.classList.add('flip-to-front');
+            curr_hand_left.parentElement.parentElement.classList.add('flip-to-front');
+            curr_hand_right.parentElement.parentElement.classList.remove('flip-to-back');
+            curr_hand_right.parentElement.parentElement.classList.remove('flip-to-back');
+
+            
         }
+        // debugger;
 
     // make a for loop for the players and if the player is the user than 
     // display the cards, if not then don't???
@@ -419,6 +436,8 @@ function displayCards(game_info, cards, players){
                 let player_right_file = cards[player_right_id]
                 player_left.src = folder + player_left_file
                 player_right.src = folder + player_right_file
+                player_left.style.visibility = "visible"
+                player_right.style.visibility = "visible"
 
 
                 // display the pfp
@@ -439,6 +458,8 @@ function displayCards(game_info, cards, players){
                 let source = folder + file
                 player_left_back.src = source 
                 player_right_back.src = source
+                player_left_back.style.visibility = "visible"
+                player_right_back.style.visibility = "visible"
 
         
             } else{
@@ -467,13 +488,6 @@ function displayCards(game_info, cards, players){
                 }
                 let player_left = document.getElementById(`player${seat_index}_left_back`)
                 let player_right = document.getElementById(`player${seat_index}_right_back`)
-                // let file_left_id = player['card_left']
-                // let file_right_id = player['card_right']
-                // let file_left = cards[file_left_id]
-                // let file_right = cards[file_right_id]
-                // let back = "not-folded-back-art.svg"
-                // player_left.src = folder + back
-                // player_right.src = folder + back
                 let folded = player['hand_is_active']
                 let file
                 if (!folded){
@@ -485,6 +499,8 @@ function displayCards(game_info, cards, players){
                 let source = folder + file
                 player_left.src = source 
                 player_right.src = source
+                player_left.style.visibility = "visible"
+                player_right.style.visibility = "visible"
 
                 let player_pfp = document.getElementById(`pfp${seat_index}_div`)
                 let player_pfp_link = player['picture']
@@ -617,6 +633,8 @@ function displayCards(game_info, cards, players){
 
         let player_left = document.getElementById('player1_left_front')
         let player_right = document.getElementById('player1_right_front')
+        player_left.style.visibility = "visible"
+        player_right.style.visibility = "visible"
 
         player_left.parentElement.parentElement.classList.add('flip-to-front');
         player_right.parentElement.parentElement.classList.add('flip-to-front');
@@ -680,10 +698,14 @@ function displayCards(game_info, cards, players){
                 
                 player_left.src = folder + player_left_file
                 player_right.src = folder + player_right_file
+                player_left.style.visibility = "visible"
+                player_right.style.visibility = "visible"
                 let file = cards["not-folded-back-art"]
                 let source = folder + file
                 player_left_back.src = source 
                 player_right_back.src = source
+                player_left_back.style.visibility = "visible"
+                player_right_back.style.visibility = "visible"
 
                 player_left.style.width = "59px";
                 player_left.style.height = "100px";
@@ -749,6 +771,8 @@ function displayCards(game_info, cards, players){
                 let file_right = cards[file_right_id]
                 player_left.src = folder + file_left
                 player_right.src = folder + file_right
+                player_left.style.visibility = "visible"
+                player_right.style.visibility = "visible"
                 
                 player_left.style.width = "59px";
                 player_left.style.height = "100px";
