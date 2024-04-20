@@ -15,12 +15,79 @@
     <div class="table-page">
       <div class="div">
         <div class="table-and-seats">
+          <div id="current_bet_group_1">
+            <span class = "current_bet_1" id="id_current_bet_1"></span>
+            <span id = "CHIPS1"></span>
+          </div>
+          <div id="current_bet_group_2">
+            <span class = "current_bet_2" id="id_current_bet_2"></span>
+            <span id = "CHIPS2"></span>
+          </div>
+          <div id="current_bet_group_3">
+            <span class = "current_bet_3" id="id_current_bet_3"></span>
+            <span id = "CHIPS3"></span>
+          </div>
+          <div id="current_bet_group_4">
+            <span class = "current_bet_4" id="id_current_bet_4"></span>
+            <span id = "CHIPS4"></span>
+          </div>
+          <div id="current_bet_group_5">
+            <span class = "current_bet_5" id="id_current_bet_5"></span>
+            <span id = "CHIPS5"></span>
+          </div>
+          <div id="current_bet_group_6">
+            <span class = "current_bet_6" id="id_current_bet_6"></span>
+            <span id = "CHIPS6"></span>
+          </div>
+          <div id="user_total_chips_group_1">
+            <div class = "user_1" id = "id_user_1"></div>
+            <div id="total_chips_group_1">
+              <span id="id_total_chips_1"></span>
+              <span id = "TCCHIPS1"></span>
+            </div>
+          </div>
+          <div id="user_total_chips_group_2">
+            <div class = "user_2" id = "id_user_2"></div>
+            <div id="total_chips_group_2">
+              <span id="id_total_chips_2"></span>
+              <span id = "TCCHIPS2"></span>
+            </div>
+          </div>
+          <div id="user_total_chips_group_3">
+            <div class = "user_3" id = "id_user_3"></div>
+            <div id="total_chips_group_3">
+              <span id="id_total_chips_3"></span>
+              <span id = "TCCHIPS3"></span>
+            </div>
+          </div>
+          <div id="user_total_chips_group_4">
+            <div class = "user_4" id = "id_user_4"></div>
+            <div id="total_chips_group_4">
+              <span id="id_total_chips_4"></span>
+              <span id = "TCCHIPS4"></span>
+            </div>
+          </div>
+          <div id="user_total_chips_group_5">
+            <div class = "user_5" id = "id_user_5"></div>
+            <div id="total_chips_group_5">
+              <span id="id_total_chips_5"></span>
+              <span id = "TCCHIPS5"></span>
+            </div>
+          </div>
+          <div id="user_total_chips_group_6">
+            <div class = "user_6" id = "id_user_6"></div>
+            <div id="total_chips_group_6">
+              <span id="id_total_chips_6"></span>
+              <span id = "TCCHIPS6"></span>
+            </div>
+          </div>
           <div class="profile-picture-1" id="pfp2_div"><img id="pfp2"/></div>
           <div class="profile-picture-2" id="pfp6_div"><img id="pfp6"/></div>
           <div class="profile-picture-3" id="pfp3_div"><img id="pfp3"/></div>
           <div class="profile-picture-4" id = "pfp5_div"><img id="pfp5"/></div>
           <div class="profile-picture-5" id="pfp1_div"><img id="pfp1"/></div>
-          <div class="profile-picture-6" id="pfp4_div"><img id="pfp4"/></div>         
+          <div class="profile-picture-6" id="pfp4_div"><img id="pfp4"/></div>    
+          
           <img class="border-rectangle" src="../static/img/BorderRectangle.svg" />
           <img class="inner-rectangle" src="../static/img/InnerRectangle.svg" />
 
@@ -33,7 +100,6 @@
                 <img id = "player1_left_back"/>
               </div>
             </div>
-
           </div>
 
           <div class="rchp-1" ontouchstart="this.classList.toggle('hover');" >
@@ -45,48 +111,148 @@
                 <img id = "player1_right_back"/>
               </div>
             </div>
-
           </div>
-          <div class="lchp-2"><img id = "player2_left_front"/></div>
-          <div class="rchp-2"><img id = "player2_right_front"/></div>
-          <div class="lchp-3"><img id = "player3_left_front"/></div>
-          <div class="rchp-3"><img id = "player3_right_front"/></div>
-          <div class="lchp-4"><img id = "player4_left_front"/></div>
-          <div class="rchp-4"><img id = "player4_right_front"/></div>
-          <div class="lchp-5"><img id = "player5_left_front"/></div>
-          <div class="rchp-5"><img id = "player5_right_front"/></div>
-          <div class="lchp-6"><img id = "player6_left_front"/></div>
-          <div class="rchp-6"><img id = "player6_right_front"/></div>
+
+          <div class="lchp-2" >
+            <div class="flipper">
+              <div class="front">
+                <img id = "player2_left_front"/>
+              </div>
+              <div class="back">
+                <img id = "player2_left_back"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="rchp-2"  >
+            <div class="flipper">
+              <div class="front">
+                <img id = "player2_right_front"/>
+              </div>
+              <div class="back">
+                <img id = "player2_right_back"/>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="lchp-3" >
+            <div class="flipper">
+              <div class="front">
+                <img id = "player3_left_front"/>
+              </div>
+              <div class="back">
+                <img id = "player3_left_back"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="rchp-3"  >
+            <div class="flipper">
+              <div class="front">
+                <img id = "player3_right_front"/>
+              </div>
+              <div class="back">
+                <img id = "player3_right_back"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="lchp-4" >
+            <div class="flipper">
+              <div class="front">
+                <img id = "player4_left_front"/>
+              </div>
+              <div class="back">
+                <img id = "player4_left_back"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="rchp-4"  >
+            <div class="flipper">
+              <div class="front">
+                <img id = "player4_right_front"/>
+              </div>
+              <div class="back">
+                <img id = "player4_right_back"/>
+              </div>
+            </div>
+          </div>
+          <div class="lchp-5" >
+            <div class="flipper">
+              <div class="front">
+                <img id = "player5_left_front"/>
+              </div>
+              <div class="back">
+                <img id = "player5_left_back"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="rchp-5"  >
+            <div class="flipper">
+              <div class="front">
+                <img id = "player5_right_front"/>
+              </div>
+              <div class="back">
+                <img id = "player5_right_back"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="lchp-6" >
+            <div class="flipper">
+              <div class="front">
+                <img id = "player6_left_front"/>
+              </div>
+              <div class="back">
+                <img id = "player6_left_back"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="rchp-6"  >
+            <div class="flipper">
+              <div class="front">
+                <img id = "player6_right_front"/>
+              </div>
+              <div class="back">
+                <img id = "player6_right_back"/>
+              </div>
+            </div>
+          </div>
+
           <div class="left-flop_container" id="leftFlopCardContainer">
-              <div class="flipper">
-                <div class="front" style="width: 68px; height: 100px;">
-                  <img id="left-flop_front"/>
-                </div>
-                <div class="back" style="width: 68px; height: 100px;">
-                  <img id="left-flop_back"/>             
-                </div>
+            <div class="flipper">
+              <div class="front" style="width: 68px; height: 100px;">
+                <img id="left-flop_front"/>
+              </div>
+              <div class="back" style="width: 68px; height: 100px;">
+                <img id="left-flop_back"/>             
+              </div>
             </div>
           </div>
           
           <div class="middle-flop_container" id="middlFlopCardContainer">
-              <div class="flipper">
-                <div class="front" style="width: 68px; height: 100px;">
-                  <img id="middle-flop_front"/>
-                </div>
-                <div class="back" style="width: 68px; height: 100px;">
-                  <img id="middle-flop_back"/>             
-                </div>
+            <div class="flipper">
+              <div class="front" style="width: 68px; height: 100px;">
+                <img id="middle-flop_front"/>
+              </div>
+              <div class="back" style="width: 68px; height: 100px;">
+                <img id="middle-flop_back"/>             
+              </div>
             </div>
           </div>
           
           <div class="right-flop_container" id="rightFlopCardContainer">
-              <div class="flipper">
-                <div class="front" style="width: 68px; height: 100px;">
-                  <img id="right-flop_front"/>
-                </div>
-                <div class="back" style="width: 68px; height: 100px;">
-                  <img id="right-flop_back"/>             
-                </div>
+            <div class="flipper">
+              <div class="front" style="width: 68px; height: 100px;">
+                <img id="right-flop_front"/>
+              </div>
+              <div class="back" style="width: 68px; height: 100px;">
+                <img id="right-flop_back"/>             
+              </div>
             </div>
           </div>
 
@@ -98,20 +264,31 @@
               <div class="back" style="width: 68px; height: 100px;">
                 <img id="turn_back"/>             
               </div>
+            </div>
           </div>
-        </div>
 
-        <div class="river_container" id="riverContainer">
-          <div class="flipper">
-            <div class="front" style="width: 68px; height: 100px;">
-              <img id="river_front"/>
+          <div class="river_container" id="riverContainer">
+            <div class="flipper">
+              <div class="front" style="width: 68px; height: 100px;">
+                <img id="river_front"/>
+              </div>
+              <div class="back" style="width: 68px; height: 100px;">
+                <img id="river_back"/>             
+              </div>
             </div>
-            <div class="back" style="width: 68px; height: 100px;">
-              <img id="river_back"/>             
-            </div>
-        </div>
-      </div>
-        <div class="text-wrapper">CHIP CITY</div>
+          </div>
+          <div class="text-wrapper" id="logo">CHIP CITY</div>
+          <div id="total_pot_group">
+            <span class = "total_pot" id="id_total_pot"></span>
+            <span id = "TPCHIPS"></span>
+          </div>
+          <!-- <div class = "pot-wrapper" id="total_pot">TOTAL POT</div> -->
+          <div class = "chips_1"></div>
+          <div class = "chips_2"></div>
+          <div class = "chips_3"></div>
+          <div class = "chips_4"></div>
+          <div class = "chips_5"></div>
+          <div class = "chips_6"></div>
         </div>
         <div class="action-buttons">
           <div class="fold-call-group">
@@ -192,7 +369,7 @@
         </form>
       </div>
     </div>
-    <button id="start-button" onclick="startGame()">Ready</button>
+    <button  type="button" value="Submit" id="start-button" onclick="startGame()" style="visibility: visible;">Ready</button>
     <button type="button" value="Submit" id="callButton" onclick="callAction()" style="visibility: hidden;">Call</button>
     <button type="button" value="Submit" id="checkButton" onclick="checkAction()" style="visibility: hidden;">Check</button>
     <button type="button" value="Submit" id="foldButton" onclick="foldAction()" style="visibility: hidden;">Fold</button>
