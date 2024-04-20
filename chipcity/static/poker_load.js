@@ -75,15 +75,6 @@ function connectToServer() {
         }
 
         processMessage(game, cards, active_players_info, n_players)
-
-        // socket.onmessage = function(event) {
-        //     let response = JSON.parse(event.data)
-        //     if (Array.isArray(response)) {
-        //         updateList(response)
-        //     } else {
-        //         displayResponse(response)
-        //     }
-        // }
         displayGameInfo(game, active_players_info)
 
         
@@ -188,6 +179,19 @@ function displayGameInfo(game_info, players){
             let user_chips = document.getElementById(`id_total_chips_${seat_index}`)
             user_chips.textContent = `${player['chips']} CHIPS`
         }
+
+
+        
+        let turn_indicator = document.getElementById('logo');
+        let current_turn_user = game_info['current_player_user'];
+        if (current_turn_user && current_turn_user === myUserName) {
+            turn_indicator.textContent = "It's your turn!";
+        } else {
+            // Reset to default text if it's not the user's turn
+            turn_indicator.textContent = `${current_turn_user} is taking their turn`;
+
+        }
+    
     }
 
 }
@@ -196,6 +200,7 @@ function displayGameInfo(game_info, players){
 function displayCards(game_info, cards, players){
     console.log("made it to display cards")
         // clear the board first 
+    
         for (let i = 1; i <= 6; i++) {
             let curr_pfp = document.getElementById(`pfp${i}_div`)
             curr_pfp.style.backgroundImage = "none"
@@ -606,6 +611,7 @@ function displayHighlight(game_info, players){
             highlightCurrentPlayer = document.getElementById(`pfp${seat_index}_div`)
             highlightCurrentPlayer.style.boxShadow = "none"
         }
+        
         
     }
 }
