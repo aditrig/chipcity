@@ -487,8 +487,6 @@ function displayCards(game_info, cards, players){
                     seat_index = 1 + distance
                     console.log("this is the seat number")
                     console.log(seat_index)
-                    // display to the right
-                    
                 }
                 // if logged_in_user_index < curr user index, curr user on the left
                 else if (logged_in_user_index < curr_user_index){
