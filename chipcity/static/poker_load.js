@@ -55,7 +55,8 @@ function connectToServer() {
         if (game_info.length > 0){
             game = game_info[(game_info.length)-1]
         } else{
-            game = null
+            // no games exist to show the readybutton
+            game = null        
         }
         if (active_players_info.length > 0){
             a_players = active_players_info[(active_players_info.length)-1]
@@ -72,6 +73,7 @@ function connectToServer() {
         } else{
             cards = null
         }
+
         processMessage(game, cards, active_players_info, n_players)
 
         // socket.onmessage = function(event) {
@@ -111,6 +113,18 @@ function processMessage(game_info, cards, active_players_info, non_active_player
     // if it is, display buttons
     console.log("makes it to processMessage, check if user is currentPlayer")
     if (game_info != null){
+        let readyDisplay
+        readyDisplay = document.getElementById("start-button")
+
+        if (game_info["curr_round"]<5){
+            readyDisplay.style.visibility = 'hidden'
+            readyDisplay.onclick = function(){}
+        }
+        if (game_info["curr_round"]==5){
+            readyDisplay.style.visibility = 'visible'
+            readyDisplay.onclick = function(){startGame()}
+
+        }
         console.log("game info is not null")
         if (game_info["current_player_user"] == myUserName){
             console.log("display Active Buttons")
@@ -517,6 +531,7 @@ function displayPlaceholderButtons(game_info){
 
 
 function startGame() {
+    document.getElementById('text_wrapper').textContent = myUserName + " is ready";
     let data = {gameState: "ready", text: "", user_pressed_ready: myUserName}
     socket.send(JSON.stringify(data))
 }

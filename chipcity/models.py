@@ -168,7 +168,7 @@ class Game(models.Model):
                 'winning_player_user': item.winning_player_user
             }
             item_dict_list.append(item_dict)
-        print(item_dict_list)
+        # print(item_dict_list)
         return item_dict_list
     
     @classmethod
