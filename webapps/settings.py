@@ -151,7 +151,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = CONFIG.get("GoogleOAuth2", "client_id")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = CONFIG.get("GoogleOAuth2", "client_secret")
 SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'prompt': 'select_account'}
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['fullname', 'picture']
-SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://team39.cmu-webapps.com/oauth/complete/google-oauth2/'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://team39.cmu-webapps.com/oauth/complete/google-oauth2/'
 
 CHIPCITY_TITLE = CONFIG.get("ChipCity", "title")
 CHIPCITY_USERS = CONFIG.get("ChipCity", "users")
