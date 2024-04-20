@@ -850,6 +850,8 @@ class MyConsumer(WebsocketConsumer):
                 print("")
                 print("-----Entering isShowDown()!-----")
                 if self.isShowDown():
+                    print("-----is showdown going to broadcast list!-----")
+                    self.broadcast_list()
                     print("-----Exiting isShowDown()!-----")
                     print("")
                     print("-----Entering isGameOver()!-----")

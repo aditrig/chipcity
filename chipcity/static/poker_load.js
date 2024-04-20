@@ -381,7 +381,7 @@ function displayCards(game_info, cards, players){
         // turn_front.parentElement.parentElement.classList.add('flip');
         // river_front.parentElement.parentElement.classList.add('flip')
     } 
-    if (game_info['curr_round'] == 1) {
+    if (game_info['curr_round'] == 1|| game_info['curr_round'] >= 4) {
         left_flop_front.parentElement.parentElement.classList.add('flip');
         middle_flop_front.parentElement.parentElement.classList.add('flip');
         right_flop_front.parentElement.parentElement.classList.add('flip');
@@ -604,6 +604,14 @@ function foldAction(){
     socket.send(JSON.stringify(data))
 }
 
+function sanitize(s) {
+    // Be sure to replace ampersand first
+    return s.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+}
+
 
 
 // function updateList(items) {
@@ -645,13 +653,6 @@ function foldAction(){
 //     return element
 // }
 
-// function sanitize(s) {
-//     // Be sure to replace ampersand first
-//     return s.replace(/&/g, '&amp;')
-//             .replace(/</g, '&lt;')
-//             .replace(/>/g, '&gt;')
-//             .replace(/"/g, '&quot;')
-// }
 
 // function addItem() {
 //     let textInputEl = document.getElementById("item")
