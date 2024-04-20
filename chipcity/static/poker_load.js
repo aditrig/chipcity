@@ -893,6 +893,10 @@ function startGame() {
     logo.textContent = `${myUserName} IS READY`;
     logo.style.textTransform = "uppercase"
     logo.style.color = "#FFF"
+    
+    let readyButton = document.getElementById('start-button')
+    readyButton.visibility = "hidden"
+
     let data = {gameState: "ready", text: "", user_pressed_ready: myUserName}
     socket.send(JSON.stringify(data))
 }
