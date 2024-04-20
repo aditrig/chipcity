@@ -318,10 +318,10 @@ body {
 
 .table-page .text-wrapper {
   position: absolute;
-  width: 199px;
+  width: 500px;
   height: 56px;
   top: 298px;
-  left: 522px;
+  left: 373px;
   text-shadow: 0px 4px 4px #00000040;
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
@@ -348,12 +348,12 @@ body {
   line-height: normal;
 }
 
-.table-page .current_bet_1 {
+.table-page #current_bet_group_1 {
   position: absolute;
   width: 120px;
   height: 30px;
   top: 555px;
-  left: 580px;
+  left: 660px;
   text-shadow: 0px 4px 4px #00000040;
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
@@ -363,13 +363,15 @@ body {
   letter-spacing: 0;
   line-height: normal;
   margin: -60px 0 0 -15px;
+  word-spacing: -100%;
 }
-.table-page .current_bet_2 {
+
+.table-page #current_bet_group_2 {
   position: absolute;
   width: 120px;
   height: 30px;
   top: 450px;
-  left: 1155px;
+  left: 1240px;
   text-shadow: 0px 4px 4px #00000040;
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
@@ -379,13 +381,15 @@ body {
   letter-spacing: 0;
   line-height: normal;
   margin: -60px 0 0 -15px;
+  word-spacing: -100%;
 }
-.table-page .current_bet_3 {
+
+.table-page #current_bet_group_3 {
   position: absolute;
   width: 120px;
   height: 30px;
   top: 35px;
-  left: 1155px;
+  left: 1240px;
   text-shadow: 0px 4px 4px #00000040;
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
@@ -395,13 +399,15 @@ body {
   letter-spacing: 0;
   line-height: normal;
   margin: -60px 0 0 -15px;
+  word-spacing: -100%;
 }
-.table-page .current_bet_4 {
+
+.table-page #current_bet_group_4 {
   position: absolute;
   width: 120px;
   height: 30px;
   top: -75px;
-  left: 580px;
+  left: 660px;
   text-shadow: 0px 4px 4px #00000040;
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
@@ -411,13 +417,15 @@ body {
   letter-spacing: 0;
   line-height: normal;
   margin: -60px 0 0 -15px;
+  word-spacing: -100%;
 }
-.table-page .current_bet_5 {
+
+.table-page #current_bet_group_5 {
   position: absolute;
   width: 120px;
   height: 30px;
-  top: 35px;
-  left: 1px;
+  top: 34px;
+  left: -30px;
   text-shadow: 0px 4px 4px #00000040;
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
@@ -427,13 +435,15 @@ body {
   letter-spacing: 0;
   line-height: normal;
   margin: -60px 0 0 -15px;
+  word-spacing: -100%;
 }
-.table-page .current_bet_6 {
+
+.table-page #current_bet_group_6 {
   position: absolute;
   width: 120px;
   height: 30px;
-  top: 450px;
-  left: 1px;
+  top: 445px;
+  left: -30px;
   text-shadow: 0px 4px 4px #00000040;
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
@@ -443,6 +453,7 @@ body {
   letter-spacing: 0;
   line-height: normal;
   margin: -60px 0 0 -15px;
+  word-spacing: -100%;
 }
 
 .table-page .user_1 {
@@ -459,7 +470,6 @@ body {
   text-align: center;
   letter-spacing: 0;
   line-height: normal;
-  margin: -60px 0 0 -15px;
 }
 .table-page .user_2 {
   position: absolute;
@@ -475,7 +485,6 @@ body {
   text-align: center;
   letter-spacing: 0;
   line-height: normal;
-  margin: -60px 0 0 -15px;
 }
 .table-page .user_3 {
   position: absolute;
@@ -491,7 +500,6 @@ body {
   text-align: center;
   letter-spacing: 0;
   line-height: normal;
-  margin: -60px 0 0 -15px;
 }
 .table-page .user_4 {
   position: absolute;
@@ -507,7 +515,6 @@ body {
   text-align: center;
   letter-spacing: 0;
   line-height: normal;
-  margin: -60px 0 0 -15px;
 }
 .table-page .user_5 {
   position: absolute;
@@ -540,6 +547,180 @@ body {
   line-height: normal;
 }
 
+.table-page #total_chips_group_1 {
+  position: absolute;
+  width: 120px;
+  height: 30px;
+  top: 20px;
+  left: 0;
+  text-shadow: 0px 4px 4px #00000040;
+  font-family: "Dangrek", Helvetica;
+  font-weight: 400;
+  color: white;
+  font-size: 15px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+  word-spacing: -100%;
+}
+
+.table-page #user_total_chips_group_1{
+  display: inline-block;
+  position: relative;
+  width: 120px;
+  height: 50px;
+  top: 540px;
+  left: 670px;
+}
+
+.table-page #total_chips_group_2 {
+  position: absolute;
+  width: 120px;
+  height: 30px;
+  top: 20px;
+  left: 0;
+  text-shadow: 0px 4px 4px #00000040;
+  font-family: "Dangrek", Helvetica;
+  font-weight: 400;
+  color: white;
+  font-size: 15px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+  word-spacing: -100%;
+}
+
+.table-page #user_total_chips_group_2{
+  display: inline-block;
+  position: relative;
+  width: 120px;
+  height: 50px;
+  top: 436px;
+  left: 1123px;
+}
+
+.table-page #total_chips_group_3 {
+  position: absolute;
+  width: 120px;
+  height: 30px;
+  top: 20px;
+  left: 0;
+  text-shadow: 0px 4px 4px #00000040;
+  font-family: "Dangrek", Helvetica;
+  font-weight: 400;
+  color: white;
+  font-size: 15px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+  word-spacing: -100%;
+}
+
+.table-page #user_total_chips_group_3{
+  display: inline-block;
+  position: relative;
+  width: 120px;
+  height: 50px;
+  top: 23px;
+  left: 1000px;
+}
+
+.table-page #total_chips_group_4 {
+  position: absolute;
+  width: 120px;
+  height: 30px;
+  top: 20px;
+  left: 0;
+  text-shadow: 0px 4px 4px #00000040;
+  font-family: "Dangrek", Helvetica;
+  font-weight: 400;
+  color: white;
+  font-size: 15px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+  word-spacing: -100%;
+}
+
+.table-page #user_total_chips_group_4{
+  display: inline-block;
+  position: relative;
+  width: 120px;
+  height: 50px;
+  top: -89px;
+  left: 300px;
+}
+
+.table-page #total_chips_group_5 {
+  position: absolute;
+  width: 120px;
+  height: 30px;
+  top: 20px;
+  left: 0;
+  text-shadow: 0px 4px 4px #00000040;
+  font-family: "Dangrek", Helvetica;
+  font-weight: 400;
+  color: white;
+  font-size: 15px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+  word-spacing: -100%;
+}
+
+.table-page #user_total_chips_group_5{
+  display: inline-block;
+  position: relative;
+  width: 120px;
+  height: 50px;
+  top: 20px;
+  left: -625px;
+}
+
+.table-page #total_chips_group_6 {
+  position: absolute;
+  width: 120px;
+  height: 30px;
+  top: 20px;
+  left: 0;
+  text-shadow: 0px 4px 4px #00000040;
+  font-family: "Dangrek", Helvetica;
+  font-weight: 400;
+  color: white;
+  font-size: 15px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+  word-spacing: -100%;
+}
+
+.table-page #user_total_chips_group_6 {
+  display: inline-block;
+  position: relative;
+  width: 120px;
+  height: 50px;
+  top: 436px;
+  left: -750px;
+}
+
+.table-page #total_pot_group {
+  position: absolute;
+  width: 135px;
+  height: 55px;
+  top: 145px;
+  left: 555px;
+  text-shadow: 0px 4px 4px #00000040;
+  font-family: "Dangrek", Helvetica;
+  font-weight: 400;
+  color: white;
+  font-size: 30px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+  word-spacing: -100%;
+}
+
+/* 
 .table-page .total_chips_1 {
   position: absolute;
   width: 120px;
@@ -629,7 +810,7 @@ body {
   text-align: center;
   letter-spacing: 0;
   line-height: normal;
-}
+} */
 
 .table-page .profile-picture-5 {
   top: 520px;
