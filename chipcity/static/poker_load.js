@@ -82,6 +82,7 @@ function connectToServer() {
         //         displayResponse(response)
         //     }
         // }
+        displayGameInfo(game, active_players_info)
 
         
     }
@@ -126,6 +127,52 @@ function processMessage(game_info, cards, active_players_info, non_active_player
     }
     else{
         console.log("game info is null")
+    }
+
+}
+
+function displayGameInfo(game_info, players){
+    // display the total pot
+    let pot_text = document.getElementById("total_pot")
+    pot_text.textContent = `${game_info['total_pot']} Chips`
+    // display the username for each player
+    // display the current bet for each player
+    // display the total chips for each player
+    let list_of_players = game_info['list_of_active_players']
+    list_of_players = list_of_players.replace(/'/g, '"')
+    list_of_players = JSON.parse(list_of_players)
+    let logged_in_user_index = list_of_players.indexOf(myUserName)
+    for (let player_id in players){
+        let player = players[player_id]
+        if (player.user == myUserName){
+            console.log("displaying the username")
+            // display as user 1
+            let user_1 = document.getElementById("id_user_1")
+            user_1.textContent = `${player.user}`
+            let user_bet = document.getElementById("id_current_bet_1")
+            user_bet.textContent = `CURRENT BET: ${player['current_bet']}`
+            let user_chips = document.getElementById("id_total_chips_1")
+            user_chips.textContent = `${player['chips']} CHIPS`
+        }
+        else{
+            let curr_user_index = list_of_players.indexOf(player.user)
+            let distance = Math.abs(curr_user_index - logged_in_user_index)
+            let seat_index
+            if (curr_user_index < logged_in_user_index){
+                // curr user on the right of the logged in user
+                seat_index = 1 + distance
+            }
+            // if logged_in_user_index < curr user index, curr user on the left
+            else if (logged_in_user_index < curr_user_index){
+                seat_index = 7 - distance
+            }
+            let user = document.getElementById(`id_user_${seat_index}`)
+            user.textContent = `${player.user}`
+            let user_bet = document.getElementById(`id_current_bet_${seat_index}`)
+            user_bet.textContent = `CURRENT BET: ${player['current_bet']}`
+            let user_chips = document.getElementById(`id_total_chips_${seat_index}`)
+            user_chips.textContent = `${player['chips']} CHIPS`
+        }
     }
 
 }
