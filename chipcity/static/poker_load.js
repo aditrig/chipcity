@@ -134,26 +134,20 @@ function processMessage(game_info, cards, active_players_info, non_active_player
 function displayCards(game_info, cards, players){
     console.log("made it to display cards")
         // clear the board first 
-    for (let i = 1; i <= 6; i++) {
-        let curr_pfp = document.getElementById(`pfp${i}`)
-        curr_pfp.src = ''
-        let curr_hand_left = document.getElementById(`player${i}_left_front`)
-        curr_hand_left.src = ""
-        let curr_hand_right = document.getElementById(`player${i}_right_front`)
-        curr_hand_right.src = ""
-    }
-    // let reset_left_flop = document.getElementById("left-flop_front")
-    // reset_left_flop.src = ""
-    // let reset_right_flop = document.getElementById("right-flop_front")
-    // reset_right_flop.src = ""
-    // let reset_middle_flop = document.getElementById("middle-flop_front")
-    // reset_middle_flop.src = ""
-    // let reset_turn = document.getElementById("turn_front")
-    // reset_turn.src = ""
-    // let reset_river = document.getElementById("river_front")
-    // reset_river.src = ""
-    console.log("this is the game info")
-    console.log(game_info)
+        for (let i = 1; i <= 6; i++) {
+            let curr_pfp = document.getElementById(`pfp${i}`)
+            curr_pfp.src = ''
+            let curr_hand_left = document.getElementById(`player${i}_left_front`)
+            curr_hand_left.src = ""
+            let curr_hand_right = document.getElementById(`player${i}_right_front`)
+            curr_hand_right.src = ""
+
+            curr_hand_left.style.width = 0
+            curr_hand_left.style.height = 0
+
+            curr_hand_right.style.width = 0
+            curr_hand_right.style.height = 0
+        }
 
     // make a for loop for the players and if the player is the user than 
     // display the cards, if not then don't???
@@ -180,6 +174,26 @@ function displayCards(game_info, cards, players){
             let player_left_back = document.getElementById("player1_left_back")
             let player_right = document.getElementById("player1_right_front")
             let player_right_back = document.getElementById("player1_right_back")
+            
+            player_left.style.width = "59px";
+            player_left.style.height = "100px";
+            player_left.style.marginLeft = "-5px"
+            player_left.style.marginTop = "-8px"
+
+            player_left_back.style.width = "59px";
+            player_left_back.style.height = "100px";
+            player_left_back.style.marginLeft = "-5px"
+            player_left_back.style.marginTop = "-8px"
+
+            player_right.style.width = "59px";
+            player_right.style.height = "100px";
+            player_right.style.marginLeft = "-5px"
+            player_right.style.marginTop = "-8px"
+
+            player_right_back.style.width = "59px";
+            player_right_back.style.height = "100px";
+            player_right_back.style.marginLeft = "-5px"
+            player_right_back.style.marginTop = "-8px"
 
 
             let player_left_id = player['card_left']
@@ -241,9 +255,15 @@ function displayCards(game_info, cards, players){
             player_pfp.style.backgroundImage = `url(${player_pfp_link})`
             player_pfp.src = player_pfp_link
 
+            player_left.style.width = "59px";
+            player_left.style.height = "100px";
+            player_left.style.marginLeft = "-5px"
+            player_left.style.marginTop = "-8px"
 
-
-
+            player_right.style.width = "59px";
+            player_right.style.height = "100px";
+            player_right.style.marginLeft = "-5px"
+            player_right.style.marginTop = "-8px"
         }
 
     }
@@ -264,30 +284,32 @@ function displayCards(game_info, cards, players){
     let river_back = document.getElementById("river_back"); 
 
 
-    left_flop_front.style.width = "65px";
-    left_flop_front.style.height = "108px";
-    left_flop_back.style.width = "65px";
-    left_flop_back.style.height = "108px";
+    left_flop_front.style.width = "79px";
+    left_flop_front.style.height = "120px";
+    left_flop_front.style.marginLeft = "-4.5px"
+    left_flop_front.style.marginTop = "-3.5px"
+    left_flop_back.style.width = "79px";
+    left_flop_back.style.height = "120px";
+    left_flop_back.style.marginLeft = "-6.5px"
+    left_flop_back.style.marginTop = "-3.5px"
 
-    middle_flop_front.style.width = "65px";
-    middle_flop_front.style.height = "108px";
-    middle_flop_back.style.width = "65px";
-    middle_flop_back.style.height = "108px";
+    middle_flop_front.style.width = "79px";
+    middle_flop_front.style.height = "120px";
+    middle_flop_front.style.marginLeft = "-4.5px"
+    middle_flop_front.style.marginTop = "-3.5px"
+    middle_flop_back.style.width = "79px";
+    middle_flop_back.style.height = "120px";
+    middle_flop_back.style.marginLeft = "-6.5px"
+    middle_flop_back.style.marginTop = "-3.5px"
 
-    right_flop_front.style.width = "65px";
-    right_flop_front.style.height = "108px";
-    right_flop_back.style.width = "65px";
-    right_flop_back.style.height = "108px";
-
-    turn_front.style.width = "65px"; 
-    turn_front.style.height = "108px";
-    turn_back.style.width = "65px"; 
-    turn_back.style.height = "108px";
-
-    river_front.style.width = "65px"; 
-    river_front.style.height = "108px";
-    river_back.style.width = "65px"; 
-    river_back.style.height = "108px";
+    right_flop_front.style.width = "79px";
+    right_flop_front.style.height = "120px";
+    right_flop_front.style.marginLeft = "-4.5px"
+    right_flop_front.style.marginTop = "-3.5px"
+    right_flop_back.style.width = "79px";
+    right_flop_back.style.height = "120px";
+    right_flop_back.style.marginLeft = "-6.5px"
+    right_flop_back.style.marginTop = "-3.5px"
 
     let file = cards["not-folded-back-art"];
     let source = folder + file;
@@ -311,6 +333,24 @@ function displayCards(game_info, cards, players){
     let river_id = game_info['river'];
     let river_file = cards[river_id];
     river_front.src = folder + river_file;
+    turn_front.style.width = "79px";
+    turn_front.style.height = "120px";
+    turn_front.style.marginLeft = "-4.5px"
+    turn_front.style.marginTop = "-3.5px"
+    turn_back.style.width = "79px";
+    turn_back.style.height = "120px";
+    turn_back.style.marginLeft = "-6.5px"
+    turn_back.style.marginTop = "-3.5px"
+
+    river_front.style.width = "79px";
+    river_front.style.height = "120px";
+    river_front.style.marginLeft = "-4.5px"
+    river_front.style.marginTop = "-3.5px"
+    river_back.style.width = "79px";
+    river_back.style.height = "120px";
+    river_back.style.marginLeft = "-6.5px"
+    river_back.style.marginTop = "-3.5px"
+
     // Display cards based on game state
     if ((game_info['curr_round'] == 0) && (game_info['game_num'] > 1)) {
         // display all red cards
@@ -343,6 +383,7 @@ function displayCards(game_info, cards, players){
     }
     if (game_info['curr_round'] >= 4){
         // flip over all the active hand cards
+        displayPlaceholderButtons(game_info)
         for (let player_id in players){
             // console.log(player_id)
             let player = players[player_id]
@@ -363,6 +404,26 @@ function displayCards(game_info, cards, players){
                 let source = folder + file
                 player_left_back.src = source 
                 player_right_back.src = source
+
+                player_left.style.width = "59px";
+                player_left.style.height = "100px";
+                player_left.style.marginLeft = "-5px"
+                player_left.style.marginTop = "-8px"
+
+                player_left_back.style.width = "59px";
+                player_left_back.style.height = "100px";
+                player_left_back.style.marginLeft = "-5px"
+                player_left_back.style.marginTop = "-8px"
+
+                player_right.style.width = "59px";
+                player_right.style.height = "100px";
+                player_right.style.marginLeft = "-5px"
+                player_right.style.marginTop = "-8px"
+
+                player_right_back.style.width = "59px";
+                player_right_back.style.height = "100px";
+                player_right_back.style.marginLeft = "-5px"
+                player_right_back.style.marginTop = "-8px"
         
             } else{
                 let curr_user_index = list_of_players.indexOf(player.user)
@@ -398,7 +459,16 @@ function displayCards(game_info, cards, players){
                 let file_right = cards[file_right_id]
                 player_left.src = folder + file_left
                 player_right.src = folder + file_right
-    
+                
+                player_left.style.width = "59px";
+                player_left.style.height = "100px";
+                player_left.style.marginLeft = "-5px"
+                player_left.style.marginTop = "-8px"
+
+                player_right.style.width = "59px";
+                player_right.style.height = "100px";
+                player_right.style.marginLeft = "-5px"
+                player_right.style.marginTop = "-8px"
             }
 
             }
