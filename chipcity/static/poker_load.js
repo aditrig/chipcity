@@ -148,8 +148,13 @@ function processMessage(game_info, cards, active_players_info, non_active_player
 
 function displayGameInfo(game_info, players){
     // display the total pot
-    let pot_text = document.getElementById("total_pot")
-    pot_text.textContent = `${game_info['total_pot']} Chips`
+    let pot_text = document.getElementById("id_total_pot")
+    pot_text.textContent = `${game_info['total_pot']}`
+
+    let tp = document.getElementById("TPCHIPS")
+    tp.style.fontSize = "20px"
+    tp.innerHTML = "CHIPS"
+
     // display the username for each player
     // display the current bet for each player
     // display the total chips for each player
@@ -164,10 +169,45 @@ function displayGameInfo(game_info, players){
             // display as user 1
             let user_1 = document.getElementById("id_user_1")
             user_1.textContent = `${player.user}`
-            let user_bet = document.getElementById("id_current_bet_1")
-            user_bet.textContent = `CURRENT BET: ${player['current_bet']}`
+            user_1.style.top = "0%"
+            user_1.style.left = "0%"
+            user_1.style.position = "absolute"
+
             let user_chips = document.getElementById("id_total_chips_1")
-            user_chips.textContent = `${player['chips']} CHIPS`
+            user_chips.textContent = `${player['chips']}`
+
+            let tc_1 = document.getElementById("TCCHIPS1")
+            tc_1.style.fontSize = "10px"
+            tc_1.innerHTML = "CHIPS"
+            tc_1.style.opacity = "100%"
+
+            let tcg_div = document.getElementById("user_total_chips_group_1")
+            tcg_div.style.borderRadius = "20px"
+            tcg_div.style.border = "1px solid #EEDBC0"
+            tcg_div.style.background = "#DFC7A7"
+            tcg_div.style.boxShadow = "0px 4px 4px 0px rgba(0, 0, 0, 0.25)"
+            tcg_div.style.opacity = "100%"
+
+            let user_bet = document.getElementById("id_current_bet_1")
+            user_bet.textContent = `${player['current_bet']}`
+            user_bet.style.position = "relative"
+            user_bet.style.top = "-3px"
+
+            let chips_1 = document.getElementById("CHIPS1")
+            chips_1.style.fontSize = "10px"
+            chips_1.innerHTML = "CHIPS"
+            chips_1.style.position = "relative"
+            chips_1.style.top = "-3px"
+            
+
+            let group_bet_div = document.getElementById("current_bet_group_1")
+            group_bet_div.style.width = "68px"
+            group_bet_div.style.height = "23px"
+            group_bet_div.style.flexShrink = "0"
+            group_bet_div.style.borderRadius = "20px"
+            group_bet_div.style.border = "1px solid #DA92D0"
+            group_bet_div.style.background = "#BE7EB5"
+            group_bet_div.style.boxShadow = "0px 4px 4px 0px rgba(0, 0, 0, 0.25)"
         }
         else{
             let curr_user_index = list_of_players.indexOf(player.user)
@@ -183,10 +223,44 @@ function displayGameInfo(game_info, players){
             }
             let user = document.getElementById(`id_user_${seat_index}`)
             user.textContent = `${player.user}`
-            let user_bet = document.getElementById(`id_current_bet_${seat_index}`)
-            user_bet.textContent = `CURRENT BET: ${player['current_bet']}`
+            user.style.top = "0%"
+            user.style.left = "0%"
+            user.style.position = "absolute"
+
             let user_chips = document.getElementById(`id_total_chips_${seat_index}`)
-            user_chips.textContent = `${player['chips']} CHIPS`
+            user_chips.textContent = `${player['chips']}`
+
+            let tc = document.getElementById(`TCCHIPS${seat_index}`)
+            tc.style.fontSize = "10px"
+            tc.innerHTML = "CHIPS"
+            tc.style.opacity = "100%"
+
+            let tcg_div = document.getElementById(`user_total_chips_group_${seat_index}`)
+            tcg_div.style.borderRadius = "20px"
+            tcg_div.style.border = "1px solid #EEDBC0"
+            tcg_div.style.background = "#DFC7A7"
+            tcg_div.style.boxShadow = "0px 4px 4px 0px rgba(0, 0, 0, 0.25)"
+            tcg_div.style.opacity = "100%"
+
+            let user_bet = document.getElementById(`id_current_bet_${seat_index}`)
+            user_bet.textContent = `${player['current_bet']}`
+            user_bet.style.position = "relative"
+            user_bet.style.top = "-3px"
+
+            let chips = document.getElementById(`CHIPS${seat_index}`)
+            chips.style.fontSize = "10px"
+            chips.innerHTML = "CHIPS"
+            chips.style.position = "relative"
+            chips.style.top = "-3px"
+
+            let group_bet_div = document.getElementById(`current_bet_group_${seat_index}`)
+            group_bet_div.style.width = "68px"
+            group_bet_div.style.height = "23px"
+            group_bet_div.style.flexShrink = "0"
+            group_bet_div.style.borderRadius = "20px"
+            group_bet_div.style.border = "1px solid #DA92D0"
+            group_bet_div.style.background = "#BE7EB5"
+            group_bet_div.style.boxShadow = "0px 4px 4px 0px rgba(0, 0, 0, 0.25)"
         }
     }
 
@@ -197,6 +271,31 @@ function displayCards(game_info, cards, players){
     console.log("made it to display cards")
         // clear the board first 
         for (let i = 1; i <= 6; i++) {
+            let user_tc_group = document.getElementById(`user_total_chips_group_${i}`)
+            user_tc_group.style.background = "none"
+            user_tc_group.style.border = "0px"
+            user_tc_group.style.boxShadow = "none"
+
+            let id_user = document.getElementById(`id_user_${i}`)
+            id_user.innerHTML = ""
+
+            let user_tc = document.getElementById(`user_total_chips_group_${i}`)
+            user_tc.style.opacity = "0"
+
+            let TCCHIPS = document.getElementById(`TCCHIPS${i}`)
+            TCCHIPS.style.opacity = "0"
+
+            let user_bet = document.getElementById(`id_current_bet_${i}`)
+            user_bet.innerHTML = ""
+
+            let CHIPS = document.getElementById(`CHIPS${i}`)
+            CHIPS.innerHTML = ""
+
+            let user_chips_group = document.getElementById(`current_bet_group_${i}`)
+            user_chips_group.style.background = "none"
+            user_chips_group.style.border = "0px"
+            user_chips_group.style.boxShadow = "none"
+
             let curr_pfp = document.getElementById(`pfp${i}_div`)
             curr_pfp.style.backgroundImage = "none"
             let curr_hand_left = document.getElementById(`player${i}_left_front`)
@@ -681,7 +780,10 @@ function displayPlaceholderButtons(game_info){
 
 
 function startGame() {
-    document.getElementById('logo').textContent = `${myUserName} is ready`;
+    let logo = document.getElementById('logo')
+    logo.textContent = `${myUserName} IS READY`;
+    logo.style.textTransform = "uppercase"
+    logo.style.color = "#FFF"
     let data = {gameState: "ready", text: "", user_pressed_ready: myUserName}
     socket.send(JSON.stringify(data))
 }
