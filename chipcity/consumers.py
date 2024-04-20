@@ -357,7 +357,7 @@ class MyConsumer(WebsocketConsumer):
         winner = evaluator.hand_summary(board, list_of_hands)
         print(f"This is the evaluator summary to find winner")
         if len(winner) == 1:
-            print(f"{list_of_players_with_active_hand[winner[0][0]].user} won with a {winner[0][1]}")
+            # print(f"{list_of_players_with_active_hand[winner[0][0]].user} won with a {winner[0][1]}")
             for player in Player.objects.all().filter(hand_is_active = True):
                 if player.id == list_of_players_with_active_hand[winner[0][0]].id:
                     player.win_count += 1
@@ -365,7 +365,7 @@ class MyConsumer(WebsocketConsumer):
                     # Give Rewards
                     player.chips += game.total_pot
                     player.save()
-                    game.winning_player_user = str([list_of_players_with_active_hand[winner[0][0]].user.username])
+                    game.winning_player_user = f"{list_of_players_with_active_hand[winner[0][0]].user} won with a {winner[0][1]}"
                     game.save()
         else:
             winning_player_user_list = []
@@ -378,16 +378,9 @@ class MyConsumer(WebsocketConsumer):
                 win.chips += math.ceil(game.total_pot/len(winner))
                 win.save()
                 winning_player_user_list.append(win.user.username)
-
-                # for player in Player.objects.all().filter(hand_is_active = True):
-                #     if player.id == list_of_players_with_active_hand[winner[i][0]].id:
-                #         player.win_count += 1
-                #         player.winning_hand = winner[0][1]
-                #         player.chips += math.ceil(game.total_pot/len(winner))
-                #         player.save()
-                #         winning_player_user_list.append(list_of_players_with_active_hand[winner[i][0]].user)
-            print(str(winning_player_user_list))
-            game.winning_player_user = str(winning_player_user_list)
+            concatenated_winners = ", ".join(winning_player_user_list)
+            concatenated_winners += f" split pot with a {winner[0][1]}"
+            game.winning_player_user = concatenated_winners
             game.save()
     
     def resetRound(self):
@@ -526,6 +519,9 @@ class MyConsumer(WebsocketConsumer):
         for player in Player.objects.all():
             if player.is_participant:
                 list.append(player.user.username)
+                player.player_pressed_ready = False
+                player.save() 
+
 
         Game_Action.start_new_game(self,1,active_players)
         # Sets BBP and SBP
@@ -640,6 +636,8 @@ class MyConsumer(WebsocketConsumer):
         
         list = []
         for player in list_of_active_players:
+            player.player_pressed_ready = False
+            player.save() 
             list.append(player.user.username)
 
         Game_Action.start_new_game(self,1,active_players)
@@ -763,18 +761,29 @@ class MyConsumer(WebsocketConsumer):
                     print("-----Entering broadcast_list()!-----")
                     self.broadcast_list()    
                     print("-----Exiting broadcast_list()!-----") 
-                else:
-                    print("-----Starting New Game! Entering newGame()!-----")
-                    self.newGame()
-                    print("-----Exiting newGame()!-----")
-                    print("")
-                    # print(f"Big Blind Player: {Game.objects.last().big_blind_player}")
-                    # print(f"Game object count: {Game.objects.count()}")
-                    print("-----Entering broadcast_list()!-----")
-                    self.broadcast_list()
-                    print("-----Exiting broadcast_list()!-----")
-                    print("")
-        
+                elif (Game.objects.last().curr_round==5): 
+                        print("-----Starting New Game! Entering newGame()!-----")
+                        self.newGame()
+                        print("-----Exiting newGame()!-----")
+                        print("")
+                        # print(f"Big Blind Player: {Game.objects.last().big_blind_player}")
+                        # print(f"Game object count: {Game.objects.count()}")
+                        print("-----Entering broadcast_list()!-----")
+                        self.broadcast_list()
+                        print("-----Exiting broadcast_list()!-----")
+                        print("")
+                # game got interuptted 
+                elif (Game.objects.last().winning_player_user == None):
+                        print("-----Starting New Game! Entering newGame()!-----")
+                        self.newGame()
+                        print("-----Exiting newGame()!-----")
+                        print("")
+                        print("-----Entering broadcast_list()!-----")
+                        self.broadcast_list()
+                        print("-----Exiting broadcast_list()!-----")
+                        print("")
+
+            
         if (status == "newGame"):
             user_readied = data['user_pressed_ready']
             for player in Player.objects.all():
@@ -788,6 +797,24 @@ class MyConsumer(WebsocketConsumer):
             print("-----New Game! Currently in newGame State!-----")
             print(f"The number of players is: {active_and_ready_players}")
             print("")
+            
+            user_readied = data['user_pressed_ready']
+            num_participants = Player.objects.filter(is_participant=True).count()
+            ready_players = Player.objects.filter(user__username=user_readied, is_participant=True)
+            
+            for player in ready_players:
+                player.player_pressed_ready = True
+                player.save()
+    
+            active_and_ready_players = Player.objects.filter(is_participant=True, player_pressed_ready=True).count()
+            print("")
+            print("-----Pressed Ready! Currently in Ready State!-----")
+            print(f"The number active AND ready players is: {active_and_ready_players}")
+            print("")
+
+            if num_participants != active_and_ready_players:
+                print("Waiting for players to ready up!")
+            
 
             if (active_and_ready_players < 2):
                 print("Cannot Start Game With Less Than Two Players!")
@@ -816,6 +843,8 @@ class MyConsumer(WebsocketConsumer):
                 print("")
                 print("-----Entering isShowDown()!-----")
                 if self.isShowDown():
+                    print("-----is showdown going to broadcast list!-----")
+                    self.broadcast_list()
                     print("-----Exiting isShowDown()!-----")
                     print("")
                     print("-----Entering isGameOver()!-----")
@@ -829,7 +858,19 @@ class MyConsumer(WebsocketConsumer):
                 print("")
                 if Game.objects.last().curr_round == 5:
                     print("Finished Game!")
+                    print("Inside Finish, need to reset everything!")
+                    # self.finishGame(data)
+                    print(Game.objects.last().curr_round)
+                    print("going to broadcast list")
                     status = "finish"
+                    self.broadcast_list()
+                    print("exiting broadcast lsit")
+
+                    status = "ready"
+                    for player in Player.objects.all().filter(is_participant=True):
+                        player.player_pressed_ready = False
+                        player.save()
+
                     # print("-----Starting New Game! Entering newGame()!-----")
                     # self.newGame()
                     # print("-----Exiting newGame()!-----")
@@ -843,14 +884,6 @@ class MyConsumer(WebsocketConsumer):
             else:
                 print(Game.objects.last().current_player)
 
-        if (status == "finish"):
-            print("Inside Finish, need to reset everything!")
-            # self.finishGame(data)
-            self.broadcast_list()
-            status = "ready"
-            for player in Player.objects.all().filter(is_participant=True):
-                player.player_pressed_ready = False
-                player.save()
         else: self.send_error(f'Invalid status property: "{status}"')
 
     def broadcast_list(self):
@@ -862,7 +895,7 @@ class MyConsumer(WebsocketConsumer):
         messages['game_info'] = game_info
         messages['gameState'] = "inProgress"
         messages['cards'] = json.dumps(Game.make_card_list())
-        print(Player.make_active_player_list())
+        # print(Player.make_active_player_list())
         active_players = json.dumps(Player.make_active_player_list())
         non_active_players = json.dumps(Player.make_non_active_player_list())
         messages['active_players_info'] = active_players
