@@ -123,6 +123,7 @@ function processMessage(game_info, cards, active_players_info, non_active_player
             displayPlaceholderButtons(game_info)
         }
         displayCards(game_info, cards, active_players_info)
+        displayHighlight(game_info, active_players_info)
     }
     else{
         console.log("game info is null")
@@ -130,13 +131,12 @@ function processMessage(game_info, cards, active_players_info, non_active_player
 
 }
 
-
 function displayCards(game_info, cards, players){
     console.log("made it to display cards")
         // clear the board first 
         for (let i = 1; i <= 6; i++) {
-            let curr_pfp = document.getElementById(`pfp${i}`)
-            curr_pfp.src = ''
+            let curr_pfp = document.getElementById(`pfp${i}_div`)
+            curr_pfp.style.backgroundImage = "none"
             let curr_hand_left = document.getElementById(`player${i}_left_front`)
             curr_hand_left.src = ""
             let curr_hand_right = document.getElementById(`player${i}_right_front`)
@@ -165,108 +165,111 @@ function displayCards(game_info, cards, players){
     console.log("this is the logged in user index")
     console.log(logged_in_user_index)
     if (game_info["curr_round"] < 4){
-    for (let player_id in players){
-        // console.log(player_id)
-        let player = players[player_id]
-        if (player.user == myUserName){
-            // display the current user
-            let player_left = document.getElementById("player1_left_front")
-            let player_left_back = document.getElementById("player1_left_back")
-            let player_right = document.getElementById("player1_right_front")
-            let player_right_back = document.getElementById("player1_right_back")
-            
-            player_left.style.width = "59px";
-            player_left.style.height = "100px";
-            player_left.style.marginLeft = "-5px"
-            player_left.style.marginTop = "-8px"
-
-            player_left_back.style.width = "59px";
-            player_left_back.style.height = "100px";
-            player_left_back.style.marginLeft = "-5px"
-            player_left_back.style.marginTop = "-8px"
-
-            player_right.style.width = "59px";
-            player_right.style.height = "100px";
-            player_right.style.marginLeft = "-5px"
-            player_right.style.marginTop = "-8px"
-
-            player_right_back.style.width = "59px";
-            player_right_back.style.height = "100px";
-            player_right_back.style.marginLeft = "-5px"
-            player_right_back.style.marginTop = "-8px"
-
-
-            let player_left_id = player['card_left']
-            let player_right_id = player['card_right']
-            let player_left_file = cards[player_left_id]
-            let player_right_file = cards[player_right_id]
-            player_left.src = folder + player_left_file
-            player_right.src = folder + player_right_file
-
-
-            // display the pfp
-            let player_pfp = document.getElementById("pfp1")
-            let player_pfp_link = player['picture']
-            player_pfp.src = player_pfp_link
-
-
-            let file = cards["not-folded-back-art"]
-            let source = folder + file
-            player_left_back.src = source 
-            player_right_back.src = source
-
-    
-        } else{
-            let curr_user_index = list_of_players.indexOf(player.user)
-            console.log("this is the current user index")
-            console.log(curr_user_index)
-            let distance = Math.abs(curr_user_index - logged_in_user_index)
-            console.log("this is the calculated distance")
-            console.log(distance)
-            // if the curr user index < logged_in_user_index, curr user on the right
-            let seat_index
-            if (curr_user_index < logged_in_user_index){
-                console.log("the user shoudl be on the right of the logged in")
-                // curr user on the right of the logged in user
-                seat_index = 1 + distance
-                console.log("this is the seat number")
-                console.log(seat_index)
-                // display to the right
+        for (let player_id in players){
+            // console.log(player_id)
+            let player = players[player_id]
+            if (player.user == myUserName){
+                // display the current user
+                let player_left = document.getElementById("player1_left_front")
+                let player_left_back = document.getElementById("player1_left_back")
+                let player_right = document.getElementById("player1_right_front")
+                let player_right_back = document.getElementById("player1_right_back")
                 
-            }
-            // if logged_in_user_index < curr user index, curr user on the left
-            else if (logged_in_user_index < curr_user_index){
-                seat_index = 7 - distance
-                console.log("this is the seat number")
-                console.log(seat_index)
-            }
-            let player_left = document.getElementById(`player${seat_index}_left_front`)
-            let player_right = document.getElementById(`player${seat_index}_right_front`)
-            let file_left_id = player['card_left']
-            // console.log(file_left)
-            let file_right_id = player['card_right']
-            // console.log(file_right)
-            let file_left = cards[file_left_id]
-            let file_right = cards[file_right_id]
-            player_left.src = folder + file_left
-            player_right.src = folder + file_right
-            let player_pfp = document.getElementById(`pfp${seat_index}`)
-            let player_pfp_link = player['picture']
-            player_pfp.style.backgroundImage = `url(${player_pfp_link})`
-            player_pfp.src = player_pfp_link
+                player_left.style.width = "59px";
+                player_left.style.height = "100px";
+                player_left.style.marginLeft = "-5px"
+                player_left.style.marginTop = "-8px"
 
-            player_left.style.width = "59px";
-            player_left.style.height = "100px";
-            player_left.style.marginLeft = "-5px"
-            player_left.style.marginTop = "-8px"
+                player_left_back.style.width = "59px";
+                player_left_back.style.height = "100px";
+                player_left_back.style.marginLeft = "-5px"
+                player_left_back.style.marginTop = "-8px"
 
-            player_right.style.width = "59px";
-            player_right.style.height = "100px";
-            player_right.style.marginLeft = "-5px"
-            player_right.style.marginTop = "-8px"
+                player_right.style.width = "59px";
+                player_right.style.height = "100px";
+                player_right.style.marginLeft = "-5px"
+                player_right.style.marginTop = "-8px"
+
+                player_right_back.style.width = "59px";
+                player_right_back.style.height = "100px";
+                player_right_back.style.marginLeft = "-5px"
+                player_right_back.style.marginTop = "-8px"
+
+
+                let player_left_id = player['card_left']
+                let player_right_id = player['card_right']
+                let player_left_file = cards[player_left_id]
+                let player_right_file = cards[player_right_id]
+                player_left.src = folder + player_left_file
+                player_right.src = folder + player_right_file
+
+
+                // display the pfp
+                let player_pfp = document.getElementById("pfp1_div")
+                let player_pfp_link = player['picture']
+                player_pfp.style.backgroundImage = `url(${player_pfp_link})`
+                player_pfp.style.backgroundPosition = "center"
+                player_pfp.src = player_pfp_link
+
+
+                let file = cards["not-folded-back-art"]
+                let source = folder + file
+                player_left_back.src = source 
+                player_right_back.src = source
+
+        
+            } else{
+                let curr_user_index = list_of_players.indexOf(player.user)
+                console.log("this is the current user index")
+                console.log(curr_user_index)
+                let distance = Math.abs(curr_user_index - logged_in_user_index)
+                console.log("this is the calculated distance")
+                console.log(distance)
+                // if the curr user index < logged_in_user_index, curr user on the right
+                let seat_index
+                if (curr_user_index < logged_in_user_index){
+                    console.log("the user shoudl be on the right of the logged in")
+                    // curr user on the right of the logged in user
+                    seat_index = 1 + distance
+                    console.log("this is the seat number")
+                    console.log(seat_index)
+                    // display to the right
+                    
+                }
+                // if logged_in_user_index < curr user index, curr user on the left
+                else if (logged_in_user_index < curr_user_index){
+                    seat_index = 7 - distance
+                    console.log("this is the seat number")
+                    console.log(seat_index)
+                }
+                let player_left = document.getElementById(`player${seat_index}_left_front`)
+                let player_right = document.getElementById(`player${seat_index}_right_front`)
+                let file_left_id = player['card_left']
+                // console.log(file_left)
+                let file_right_id = player['card_right']
+                // console.log(file_right)
+                let file_left = cards[file_left_id]
+                let file_right = cards[file_right_id]
+                player_left.src = folder + file_left
+                player_right.src = folder + file_right
+                let player_pfp = document.getElementById(`pfp${seat_index}_div`)
+                let player_pfp_link = player['picture']
+                player_pfp.style.backgroundImage = `url(${player_pfp_link})`
+                player_pfp.style.backgroundPosition = "center"
+                player_pfp.src = player_pfp_link
+
+                player_left.style.width = "59px";
+                player_left.style.height = "100px";
+                player_left.style.marginLeft = "-5px"
+                player_left.style.marginTop = "-8px"
+
+                player_right.style.width = "59px";
+                player_right.style.height = "100px";
+                player_right.style.marginLeft = "-5px"
+                player_right.style.marginTop = "-8px"
+            }
+
         }
-
-    }
     }
 
 
@@ -389,6 +392,7 @@ function displayCards(game_info, cards, players){
             let player = players[player_id]
             if (player.user == myUserName){
                 // display the current user
+                
                 let player_left = document.getElementById("player1_left_front")
                 let player_left_back = document.getElementById("player1_left_back")
                 let player_right = document.getElementById("player1_right_front")
@@ -424,6 +428,12 @@ function displayCards(game_info, cards, players){
                 player_right_back.style.height = "100px";
                 player_right_back.style.marginLeft = "-5px"
                 player_right_back.style.marginTop = "-8px"
+
+                let player_pfp = document.getElementById("pfp1_div")
+                let player_pfp_link = player['picture']
+                player_pfp.style.backgroundImage = `url(${player_pfp_link})`
+                player_pfp.style.backgroundPosition = "center"
+                player_pfp.src = player_pfp_link
         
             } else{
                 let curr_user_index = list_of_players.indexOf(player.user)
@@ -469,6 +479,12 @@ function displayCards(game_info, cards, players){
                 player_right.style.height = "100px";
                 player_right.style.marginLeft = "-5px"
                 player_right.style.marginTop = "-8px"
+
+                let player_pfp = document.getElementById(`pfp${seat_index}_div`)
+                let player_pfp_link = player['picture']
+                player_pfp.style.backgroundImage = `url(${player_pfp_link})`
+                player_pfp.style.backgroundPosition = "center"
+                player_pfp.src = player_pfp_link
             }
 
             }
@@ -494,10 +510,48 @@ function dec(chips){
         }
 }
 
+function displayHighlight(game_info, players){
+    let list_of_players = game_info['list_of_active_players']
+    list_of_players = list_of_players.replace(/'/g, '"')
+    list_of_players = JSON.parse(list_of_players)
+    let logged_in_user_index = list_of_players.indexOf(myUserName)
+    
+    for (let player_id in players){
+        let player = players[player_id]
+        
+            // find this player's location and display highlight
+            let curr_user_index = list_of_players.indexOf(player.user)
+            console.log(curr_user_index)
+            let distance = Math.abs(curr_user_index - logged_in_user_index)
+            let seat_index
+            if (curr_user_index < logged_in_user_index){
+                // curr user on the right of the logged in user
+                seat_index = 1 + distance
+            }
+            // if logged_in_user_index < curr user index, curr user on the left
+            else if (logged_in_user_index < curr_user_index){
+                seat_index = 7 - distance
+            } else{
+                seat_index = 1
+            }
+        if (player.user == game_info['current_player_user']){
+            let highlightCurrentPlayer
+            console.log(seat_index)
+            highlightCurrentPlayer = document.getElementById(`pfp${seat_index}_div`)
+            highlightCurrentPlayer.style.boxShadow = "0px 0px 10px 5px #B7D1FF"
+        }
+        else{
+            let highlightCurrentPlayer
+            console.log(seat_index)
+            highlightCurrentPlayer = document.getElementById(`pfp${seat_index}_div`)
+            highlightCurrentPlayer.style.boxShadow = "none"
+        }
+        
+    }
+}
 
 function displayActiveButtons(game_info){
     var chips = 0
-
     let callDisplay
     callDisplay = document.getElementById("callButton")
     callDisplay.style.visibility = 'visible'
