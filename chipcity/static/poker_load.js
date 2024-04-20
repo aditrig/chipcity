@@ -265,7 +265,9 @@ function displayGameInfo(game_info, players){
             turn_indicator.textContent = `${current_turn_user} is taking their turn`;
 
         }
-    
+        if (game_info["curr_round"] == 5) {
+            displayGameOver(game_info)
+        }
     }
 
 }
@@ -565,8 +567,8 @@ function displayCards(game_info, cards, players){
     }
     if (game_info['curr_round'] >= 4){
         // flip over all the active hand cards
-        displayPlaceholderButtons(game_info)
         displayGameOver(game_info)
+        displayPlaceholderButtons(game_info)
         for (let player_id in players){
             // console.log(player_id)
             let player = players[player_id]
@@ -664,8 +666,7 @@ function displayCards(game_info, cards, players){
                 player_pfp.style.backgroundPosition = "center"
                 player_pfp.src = player_pfp_link
             }
-
-            }
+        }
     }
 
 }
