@@ -253,7 +253,13 @@ function displayGameInfo(game_info, players){
         if (game_info['curr_round'] == 5) {
             displayGameOver(game_info)
             let winning_player_string = game_info['winning_player_string']
-            let winning_player_list = winning_player_string.split(', ')
+            let winning_player_list
+            if (winning_player_string.includes(',')) {
+                winning_player_list = winning_player_string.split(', ')
+            }
+            else {
+                winning_player_list = winning_player_string.split()
+            }
             let seat_indices = []
             for (let player_id in winning_player_list){
                 // find this player's location and display highlight
