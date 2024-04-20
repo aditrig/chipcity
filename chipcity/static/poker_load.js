@@ -7,41 +7,6 @@
  */
 let socket = null
 
-// Assumed shared key (this should be securely obtained and identical to the server's key)
-const key = crypto.subtle.importKey(
-    "raw",
-    new Uint8Array([...]), // key bytes here
-    { name: "AES-GCM" },
-    false,
-    ["encrypt", "decrypt"]
-);
-
-async function encryptData(data) {
-    const encoder = new TextEncoder();
-    const encoded = encoder.encode(JSON.stringify(data));
-    const iv = window.crypto.getRandomValues(new Uint8Array(12));
-    const encrypted = await crypto.subtle.encrypt(
-        { name: "AES-GCM", iv: iv },
-        key,
-        encoded
-    );
-    return btoa(String.fromCharCode(...new Uint8Array(iv, encrypted)));
-}
-
-async function decryptData(encryptedData) {
-    const iv = encryptedData.slice(0, 12);
-    const ciphertext = encryptedData.slice(12);
-    const decrypted = await crypto.subtle.decrypt(
-        { name: "AES-GCM", iv: iv },
-        key,
-        ciphertext
-    );
-    const decoder = new TextDecoder();
-    return JSON.parse(decoder.decode(decrypted));
-}
-
-// Use these functions to encrypt/decrypt messages sent/received via WebSocket
-
 
 
 function connectToServer() {
@@ -72,10 +37,8 @@ function connectToServer() {
     // Handle messages received from the server.
     socket.onmessage = function(event) {
         // so here we have our response from the server and we want to utilize it to 
-        decryptData(event.data).then(decrypted => {
-            console.log("Received:", decrypted);
-        });
-        let response = JSON.parse(decryptData)
+
+        let response = JSON.parse(event.data)
         let game_info = JSON.parse(response.game_info)
         let active_players_info = JSON.parse(response.active_players_info)
         let non_active_players_info = JSON.parse(response.non_active_players_info)
@@ -910,11 +873,6 @@ function displayPlaceholderButtons(game_info){
 
 }
 
-function sendData(data) {
-    encryptData(data).then(encrypted => {
-        socket.sendData(encrypted);
-    });
-}
 
 function startGame() {
     let logo = document.getElementById('logo')
@@ -926,25 +884,25 @@ function startGame() {
     readyButton.style.visibility = "hidden"
 
     let data = {gameState: "ready", text: "", user_pressed_ready: myUserName}
-    socket.sendData(JSON.stringify(data))
+    socket.send(JSON.stringify(data))
 }
 
 // }
 function callAction(){
     let data = {user: myUserName, gameState: "inProgress", player_action: "call", text:""}
-    socket.sendData(JSON.stringify(data))
+    socket.send(JSON.stringify(data))
 }
 function raiseAction(){
     let data = {user: myUserName, gameState: "inProgress", player_action: "raise," + sanitize(document.getElementById('raiseAmount').value), text:""}
-    socket.sendData(JSON.stringify(data))
+    socket.send(JSON.stringify(data))
 }
 function checkAction(){
     let data = {user: myUserName, gameState: "inProgress", player_action: "check", text:""}
-    socket.sendData(JSON.stringify(data))
+    socket.send(JSON.stringify(data))
 }
 function foldAction(){
     let data = {user: myUserName, gameState: "inProgress", player_action: "fold", text:""}
-    socket.sendData(JSON.stringify(data))
+    socket.send(JSON.stringify(data))
 }
 
 function sanitize(s) {

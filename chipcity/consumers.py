@@ -11,30 +11,6 @@ import random, math, requests
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 
-
-from Crypto.Cipher import AES
-from Crypto.Random import get_random_bytes
-import json
-import base64
-
-# Key generation (should be stored securely and shared with the client securely)
-key = get_random_bytes(32)  # AES-256 key
-
-def encrypt_data(data):
-    """Encrypt data using AES GCM."""
-    data_bytes = json.dumps(data).encode('utf-8')
-    cipher = AES.new(key, AES.MODE_GCM)
-    ciphertext, tag = cipher.encrypt_and_digest(data_bytes)
-    return base64.b64encode(cipher.nonce + tag + ciphertext).decode('utf-8')
-
-def decrypt_data(encrypted_data):
-    """Decrypt data using AES GCM."""
-    data = base64.b64decode(encrypted_data)
-    nonce, tag, ciphertext = data[:12], data[12:28], data[28:]
-    cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
-    plaintext = cipher.decrypt_and_verify(ciphertext, tag)
-    return json.loads(plaintext.decode('utf-8'))
-
 class MyConsumer(WebsocketConsumer):
     group_name = 'chipcity_group'
     channel_name = 'game_inProgress'
@@ -691,7 +667,6 @@ class MyConsumer(WebsocketConsumer):
         # self.send(text_data=json.dumps({"message": response }))
             
     def receive(self, **kwargs):
-        kwargs = decrypt_data(kwargs)
         if 'text_data' not in kwargs:
             self.send_error('you must send text_data')
             return
@@ -881,12 +856,11 @@ class MyConsumer(WebsocketConsumer):
         non_active_players = json.dumps(Player.make_non_active_player_list())
         messages['active_players_info'] = active_players
         messages['non_active_players_info'] = non_active_players
-        encrypted_data = encrypt_data(json.dumps(messages))
         async_to_sync(self.channel_layer.group_send)(
             self.group_name,
             {
                 'type': 'broadcast_event',
-                'message': encrypted_data
+                'message': json.dumps(messages)
             }
         )
 
