@@ -74,10 +74,10 @@ class Game_Action:
         # evaluator = Evaluator()
         # hands = [[98306, 2102541], [67127839, 139523]]
         # print(evaluator.hand_summary(board, hands))
-        cards = deck.draw(2)
+        # cards = deck.draw(2)
         for player in Player.objects.all().filter(is_participant=True):
             # hand, created = Hand.objects.get_or_create(game=game, player=player)
-            # cards = deck.draw(2)
+            cards = deck.draw(2)
             player.card_left = cards[0]
             player.card_right = cards[1]
             # hands.append([player.card_left, player.card_right])
