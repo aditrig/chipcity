@@ -146,8 +146,6 @@ function processMessage(game_info, cards, active_players_info, non_active_player
 
 }
 
-<<<<<<< HEAD
-=======
 function displayGameInfo(game_info, players){
     // display the total pot
     let pot_text = document.getElementById("total_pot")
@@ -195,7 +193,6 @@ function displayGameInfo(game_info, players){
 }
 
 
->>>>>>> connections
 function displayCards(game_info, cards, players){
     console.log("made it to display cards")
         // clear the board first 
@@ -684,7 +681,7 @@ function displayPlaceholderButtons(game_info){
 
 
 function startGame() {
-    document.getElementById('text_wrapper').textContent = myUserName + " is ready";
+    document.getElementById('logo').textContent = `${myUserName} is ready`;
     let data = {gameState: "ready", text: "", user_pressed_ready: myUserName}
     socket.send(JSON.stringify(data))
 }
