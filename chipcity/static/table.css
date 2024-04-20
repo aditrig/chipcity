@@ -561,7 +561,6 @@ body {
 }
 
 #subtractRaise{
-  
   position: absolute;
   width: 45px;
   height: 45px;
@@ -569,6 +568,8 @@ body {
   left: 0;
   background-color: #ee555dcc;
   border-radius: 10px;
+  border: 1px solid;
+  border-color: #E47076;
   box-shadow: 0px 4px 4px #00000040;
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
@@ -638,6 +639,8 @@ body {
   left: 0;
   background-color: #93cb5bcc;
   border-radius: 10px;
+  border: 1px solid;
+  border-color: #9BCB6B;
   box-shadow: 0px 4px 4px #00000040;
   font-family: "Dangrek", Helvetica;
   font-weight: 400;
@@ -973,6 +976,8 @@ body {
   left: 1px;
   background-color: #374b6b;
   border-radius: 30px;
+  border: 1px solid;
+  border-color: #425778;
   transform: rotate(9.66deg);
   box-shadow: 0px 4px 4px #00000040;
   transform: rotate(9.66deg);
@@ -1035,6 +1040,8 @@ body {
   left: 2px;
   background-color: #374b6b;
   border-radius: 30px;
+  border: 1px solid;
+  border-color: #425778;
   transform: rotate(-9.66deg);
   box-shadow: 0px 4px 4px #00000040;
   text-shadow: 0px 4px 4px #00000040;
@@ -1147,5 +1154,13 @@ body {
 	z-index: 2;
 	/* for firefox 31 */
 	transform: rotateY(0deg);
+}
+
+img {
+  image-rendering: -moz-crisp-edges; /* Firefox */
+  image-rendering: -o-crisp-edges; /* Opera */
+  image-rendering: -webkit-optimize-contrast; /* Webkit (non-standard naming) */
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor; /* IE (non-standard property) */
 }
 
