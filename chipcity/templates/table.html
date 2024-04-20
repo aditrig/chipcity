@@ -59,10 +59,10 @@
           <div class="rchp-6"><img id = "player6_right_front"/></div>
           <div class="left-flop_container" id="leftFlopCardContainer">
               <div class="flipper">
-                <div class="front">
+                <div class="front" style="width: 68px; height: 100px;">
                   <img id="left-flop_front"/>
                 </div>
-                <div class="back">
+                <div class="back" style="width: 68px; height: 100px;">
                   <img id="left-flop_back"/>             
                 </div>
             </div>
@@ -70,10 +70,10 @@
           
           <div class="middle-flop_container" id="middlFlopCardContainer">
               <div class="flipper">
-                <div class="front">
+                <div class="front" style="width: 68px; height: 100px;">
                   <img id="middle-flop_front"/>
                 </div>
-                <div class="back">
+                <div class="back" style="width: 68px; height: 100px;">
                   <img id="middle-flop_back"/>             
                 </div>
             </div>
@@ -81,10 +81,10 @@
           
           <div class="right-flop_container" id="rightFlopCardContainer">
               <div class="flipper">
-                <div class="front">
+                <div class="front" style="width: 68px; height: 100px;">
                   <img id="right-flop_front"/>
                 </div>
-                <div class="back">
+                <div class="back" style="width: 68px; height: 100px;">
                   <img id="right-flop_back"/>             
                 </div>
             </div>
@@ -92,10 +92,10 @@
 
           <div class="turn_container" id="turnContainer">
             <div class="flipper">
-              <div class="front">
+              <div class="front" style="width: 68px; height: 100px;">
                 <img id="turn_front"/>
               </div>
-              <div class="back">
+              <div class="back" style="width: 68px; height: 100px;">
                 <img id="turn_back"/>             
               </div>
           </div>
@@ -103,10 +103,10 @@
 
         <div class="river_container" id="riverContainer">
           <div class="flipper">
-            <div class="front">
+            <div class="front" style="width: 68px; height: 100px;">
               <img id="river_front"/>
             </div>
-            <div class="back">
+            <div class="back" style="width: 68px; height: 100px;">
               <img id="river_back"/>             
             </div>
         </div>
@@ -116,7 +116,7 @@
         <div class="action-buttons">
           <div class="fold-call-group">
             <div class="fold-wrap">
-              <button type="button" value="Submit" id="foldButton" onclick="foldAction()" style="visibility: hidden;">Fold</button>
+              <button type="button" value="Submit" id="foldButton" onclick="foldAction()" style="visibility: hidden;">FOLD</button>
               <!-- <div class="fold-button"></div>
               <div class="fold-text">FOLD</div> -->
             </div>
@@ -124,19 +124,19 @@
               <!-- <div class="call-button"></div>
               
               <div class="call-text">CALL</div> -->
-              <button type="button" value="Submit" id="callButton" onclick="callAction()" style="visibility: hidden;">Call</button>
+              <button type="button" value="Submit" id="callButton" onclick="callAction()" style="visibility: hidden;">CALL</button>
 
             </div>
           </div>
           <div class="raise-check-group">
             <div class="raise-wrap">
-              <button type="button" form="raiseForm" value="Submit" id="raiseButton" onclick="raiseAction()" style="visibility: hidden;">Raise</button>
+              <button type="button" form="raiseForm" value="Submit" id="raiseButton" onclick="raiseAction()" style="visibility: hidden;">RAISE</button>
 
               
             </div>
 
             <div class="check-wrap">
-              <button type="button" value="Submit" id="checkButton" onclick="checkAction()" style="visibility: hidden;">Check</button>
+              <button type="button" value="Submit" id="checkButton" onclick="checkAction()" style="visibility: hidden;">CHECK</button>
 
               <!-- <div class="check-button"></div>
               
