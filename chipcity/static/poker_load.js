@@ -263,16 +263,10 @@ function displayGameInfo(game_info, players){
             turn_indicator.textContent = `${current_turn_user} is taking their turn`;
 
         }
-<<<<<<< HEAD
-        if (game_info["curr_round"] == 5) {
-            displayGameOver(game_info)
-        }
-=======
         if (game_info['curr_round'] == 5) {
             displayGameOver(game_info)
         }
     
->>>>>>> 832a398db5a71c1afb67804fec6479b7b2c41530
     }
 
 }
