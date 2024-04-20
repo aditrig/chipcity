@@ -740,16 +740,16 @@ function inc(chips){
     var value = parseInt(document.getElementById('raiseAmount').value ,10) 
     value = isNaN(value) ? 0 : value;
     value++;
-    document.getElementById('number').value = value;
+    document.getElementById('raiseAmount').value = value;
 
 }
 
 function dec(chips){
-    if (chips > 0) {
         var value = parseInt(document.getElementById('raiseAmount').value ,10) 
+        if (value > 0) {
         value = isNaN(value) ? 0 : value;
         value--;
-        document.getElementById('number').value = value;
+        document.getElementById('raiseAmount').value = value;
         }
 }
 
@@ -883,7 +883,7 @@ function callAction(){
     socket.send(JSON.stringify(data))
 }
 function raiseAction(){
-    let data = {user: myUserName, gameState: "inProgress", player_action: "raise," + document.getElementById('raiseAmount').value, text:""}
+    let data = {user: myUserName, gameState: "inProgress", player_action: "raise," + sanitize(document.getElementById('raiseAmount').value), text:""}
     socket.send(JSON.stringify(data))
 }
 function checkAction(){
