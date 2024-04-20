@@ -30,7 +30,7 @@ SECRET_KEY = CONFIG.get("Django", "Secret")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['team39.cmu-webapps.com','18.218.127.71']
+ALLOWED_HOSTS = ["18.218.127.71", "team39.cmu-webapps.com"]
 
 # Application definition
 
@@ -151,6 +151,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = CONFIG.get("GoogleOAuth2", "client_id")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = CONFIG.get("GoogleOAuth2", "client_secret")
 SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {'prompt': 'select_account'}
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['fullname', 'picture']
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://team39.cmu-webapps.com/oauth/complete/google-oauth2/'
 
 CHIPCITY_TITLE = CONFIG.get("ChipCity", "title")
 CHIPCITY_USERS = CONFIG.get("ChipCity", "users")
@@ -159,4 +160,4 @@ CHIPCITY_USERS = CONFIG.get("ChipCity", "users")
 LOGIN_URL = '/oauth/login/google-oauth2/'
 
 # Default URL to redirect to after a user logs in.
-LOGIN_REDIRECT_URL = 'http://team39.cmu-webapps.com/oauth/complete/google-oauth2/'
+LOGIN_REDIRECT_URL = '/'
