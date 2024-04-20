@@ -366,6 +366,7 @@ class MyConsumer(WebsocketConsumer):
                     player.chips += game.total_pot
                     player.save()
                     game.winning_player_user = f"{list_of_players_with_active_hand[winner[0][0]].user} won with a {winner[0][1]}"
+                    game.winning_player_string = f"{list_of_players_with_active_hand[winner[0][0]].user}"
                     game.save()
         else:
             winning_player_user_list = []
@@ -379,6 +380,7 @@ class MyConsumer(WebsocketConsumer):
                 win.save()
                 winning_player_user_list.append(win.user.username)
             concatenated_winners = ", ".join(winning_player_user_list)
+            game.winning_player_string = concatenated_winners
             concatenated_winners += f" split pot with a {winner[0][1]}"
             game.winning_player_user = concatenated_winners
             game.save()

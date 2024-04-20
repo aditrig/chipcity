@@ -265,6 +265,54 @@ function displayGameInfo(game_info, players){
         }
         if (game_info['curr_round'] == 5) {
             displayGameOver(game_info)
+            let winning_player_string = game_info['winning_player_string']
+            let winning_player_list = winning_player_string.split(', ')
+            console.log("PRINTINGWINNINGPLAYERSTRING")
+            console.log(winning_player_string)
+            console.log("PRINTINGWINNINGPLAYERLIST")
+            console.log(winning_player_list)
+            let seat_indices = []
+            for (let player_id in winning_player_list){
+                // find this player's location and display highlight
+                console.log("WINNINGPLAYERID:")
+                console.log(winning_player_list[player_id])
+                let actualPlayer = winning_player_list[player_id]
+                console.log("this is the list of players")
+                console.log(list_of_players)
+                let curr_user_index = list_of_players.indexOf(actualPlayer)
+                console.log("this is the curr_user_index")
+                console.log(curr_user_index)
+                console.log("this is the logged in user index")
+                console.log(logged_in_user_index)
+                let distance = Math.abs(curr_user_index - logged_in_user_index)
+                let seat_index
+                if (curr_user_index < logged_in_user_index){
+                    // curr user on the right of the logged in user
+                    seat_index = 1 + distance
+                }
+                // if logged_in_user_index < curr user index, curr user on the left
+                else if (logged_in_user_index < curr_user_index){
+                    seat_index = 7 - distance
+                } else{
+                    seat_index = 1
+                }
+                console.log("this is the new seat index")
+                console.log(seat_index)
+                seat_indices.push(seat_index)
+                console.log(seat_indices)
+            }
+            for (let i = 0; i < seat_indices.length; i++){
+                let highlightWinningPlayer
+                highlightWinningPlayer = document.getElementById(`pfp${seat_indices[i]}_div`)
+                highlightWinningPlayer.style.boxShadow = "0px 0px 10px 5px #B7D1FF" 
+            }
+            for (let i = 1; i < 7; i++) {
+                if (seat_indices.indexOf(i) == -1) {
+                    let highlightWinningPlayer
+                    highlightWinningPlayer = document.getElementById(`pfp${i}_div`)
+                    highlightWinningPlayer.style.boxShadow = "none" 
+                }
+            }
         }
     
     }
@@ -304,6 +352,8 @@ function displayCards(game_info, cards, players){
 
             let curr_pfp = document.getElementById(`pfp${i}_div`)
             curr_pfp.style.backgroundImage = "none"
+            curr_pfp.style.boxShadow = "none"
+
             let curr_hand_left = document.getElementById(`player${i}_left_front`)
             curr_hand_left.src = ""
             let curr_hand_right = document.getElementById(`player${i}_right_front`)
@@ -761,22 +811,21 @@ function displayHighlight(game_info, players){
     
     for (let player_id in players){
         let player = players[player_id]
-        
-            // find this player's location and display highlight
-            let curr_user_index = list_of_players.indexOf(player.user)
-            console.log(curr_user_index)
-            let distance = Math.abs(curr_user_index - logged_in_user_index)
-            let seat_index
-            if (curr_user_index < logged_in_user_index){
-                // curr user on the right of the logged in user
-                seat_index = 1 + distance
-            }
-            // if logged_in_user_index < curr user index, curr user on the left
-            else if (logged_in_user_index < curr_user_index){
-                seat_index = 7 - distance
-            } else{
-                seat_index = 1
-            }
+        // find this player's location and display highlight
+        let curr_user_index = list_of_players.indexOf(player.user)
+        console.log(curr_user_index)
+        let distance = Math.abs(curr_user_index - logged_in_user_index)
+        let seat_index
+        if (curr_user_index < logged_in_user_index){
+            // curr user on the right of the logged in user
+            seat_index = 1 + distance
+        }
+        // if logged_in_user_index < curr user index, curr user on the left
+        else if (logged_in_user_index < curr_user_index){
+            seat_index = 7 - distance
+        } else{
+            seat_index = 1
+        }
         if (player.user == game_info['current_player_user']){
             let highlightCurrentPlayer
             console.log(seat_index)
@@ -793,6 +842,8 @@ function displayHighlight(game_info, players){
         
     }
 }
+
+
 
 function displayActiveButtons(game_info){
     var chips = 0
@@ -871,7 +922,7 @@ function startGame() {
     logo.style.color = "#FFF"
     
     let readyButton = document.getElementById('start-button')
-    readyButton.visibility = "hidden"
+    readyButton.style.visibility = "hidden"
 
     let data = {gameState: "ready", text: "", user_pressed_ready: myUserName}
     socket.send(JSON.stringify(data))
