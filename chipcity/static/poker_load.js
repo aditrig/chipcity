@@ -548,6 +548,7 @@ function displayCards(game_info, cards, players){
     if (game_info['curr_round'] >= 4){
         // flip over all the active hand cards
         displayPlaceholderButtons(game_info)
+        displayGameOver(game_info)
         for (let player_id in players){
             // console.log(player_id)
             let player = players[player_id]
@@ -651,6 +652,14 @@ function displayCards(game_info, cards, players){
 
 }
 
+function displayGameOver(game_info) {
+    console.log(game_info['winning_player_user'])
+    let winning_player = game_info['winning_player_user']
+    let logo = document.getElementById('logo')
+    logo.textContent = `${winning_player}`;
+    logo.style.textTransform = "uppercase"
+    logo.style.color = "#FFF"
+}
 
 function inc(chips){
     var value = parseInt(document.getElementById('raiseAmount').value ,10) 

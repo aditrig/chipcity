@@ -357,7 +357,7 @@ class MyConsumer(WebsocketConsumer):
         winner = evaluator.hand_summary(board, list_of_hands)
         print(f"This is the evaluator summary to find winner")
         if len(winner) == 1:
-            print(f"{list_of_players_with_active_hand[winner[0][0]].user} won with a {winner[0][1]}")
+            # print(f"{list_of_players_with_active_hand[winner[0][0]].user} won with a {winner[0][1]}")
             for player in Player.objects.all().filter(hand_is_active = True):
                 if player.id == list_of_players_with_active_hand[winner[0][0]].id:
                     player.win_count += 1
@@ -365,7 +365,7 @@ class MyConsumer(WebsocketConsumer):
                     # Give Rewards
                     player.chips += game.total_pot
                     player.save()
-                    game.winning_player_user = str([list_of_players_with_active_hand[winner[0][0]].user.username])
+                    game.winning_player_user = f"{list_of_players_with_active_hand[winner[0][0]].user} won with a {winner[0][1]}"
                     game.save()
         else:
             winning_player_user_list = []
@@ -378,16 +378,9 @@ class MyConsumer(WebsocketConsumer):
                 win.chips += math.ceil(game.total_pot/len(winner))
                 win.save()
                 winning_player_user_list.append(win.user.username)
-
-                # for player in Player.objects.all().filter(hand_is_active = True):
-                #     if player.id == list_of_players_with_active_hand[winner[i][0]].id:
-                #         player.win_count += 1
-                #         player.winning_hand = winner[0][1]
-                #         player.chips += math.ceil(game.total_pot/len(winner))
-                #         player.save()
-                #         winning_player_user_list.append(list_of_players_with_active_hand[winner[i][0]].user)
-            print(str(winning_player_user_list))
-            game.winning_player_user = str(winning_player_user_list)
+            concatenated_winners = ", ".join(winning_player_user_list)
+            concatenated_winners += f" split pot with a {winner[0][1]}"
+            game.winning_player_user = concatenated_winners
             game.save()
     
     def resetRound(self):
