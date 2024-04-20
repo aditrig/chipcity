@@ -125,7 +125,7 @@ class Game(models.Model):
     small_blind_amt = models.IntegerField(default=1)
     current_player = models.ForeignKey(Player, on_delete=models.PROTECT,related_name="current_player", null=True)
     winning_player_user = models.CharField(blank=True, max_length=100, null=True)
-    
+    winning_player_string = models.CharField(blank=True, max_length=1000, null=True)
 
     def create_game(self, game_num, num_players, init_pot, curr_round):
         return type(self).objects.create(
@@ -165,7 +165,8 @@ class Game(models.Model):
                 'small_blind_player': item.small_blind_player.id,
                 'current_player_id': item.current_player.id,
                 'current_player_user': item.current_player.user.username,
-                'winning_player_user': item.winning_player_user
+                'winning_player_user': item.winning_player_user,
+                'winning_player_string': item.winning_player_string
             }
             item_dict_list.append(item_dict)
         # print(item_dict_list)
