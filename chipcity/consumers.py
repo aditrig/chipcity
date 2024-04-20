@@ -11,7 +11,6 @@ import random, math, requests
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 
-
 class MyConsumer(WebsocketConsumer):
     group_name = 'chipcity_group'
     channel_name = 'game_inProgress'
@@ -32,8 +31,7 @@ class MyConsumer(WebsocketConsumer):
                 spectateMode = True
             else: 
                 spectateMode = False
-                print("New player has been created!")
-            player, created = Player.objects.get_or_create(
+                player, created = Player.objects.get_or_create(
                 user=self.scope['user'],
                 defaults={
                     'picture': self.scope['user'].social_auth.get(provider='google-oauth2').extra_data['picture'],
@@ -42,8 +40,6 @@ class MyConsumer(WebsocketConsumer):
                     'spectator': spectateMode
                 }
             )
-            # print(player.user)
-            # print(player.spectator)
             player.save()
 
         # If the player was not created, it means it already existed. In this case, only update is_active.
@@ -56,25 +52,16 @@ class MyConsumer(WebsocketConsumer):
             player = Player.objects.get(user=self.user)
             if not player.spectator and active_players<6:
                 player.is_participant = True
-            # print(self.user)
             player.save()
-            # if ((active_players) > 2):
-                
-            #     curr_game = Game.objects.last()
-            #     curr_game.save()
-            for player in Player.objects.all().filter(): 
-                print(f"player: {player.user} spectator status: {player.spectator} and their participant status: {player.is_participant}")
         active_players = 0 
         for player in Player.objects.all():
             if player.is_participant:
                 active_players+=1
-        print(f"Number of Players That Are Participants: {active_players}")
 
         ready_players = 0
         for player in Player.objects.all().filter(player_pressed_ready=True):
             ready_players += 1
         
-        print(f"The number of players pressed ready is: {ready_players}")
         
         self.user = self.scope["user"]
         self.broadcast_list()
@@ -88,13 +75,11 @@ class MyConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_discard)(
             self.group_name, self.channel_name
         )      
-        print(self.user)
         
         player = Player.objects.get(user=self.user)
         if player== None: 
             return
         if player.spectator: 
-            print(f"why r u disconnecting {player.user}")
             player.delete() 
             self.broadcast_list()
             return
@@ -107,16 +92,12 @@ class MyConsumer(WebsocketConsumer):
         if (Game.objects.last() and Game.objects.last().current_player == player): 
             self.playerTakeTurn("fold")
         player.save() 
-        print("websocket is diconnected yay")
-        for player in Player.objects.all().filter(): 
-            print(f"player: {player.user} spectator status: {player.spectator} and their participant status: {player.is_participant}")
 
         active_players = 0 
         for player in Player.objects.all():
             if player.is_participant:
                 active_players+=1
 
-        print(f"number of active players: {active_players}")
         player = Player.objects.get(user=self.user)
             
         curr_game = Game.objects.last()
@@ -174,23 +155,18 @@ class MyConsumer(WebsocketConsumer):
         list_active_hand_players = []
         for player in Player.objects.all().filter(hand_is_active=True):
             list_active_hand_players.append(player)
-        print(f"list_active_hand_players: {list_active_hand_players}")
-        print(f"game.players_connected: {game.players_connected}")
         
         list_are_participants = []
         for player in Player.objects.all().filter(is_participant=True):
             list_are_participants.append(player)
 
-        print(f"list_are_participants: {list_are_participants}")
 
         current_player = game.current_player
-        print(f"This is current player: {game.current_player.user}")
         
         num_players_at_start = 0
         for player in Player.objects.all().filter(player_pressed_ready = True):
             num_players_at_start += 1
         
-        print(f"PLAYERS AT START:{num_players_at_start}")
         # Checks for the player to the left of the current player's existance in list_active_hand_players
         firstPlayer = Player.objects.all().filter(id=((game.big_blind_player.id)%(num_players_at_start))+1)[0]
         if firstPlayer in list_active_hand_players:
@@ -199,7 +175,6 @@ class MyConsumer(WebsocketConsumer):
             currPlay = Player.objects.all().filter(id=((game.big_blind_player.id)%(num_players_at_start))+1)[0]
             count = 1
             while currPlay not in list_active_hand_players or currPlay.is_all_in:
-                print(f"PLAYERS CONNECTED INSIDE 1: {num_players_at_start}")
                 currPlay = Player.objects.all().filter(id=((game.big_blind_player.id+count)%(num_players_at_start))+1)[0]
                 count += 1
             current_player = currPlay
@@ -207,17 +182,14 @@ class MyConsumer(WebsocketConsumer):
             currPlay = Player.objects.all().filter(id=((game.small_blind_player.id)%(num_players_at_start))+1)[0]
             count = 1
             while currPlay not in list_active_hand_players or currPlay.is_all_in:
-                print(f"PLAYERS CONNECTED INSIDE 2: {num_players_at_start}")
                 currPlay = Player.objects.all().filter(id=((game.small_blind_player.id+count)%(num_players_at_start))+1)[0]
                 count += 1
             current_player = currPlay
         # elif game.big_blind_player not in list_active_hand_players and game.small_blind_player in list_active_hand_players:
         #     current_player = Player.objects.all().filter(id=((game.small_blind_player.id)%(game.players_connected))+1)[0]
         elif Player.objects.all().filter(id=((game.current_player.id)%(num_players_at_start))+1)[0] in list_active_hand_players and not Player.objects.all().filter(id=((game.current_player.id)%(num_players_at_start))+1)[0].is_all_in:
-            print(f"PLAYERS CONNECTED INSIDE 3: {num_players_at_start}")
             current_player = Player.objects.all().filter(id=((game.current_player.id)%(num_players_at_start))+1)[0]
         else: # If doesn't exist, finds next closest player
-            print(f"PLAYERS CONNECTED INSIDE 4: {num_players_at_start}")
             currPlay = Player.objects.all().filter(id=((game.current_player.id)%(num_players_at_start))+1)[0]
             count = 1
             while currPlay not in list_active_hand_players or currPlay.is_all_in:
@@ -293,7 +265,6 @@ class MyConsumer(WebsocketConsumer):
         
 
         print("Round is not Over!")
-        print(((game.current_player.id)%(num_players_at_start))+1)
         if Player.objects.all().filter(id=((game.current_player.id)%(num_players_at_start))+1)[0] in list_active_hand_players and not Player.objects.all().filter(id=((game.current_player.id)%(num_players_at_start))+1)[0].is_all_in:
             game.current_player = Player.objects.all().filter(id=((game.current_player.id)%(num_players_at_start))+1)[0]
             game.current_player.save()
@@ -307,7 +278,6 @@ class MyConsumer(WebsocketConsumer):
             game.current_player = currPlay
             game.current_player.save()
             game.save()
-        print(f"This is now the current player: {game.current_player.user}")
         return False
 
     def isShowDown(self):
@@ -368,19 +338,14 @@ class MyConsumer(WebsocketConsumer):
         list_of_players_with_active_hand = []
         for player in Player.objects.all().filter(hand_is_active = True):
             list_of_players_with_active_hand.append(player)
-        print(list_of_players_with_active_hand)
         
         list_of_hands = []
         for player in Player.objects.all().filter(hand_is_active = True):
             hand = [player.card_left, player.card_right]
             list_of_hands.append(hand)
-        print(list_of_hands)
         evaluator = Evaluator()
         board = [game.flop1, game.flop2, game.flop3, game.turn, game.river]
-        print(f"This is the Board: {board}")
-        print(f"This is the list_of_hands that need to evaluated: {list_of_hands}")
         winner = evaluator.hand_summary(board, list_of_hands)
-        print(f"This is the evaluator summary to find winner")
         if len(winner) == 1:
             # print(f"{list_of_players_with_active_hand[winner[0][0]].user} won with a {winner[0][1]}")
             for player in Player.objects.all().filter(hand_is_active = True):
@@ -396,8 +361,6 @@ class MyConsumer(WebsocketConsumer):
         else:
             winning_player_user_list = []
             for i in range(len(winner)):
-                print(f"{list_of_players_with_active_hand[winner[i][0]].user},")
-                print(f"Split Pot with a {winner[0][1]}")
                 win = list_of_players_with_active_hand[winner[i][0]]
                 win.win_count += 1
                 win.winning_hand = winner[0][1]
@@ -428,10 +391,6 @@ class MyConsumer(WebsocketConsumer):
 
         currRound = currentGame.curr_round
 
-        print(f"This is the Current Player: {currentGame.current_player.user}")
-        print(f"This is {currentGame.current_player.user}'s action: {action}")
-        print(f"This is the Current Round (0-preflop, 1-flop, 2-turn, 3-river, 4-showdown): {currRound}")
-        print(f"Before any turn is computed, this is the Current Round's Highest Current Bet: {currentGame.highest_curr_bet}")
         
         if (action == "call"):
             # maxBet stays the same
@@ -447,7 +406,7 @@ class MyConsumer(WebsocketConsumer):
                     currentGame.current_player.can_call = True
                     currentGame.current_player.save()
             else:
-                print("Calling is not a legal action!")
+                self.send_error("Calling is not a legal action!")
                 currentGame.current_player.can_call = False
                 currentGame.current_player.save()
                 return False
@@ -455,12 +414,12 @@ class MyConsumer(WebsocketConsumer):
             # check if it is legal 
             if (currRound==0):
                 if currentGame.current_player.id != currentGame.big_blind_player.id and not can_check(currentGame, currentGame.current_player):
-                    print("only big blind can check pre-flop!")
+                    self.send_error("only big blind can check pre-flop!")
                     currentGame.current_player.can_check = False
                     currentGame.current_player.save()
                     return False
                 elif currentGame.current_player.id == currentGame.big_blind_player.id and not can_check(currentGame, currentGame.current_player):
-                    print("Can't check, opening bet has already been placed")
+                    self.send_error("Can't check, opening bet has already been placed")
                     currentGame.current_player.can_check = False
                     currentGame.current_player.save()
                     return False
@@ -474,7 +433,7 @@ class MyConsumer(WebsocketConsumer):
                     currentGame.current_player.can_check = True
                     currentGame.current_player.save()
                 else: 
-                    print("Can't check, opening bet has already been placed")
+                    self.send_error("Can't check, opening bet has already been placed")
                     currentGame.current_player.can_check = False
                     currentGame.current_player.save()
                     return False
@@ -499,40 +458,26 @@ class MyConsumer(WebsocketConsumer):
                         currentGame.current_player.can_raise = False
                         currentGame.current_player.save()
                     else:
-                        print("Cannot raise by zero, cannot raise less than or equal to highest current bet, or have insufficient funds!")
+                        self.send_error("Cannot raise by zero, cannot raise less than or equal to highest current bet, or have insufficient funds!")
                         currentGame.current_player.can_raise = False
                         currentGame.current_player.save()
                         return False
                 except ValueError:
                     # Invalid amount (not a valid number after "raise,")
-                    print("Invalid raise amount. Please provide a numeric value.")
+                    self.send_error("Invalid raise amount. Please provide a numeric value.")
                     return False
             else:
                 # Invalid format
-                print("Invalid action format. Please use 'raise,x' format.")
+                self.send_error("Invalid action format. Please use 'raise,x' format.")
                 return False
         
-        # currentGame.save()
-        # currentGame.current_player.save()
-        print(f"This is the Current Player: {currentGame.current_player.user}")
-        print(f"This is {currentGame.current_player.user}'s action: {action}")
-        print(f"This is the Current Round (0-preflop, 1-flop, 2-turn, 3-river, 4-showdown): {currentGame.curr_round}")
-        print(f"After turn is computed, this is the Current Round's Highest Current Bet: {currentGame.highest_curr_bet}")
-        print(f"After turn is computed, this is the Current Player's Current Bet: {currentGame.current_player.current_bet}")
-        # currentGame.current_player = Player.objects.all().filter(id=((currentGame.current_player.id)%(currentGame.num_players_with_active_hand))+1)[0]
-        # currentGame.current_player.save()
-        # currentGame.save()
         return True
-        
-        # want it so that when one player is disconnected, set their active status to false
     
     def initGame(self):
-        print(f"Game object count: {Game.objects.count()}")
         active_players = 0 
         for player in Player.objects.all():
             if player.is_participant:
                 active_players+=1
-        print(f"I am now inside initGame() with the number of active players: {active_players}")
 
         if active_players < 2:
             # Makes sure that game does not start without 2+ players
@@ -540,7 +485,6 @@ class MyConsumer(WebsocketConsumer):
         
         # Gets list of active players
         list_of_active_players = list_of_players()
-        print(f"Printing list of active player objects!: {list_of_active_players}")
 
         list = []
         for player in Player.objects.all():
@@ -557,13 +501,7 @@ class MyConsumer(WebsocketConsumer):
         print(curr_game)
         curr_game.small_blind_player = list_of_active_players[0]
         curr_game.big_blind_player = list_of_active_players[1]
-        # curr_game.big_blind_player.most_recent_action = "raise"
-        # curr_game.big_blind_player.can_check = True
-        # curr_game.big_blind_player.save()
         curr_game.current_player = list_of_active_players[(list_of_active_players.index(curr_game.big_blind_player)+1)%(curr_game.players_connected)]
-        print(f"The Small Blind Player is: {curr_game.small_blind_player.user}")
-        print(f"The Big Blind Player is: {curr_game.big_blind_player.user}")
-        print(f"The Current Player is: {curr_game.current_player.user}")
         curr_game.save()
 
         for player in Player.objects.all().filter(is_participant=True):
@@ -898,8 +836,6 @@ class MyConsumer(WebsocketConsumer):
                     player.save()
 
                 self.broadcast_list()
-                print("exiting broadcast lsit")
-
                 status = "ready"
         else:
             print(Game.objects.last().current_player)
@@ -916,7 +852,6 @@ class MyConsumer(WebsocketConsumer):
         messages['game_info'] = game_info
         messages['gameState'] = "inProgress"
         messages['cards'] = json.dumps(Game.make_card_list())
-        # print(Player.make_active_player_list())
         active_players = json.dumps(Player.make_active_player_list())
         non_active_players = json.dumps(Player.make_non_active_player_list())
         messages['active_players_info'] = active_players

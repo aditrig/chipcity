@@ -8,6 +8,7 @@
 let socket = null
 
 
+
 function connectToServer() {
     // Use wss: protocol if site using https:, otherwise use ws: protocol
     let wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:"
@@ -35,11 +36,9 @@ function connectToServer() {
 
     // Handle messages received from the server.
     socket.onmessage = function(event) {
-        console.log("hi")
         // so here we have our response from the server and we want to utilize it to 
+
         let response = JSON.parse(event.data)
-        console.log(response)
-        console.log(response.game_info)
         let game_info = JSON.parse(response.game_info)
         let active_players_info = JSON.parse(response.active_players_info)
         let non_active_players_info = JSON.parse(response.non_active_players_info)
@@ -48,10 +47,6 @@ function connectToServer() {
         let a_players
         let n_players
         let cards
-        console.log('Game Info', JSON.parse(response.game_info));
-        console.log('Active Players', JSON.parse(response.active_players_info));
-        console.log('Non Active Players', JSON.parse(response.non_active_players_info))
-        console.log(cards_info)
         if (game_info.length > 0){
             game = game_info[(game_info.length)-1]
         } else{
@@ -103,7 +98,6 @@ function displayResponse(response) {
 function processMessage(game_info, cards, active_players_info, non_active_players_info){
     // check if the current player is the user
     // if it is, display buttons
-    console.log("makes it to processMessage, check if user is currentPlayer")
     if (game_info != null){
         let readyDisplay
         readyDisplay = document.getElementById("start-button")
@@ -117,22 +111,16 @@ function processMessage(game_info, cards, active_players_info, non_active_player
             readyDisplay.onclick = function(){startGame()}
 
         }
-        console.log("game info is not null")
         if (game_info["current_player_user"] == myUserName){
-            console.log("display Active Buttons")
     
             displayActiveButtons(game_info)
         }
         else{
-            console.log("don't display active buttons")
     
             displayPlaceholderButtons(game_info)
         }
         displayCards(game_info, cards, active_players_info)
         displayHighlight(game_info, active_players_info)
-    }
-    else{
-        console.log("game info is null")
     }
 
 }
@@ -156,7 +144,6 @@ function displayGameInfo(game_info, players){
     for (let player_id in players){
         let player = players[player_id]
         if (player.user == myUserName){
-            console.log("displaying the username")
             // display as user 1
             let user_1 = document.getElementById("id_user_1")
             user_1.textContent = `${player.user}`
@@ -266,24 +253,18 @@ function displayGameInfo(game_info, players){
         if (game_info['curr_round'] == 5) {
             displayGameOver(game_info)
             let winning_player_string = game_info['winning_player_string']
-            let winning_player_list = winning_player_string.split(', ')
-            console.log("PRINTINGWINNINGPLAYERSTRING")
-            console.log(winning_player_string)
-            console.log("PRINTINGWINNINGPLAYERLIST")
-            console.log(winning_player_list)
+            let winning_player_list
+            if (winning_player_string.includes(',')) {
+                winning_player_list = winning_player_string.split(', ')
+            }
+            else {
+                winning_player_list = winning_player_string.split()
+            }
             let seat_indices = []
             for (let player_id in winning_player_list){
                 // find this player's location and display highlight
-                console.log("WINNINGPLAYERID:")
-                console.log(winning_player_list[player_id])
                 let actualPlayer = winning_player_list[player_id]
-                console.log("this is the list of players")
-                console.log(list_of_players)
                 let curr_user_index = list_of_players.indexOf(actualPlayer)
-                console.log("this is the curr_user_index")
-                console.log(curr_user_index)
-                console.log("this is the logged in user index")
-                console.log(logged_in_user_index)
                 let distance = Math.abs(curr_user_index - logged_in_user_index)
                 let seat_index
                 if (curr_user_index < logged_in_user_index){
@@ -296,10 +277,7 @@ function displayGameInfo(game_info, players){
                 } else{
                     seat_index = 1
                 }
-                console.log("this is the new seat index")
-                console.log(seat_index)
                 seat_indices.push(seat_index)
-                console.log(seat_indices)
             }
             for (let i = 0; i < seat_indices.length; i++){
                 let highlightWinningPlayer
@@ -321,8 +299,6 @@ function displayGameInfo(game_info, players){
 
 
 function displayCards(game_info, cards, players){
-    console.log("made it to display cards")
-        // clear the board first 
     
         for (let i = 1; i <= 6; i++) {
             let user_tc_group = document.getElementById(`user_total_chips_group_${i}`)
@@ -350,7 +326,6 @@ function displayCards(game_info, cards, players){
             user_chips_group.style.border = "0px"
             user_chips_group.style.boxShadow = "none"
 
-            console.log('setting the visibilities to be hidden')
             let curr_pfp = document.getElementById(`pfp${i}_div`)
             curr_pfp.style.backgroundImage = "none"
             curr_pfp.style.boxShadow = "none"
@@ -386,21 +361,12 @@ function displayCards(game_info, cards, players){
     // make a for loop for the players and if the player is the user than 
     // display the cards, if not then don't???
     let folder = "../static/img/cards/"
-    console.log("this is the players")
-    console.log(players)
     let list_of_players = game_info['list_of_active_players']
     list_of_players = list_of_players.replace(/'/g, '"')
     list_of_players = JSON.parse(list_of_players)
-    console.log(list_of_players)
-    console.log(typeof list_of_players)
     let logged_in_user_index = list_of_players.indexOf(myUserName)
-    console.log("this is my user name")
-    console.log(myUserName)
-    console.log("this is the logged in user index")
-    console.log(logged_in_user_index)
     if (game_info["curr_round"] < 4){
         for (let player_id in players){
-            // console.log(player_id)
             let player = players[player_id]
             if (player.user == myUserName){
                 // display the current user
@@ -464,27 +430,18 @@ function displayCards(game_info, cards, players){
         
             } else{
                 let curr_user_index = list_of_players.indexOf(player.user)
-                console.log("this is the current user index")
-                console.log(curr_user_index)
                 let distance = Math.abs(curr_user_index - logged_in_user_index)
-                console.log("this is the calculated distance")
-                console.log(distance)
                 // if the curr user index < logged_in_user_index, curr user on the right
                 let seat_index
                 if (curr_user_index < logged_in_user_index){
-                    console.log("the user shoudl be on the right of the logged in")
                     // curr user on the right of the logged in user
                     seat_index = 1 + distance
-                    console.log("this is the seat number")
-                    console.log(seat_index)
                     // display to the right
                     
                 }
                 // if logged_in_user_index < curr user index, curr user on the left
                 else if (logged_in_user_index < curr_user_index){
                     seat_index = 7 - distance
-                    console.log("this is the seat number")
-                    console.log(seat_index)
                 }
                 let player_left = document.getElementById(`player${seat_index}_left_back`)
                 let player_right = document.getElementById(`player${seat_index}_right_back`)
@@ -668,7 +625,6 @@ function displayCards(game_info, cards, players){
         displayGameOver(game_info)
         displayPlaceholderButtons(game_info)
         for (let player_id in players){
-            // console.log(player_id)
             let player = players[player_id]
             if (player.user == myUserName){
                 // display the current user
@@ -741,32 +697,21 @@ function displayCards(game_info, cards, players){
         
             } else{
                 let curr_user_index = list_of_players.indexOf(player.user)
-                console.log("this is the current user index")
-                console.log(curr_user_index)
                 let distance = Math.abs(curr_user_index - logged_in_user_index)
-                console.log("this is the calculated distance")
-                console.log(distance)
                 // if the curr user index < logged_in_user_index, curr user on the right
                 let seat_index
                 if (curr_user_index < logged_in_user_index){
-                    console.log("the user shoudl be on the right of the logged in")
                     // curr user on the right of the logged in user
                     seat_index = 1 + distance
-                    console.log("this is the seat number")
-                    console.log(seat_index)
                 }
                 // if logged_in_user_index < curr user index, curr user on the left
                 else if (logged_in_user_index < curr_user_index){
                     seat_index = 7 - distance
-                    console.log("this is the seat number")
-                    console.log(seat_index)
                 }
                 let player_left = document.getElementById(`player${seat_index}_left_front`)
                 let player_right = document.getElementById(`player${seat_index}_right_front`)
                 let file_left_id = player['card_left']
-                // console.log(file_left)
                 let file_right_id = player['card_right']
-                // console.log(file_right)
                 let file_left = cards[file_left_id]
                 let file_right = cards[file_right_id]
                 player_left.src = folder + file_left
@@ -802,7 +747,6 @@ function displayCards(game_info, cards, players){
 }
 
 function displayGameOver(game_info) {
-    console.log(game_info['winning_player_user'])
     let winning_player = game_info['winning_player_user']
     let logo = document.getElementById('logo')
     logo.textContent = `${winning_player}`;
@@ -837,7 +781,6 @@ function displayHighlight(game_info, players){
         let player = players[player_id]
         // find this player's location and display highlight
         let curr_user_index = list_of_players.indexOf(player.user)
-        console.log(curr_user_index)
         let distance = Math.abs(curr_user_index - logged_in_user_index)
         let seat_index
         if (curr_user_index < logged_in_user_index){
@@ -852,13 +795,11 @@ function displayHighlight(game_info, players){
         }
         if (player.user == game_info['current_player_user']){
             let highlightCurrentPlayer
-            console.log(seat_index)
             highlightCurrentPlayer = document.getElementById(`pfp${seat_index}_div`)
             highlightCurrentPlayer.style.boxShadow = "0px 0px 10px 5px #B7D1FF"
         }
         else{
             let highlightCurrentPlayer
-            console.log(seat_index)
             highlightCurrentPlayer = document.getElementById(`pfp${seat_index}_div`)
             highlightCurrentPlayer.style.boxShadow = "none"
         }

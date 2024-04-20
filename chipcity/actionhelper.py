@@ -29,19 +29,19 @@ def set_blinds(game):
 
 def bet_action(game, player, money):
     # Bet functionality
-    print(f"-----Now inside bet_action for {player.user}!-----")
-    print(f"Is this Pre-Flop? (0-preflop, 1-flop, 2-turn, 3-river, 4-showdown): {game.curr_round}")
-    print(f"If true, consider the following. If false, ignore...")
-    print(f"---Is {player.user} the Small Blind?: {player.is_small_blind}")
-    print(f"---If True, {player.user} should post {game.small_blind_amt}")
-    print(f"---If False, ignore")
-    print(f"---Is {player.user} the Big Blind?: {player.is_big_blind}")
-    print(f"---If True, {player.user} should post {game.big_blind_amt}")
-    print(f"---If False, ignore")
-    print(f"Amount of Money {player.user} Posted: {money}")
-    print(f"Before bet_action is run, {player.user}'s Chips: {player.chips}")
-    print(f"Before bet_action is run, Total Pot Size: {game.total_pot}")
-    print(f"True or False, {player.user} is All In?: {not (money < player.chips)}")
+    # print(f"-----Now inside bet_action for {player.user}!-----")
+    # print(f"Is this Pre-Flop? (0-preflop, 1-flop, 2-turn, 3-river, 4-showdown): {game.curr_round}")
+    # print(f"If true, consider the following. If false, ignore...")
+    # print(f"---Is {player.user} the Small Blind?: {player.is_small_blind}")
+    # print(f"---If True, {player.user} should post {game.small_blind_amt}")
+    # print(f"---If False, ignore")
+    # print(f"---Is {player.user} the Big Blind?: {player.is_big_blind}")
+    # print(f"---If True, {player.user} should post {game.big_blind_amt}")
+    # print(f"---If False, ignore")
+    # print(f"Amount of Money {player.user} Posted: {money}")
+    # print(f"Before bet_action is run, {player.user}'s Chips: {player.chips}")
+    # print(f"Before bet_action is run, Total Pot Size: {game.total_pot}")
+    # print(f"True or False, {player.user} is All In?: {not (money < player.chips)}")
     if money < player.chips:
         player.current_bet += money
         player.chips -= money
@@ -51,9 +51,7 @@ def bet_action(game, player, money):
         player.chips = 0
         player.is_all_in = True
 
-    print(f"After bet_action is run, {player.user}'s Chips: {player.chips}")
-    print(f"After bet_action is run, Total Pot Size: {game.total_pot}")
-    print(f"----------------------------------------------------")
+    # print(f"After bet_action is run, {player.user}'s Chips: {player.chips}")
     player.save()
     game.save()
     return player
@@ -75,20 +73,17 @@ def raise_action(player, money):
     updated_player.most_recent_action = "raise"
     updated_player.save()
     game.save()
-    print(f"This the total pot after: {game.total_pot}")
 
 
 def call_action(player):
     # Call functionality
     game = Game.objects.all().last()
     call_val = game.highest_curr_bet - player.current_bet
-    print(f"Call Value: {call_val}")
     updated_player = bet_action(game, player, call_val)
     # game.current_player = Player.objects.all().filter(id=((updated_player.id)%(game.num_players_with_active_hand))+1)[0]
     updated_player.most_recent_action = "call"
     updated_player.save()
     game.save()
-    print(f"This the total pot after: {game.total_pot}")
 
 
 def all_in_action(game, player):
@@ -139,13 +134,10 @@ def can_check(game, player):
 def can_call(game, player):
     # Checks if player can call
     if (game.highest_curr_bet == 0):
-        print("1")
         return False
     if (game.highest_curr_bet - player.current_bet) <= player.chips:
-        print("2")
         return True
     elif (player.chips - game.highest_curr_bet) <= 0:
-        print("3")
         player.is_all_in = True
         player.save()
         return True
@@ -154,7 +146,6 @@ def can_call(game, player):
 
 def can_raise(game, player, amount):
     # Checks if player can raise
-    print(f"Player's current bet: {player.current_bet}")
     if amount == 0 or amount <= game.highest_curr_bet:
         return False
     if (player.current_bet+amount) <= player.chips:
