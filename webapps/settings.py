@@ -159,4 +159,4 @@ CHIPCITY_USERS = CONFIG.get("ChipCity", "users")
 LOGIN_URL = '/oauth/login/google-oauth2/'
 
 # Default URL to redirect to after a user logs in.
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'http://team39.cmu-webapps.com/oauth/complete/google-oauth2/'
