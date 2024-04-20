@@ -146,7 +146,6 @@ function displayGameInfo(game_info, players){
     tp.style.fontSize = "20px"
     tp.innerHTML = "CHIPS"
 
-
     // display the username for each player
     // display the current bet for each player
     // display the total chips for each player
