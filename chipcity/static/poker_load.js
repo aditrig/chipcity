@@ -253,8 +253,6 @@ function displayGameInfo(game_info, players){
             group_bet_div.style.background = "#BE7EB5"
             group_bet_div.style.boxShadow = "0px 4px 4px 0px rgba(0, 0, 0, 0.25)"
         }
-
-
         
         let turn_indicator = document.getElementById('logo');
         let current_turn_user = game_info['current_player_user'];
@@ -265,9 +263,16 @@ function displayGameInfo(game_info, players){
             turn_indicator.textContent = `${current_turn_user} is taking their turn`;
 
         }
+<<<<<<< HEAD
         if (game_info["curr_round"] == 5) {
             displayGameOver(game_info)
         }
+=======
+        if (game_info['curr_round'] == 5) {
+            displayGameOver(game_info)
+        }
+    
+>>>>>>> 832a398db5a71c1afb67804fec6479b7b2c41530
     }
 
 }
@@ -379,8 +384,14 @@ function displayCards(game_info, cards, players){
                 player_pfp.style.backgroundPosition = "center"
                 player_pfp.src = player_pfp_link
 
-
-                let file = cards["not-folded-back-art"]
+                let folded = player['hand_is_active']
+                let file
+                if (!folded){
+                    file = cards['folded-back-art']
+                    
+                } else{
+                    file = cards["not-folded-back-art"]
+                }
                 let source = folder + file
                 player_left_back.src = source 
                 player_right_back.src = source
@@ -410,15 +421,26 @@ function displayCards(game_info, cards, players){
                     console.log("this is the seat number")
                     console.log(seat_index)
                 }
-                let player_left = document.getElementById(`player${seat_index}_left_front`)
-                let player_right = document.getElementById(`player${seat_index}_right_front`)
+                let player_left = document.getElementById(`player${seat_index}_left_back`)
+                let player_right = document.getElementById(`player${seat_index}_right_back`)
                 // let file_left_id = player['card_left']
                 // let file_right_id = player['card_right']
                 // let file_left = cards[file_left_id]
                 // let file_right = cards[file_right_id]
-                let back = "not-folded-back-art.svg"
-                player_left.src = folder + back
-                player_right.src = folder + back
+                // let back = "not-folded-back-art.svg"
+                // player_left.src = folder + back
+                // player_right.src = folder + back
+                let folded = player['hand_is_active']
+                let file
+                if (!folded){
+                    file = cards['folded-back-art']
+                    
+                } else{
+                    file = cards["not-folded-back-art"]
+                }
+                let source = folder + file
+                player_left.src = source 
+                player_right.src = source
 
                 let player_pfp = document.getElementById(`pfp${seat_index}_div`)
                 let player_pfp_link = player['picture']
@@ -543,6 +565,20 @@ function displayCards(game_info, cards, players){
         turn_front.parentElement.parentElement.classList.add('flip-to-front');
         river_front.parentElement.parentElement.classList.add('flip-to-front')
 
+        var leftelement = document.querySelector('.lchp-1');
+        var rightelement = document.querySelector('.rchp-1');
+
+        leftelement.setAttribute('ontouchstart', "this.classList.toggle('hover');");
+        rightelement.setAttribute('ontouchstart', "this.classList.toggle('hover');");
+
+        let player_left = document.getElementById('player1_left_front')
+        let player_right = document.getElementById('player1_right_front')
+
+        player_left.parentElement.parentElement.classList.add('flip-to-front');
+        player_right.parentElement.parentElement.classList.add('flip-to-front');
+        player_left.parentElement.parentElement.classList.remove('flip-to-back');
+        player_right.parentElement.parentElement.classList.remove('flip-to-back');
+
     } 
     if (game_info['curr_round'] == 1|| game_info['curr_round'] >= 4) {
         left_flop_front.parentElement.parentElement.classList.add('flip-to-back');
@@ -580,10 +616,24 @@ function displayCards(game_info, cards, players){
                 let player_right = document.getElementById("player1_right_front")
                 let player_right_back = document.getElementById("player1_right_back")
 
+                var divElement = document.querySelector('.lchp-1');
+                divElement.removeAttribute('ontouchstart');
+
+                var divElement = document.querySelector('.rchp-1');
+                divElement.removeAttribute('ontouchstart');
+
                 let player_left_id = player['card_left']
                 let player_right_id = player['card_right']
                 let player_left_file = cards[player_left_id]
                 let player_right_file = cards[player_right_id]
+                
+
+                player_left.parentElement.parentElement.classList.add('flip-to-back');
+                player_left.parentElement.parentElement.classList.remove('flip-to-front');
+                player_right.parentElement.parentElement.classList.add('flip-to-back');
+                player_right.parentElement.parentElement.classList.remove('flip-to-front');
+
+                
                 player_left.src = folder + player_left_file
                 player_right.src = folder + player_right_file
                 let file = cards["not-folded-back-art"]
@@ -610,6 +660,12 @@ function displayCards(game_info, cards, players){
                 player_right_back.style.height = "100px";
                 player_right_back.style.marginLeft = "-5px"
                 player_right_back.style.marginTop = "-8px"
+
+                // // flip it open
+                // player_left.parentElement.parentElement.classList.add('flip-to-back');
+                // player_left.parentElement.parentElement.classList.remove('flip-to-front');
+                // player_right.parentElement.parentElement.classList.add('flip-to-back');
+                // player_right.parentElement.parentElement.classList.remove('flip-to-front');
 
                 let player_pfp = document.getElementById("pfp1_div")
                 let player_pfp_link = player['picture']
@@ -659,6 +715,12 @@ function displayCards(game_info, cards, players){
                 player_right.style.height = "100px";
                 player_right.style.marginLeft = "-5px"
                 player_right.style.marginTop = "-8px"
+
+                // flip it open
+                player_left.parentElement.parentElement.classList.add('flip-to-back');
+                player_left.parentElement.parentElement.classList.remove('flip-to-front');
+                player_right.parentElement.parentElement.classList.add('flip-to-back');
+                player_right.parentElement.parentElement.classList.remove('flip-to-front');
 
                 let player_pfp = document.getElementById(`pfp${seat_index}_div`)
                 let player_pfp_link = player['picture']
@@ -842,70 +904,4 @@ function sanitize(s) {
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
 }
-
-
-
-// function updateList(items) {
-//     // Removes items from todolist if they not in items
-//     let liElements = document.getElementsByTagName("li")
-//     for (let i = 0; i < liElements.length; i++) {
-//         let element = liElements[i]
-//         let deleteIt = true
-//         items.forEach(item => {
-//             if (element.id === `id_item_${item.id}`) deleteIt = false
-//         })
-//         if (deleteIt) element.remove()
-//     }
-
-//     // Adds each to do list item received from the server to the displayed list
-//     let list = document.getElementById("todo-list")
-//     items.forEach(item => {
-//         if (document.getElementById(`id_item_${item.id}`) == null) {
-//             list.append(makeListItemElement(item))
-//         }
-//     })
-// }
-
-// // Builds a new HTML "li" element for the to do list
-// function makeListItemElement(item) {
-//     let deleteButton
-//     if (item.user === myUserName) {
-//         deleteButton = `<button onclick='deleteItem(${item.id})'>X</button>`
-//     } else {
-//         deleteButton = "<button style='visibility: hidden'>X</button> "
-//     }
-
-//     let details = `<span class="details">(id=${item.id}, ip_addr=${item.ip_addr}, user=${item.user})</span>`
-
-//     let element = document.createElement("li")
-//     element.id = `id_item_${item.id}`
-//     element.innerHTML = `${deleteButton} ${sanitize(item.text)} ${details}`
-
-//     return element
-// }
-
-
-// function addItem() {
-//     let textInputEl = document.getElementById("item")
-//     let itemText = textInputEl.value
-//     if (itemText === "") return
-
-//     // Clear previous error message, if any
-//     displayError("")
-    
-//     let data = {action: "add", text: itemText}
-//     socket.send(JSON.stringify(data))
-
-//     textInputEl.value = ""
-// }
-
-// function deleteItem(id) {
-//     let data = {action: "delete", id: id}
-//     socket.send(JSON.stringify(data))
-// }
-
-// // def join_table():
-// //     document.getElementById('id_join_table').addEventListener('click', function() {
-// //         window.location.href = '{%url 'table' %}}';
-// //     })
 
